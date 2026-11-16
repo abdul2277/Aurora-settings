@@ -1,0 +1,51 @@
+/* Aurora Store UI (see store-ui.js). Uses the app's theme variables, so every theme and light/dark mode applies. */
+.sx { --sx-r: 16px; }
+.sx-hero { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: calc(var(--sx-r) + 2px); padding: 18px 20px; display: grid; gap: 14px; grid-template-columns: 1fr auto; align-items: center;
+  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 60%), radial-gradient(100% 120% at 100% 100%, color-mix(in srgb, #c77dff 22%, transparent), transparent 55%), var(--card); }
+.sx-title { font-size: 22px; font-weight: 700; letter-spacing: .2px; }
+.sx-sub { color: var(--muted); font-size: 12.5px; margin-top: 4px; max-width: 560px; line-height: 1.45; }
+.sx-stats { display: flex; gap: 10px; }
+.sx-stat { border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 70%, transparent); backdrop-filter: blur(6px); color: var(--text); border-radius: 14px; padding: 8px 16px; min-width: 78px; display: flex; flex-direction: column; align-items: center; font: inherit; }
+button.sx-stat { cursor: pointer; } button.sx-stat:hover { border-color: var(--accent); transform: translateY(-1px); }
+.sx-stat b { font-size: 20px; line-height: 1.2; } .sx-stat span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+.sx-stat.ok b { color: #4cd964; } .sx-stat.warn b { color: #ffb347; }
+.sx-hero-btns { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.sx-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.sx-search { flex: 1 1 260px; min-width: 200px; margin: 0; }
+.sx-sort { margin: 0; width: auto; }
+.sx-views { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.sx-vbtn { background: transparent; color: var(--muted); border: 0; padding: 7px 12px; cursor: pointer; font-size: 15px; }
+.sx-vbtn.on { background: var(--accent); color: var(--accent-ink, #fff); }
+.sx-note { border: 1px solid color-mix(in srgb, #ffb347 45%, var(--border)); background: color-mix(in srgb, #ffb347 10%, transparent); border-radius: 12px; padding: 8px 12px; font-size: 12.5px; }
+.sx-chips .chip { display: inline-flex; align-items: center; gap: 6px; transition: transform .12s, background .12s; }
+.sx-chips .chip:hover { transform: translateY(-1px); }
+.sx-count { font-size: 10.5px; opacity: .75; background: color-mix(in srgb, currentColor 14%, transparent); border-radius: 999px; padding: 1px 7px; }
+.sx-h { font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--muted); }
+.sx-frow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; }
+.sx-fcard { flex: 0 0 132px; scroll-snap-align: start; border: 1px solid var(--border); background: var(--card); border-radius: var(--sx-r); padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; transition: transform .15s, border-color .15s, box-shadow .15s; }
+.sx-fcard:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 22px -12px var(--glow, var(--accent)); }
+.sx-fcard .store-name { max-width: 100%; font-size: 12.5px; }
+.sx-tile { --h: 200; font-size: 26px; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; flex: none;
+  background: linear-gradient(135deg, hsl(var(--h) 80% 60% / .35), hsl(calc(var(--h) + 50) 80% 55% / .15)); border: 1px solid hsl(var(--h) 80% 60% / .35); }
+.sx-card { border-radius: var(--sx-r); transition: transform .15s, border-color .15s, box-shadow .15s; animation: sxIn .25s ease both; }
+.sx-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 60%, var(--border)); box-shadow: 0 10px 26px -16px var(--glow, var(--accent)); }
+.sx-meta { min-width: 0; flex: 1; }
+.sx-badges { margin-left: auto; align-self: flex-start; }
+.sx-badge { font-size: 10.5px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; text-transform: uppercase; letter-spacing: .4px; }
+.sx-badge.ok { background: color-mix(in srgb, #4cd964 18%, transparent); color: #4cd964; } .sx-badge.warn { background: color-mix(in srgb, #ffb347 22%, transparent); color: #ffb347; }
+.sx-bar > i { background-size: 200% 100%; animation: sxFlow 1.4s linear infinite; }
+.sx-grid.list { grid-template-columns: 1fr; gap: 8px; }
+.sx-card.list { flex-direction: row; align-items: center; gap: 14px; padding: 10px 14px; }
+.sx-card.list .store-head { flex: 0 0 280px; } .sx-card.list .store-desc { flex: 1; min-height: 0; } .sx-card.list .store-actions { margin-top: 0; flex-wrap: nowrap; }
+.sx-card.list .store-info { flex-basis: 100%; }
+.sx-card.list { flex-wrap: wrap; }
+.sx-empty { grid-column: 1 / -1; text-align: center; padding: 36px 12px; color: var(--muted); } .sx-empty-i { font-size: 40px; margin-bottom: 6px; }
+.sx-skel { pointer-events: none; } .sx-sk-a, .sx-sk-b { border-radius: 8px; background: linear-gradient(90deg, var(--track), color-mix(in srgb, var(--track) 40%, var(--card)), var(--track)); background-size: 200% 100%; animation: sxShimmer 1.2s linear infinite; }
+.sx-sk-a { height: 42px; width: 42px; border-radius: 12px; } .sx-sk-b { height: 12px; margin-top: 4px; } .sx-sk-b.short { width: 55%; }
+@keyframes sxIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes sxShimmer { to { background-position: -200% 0; } } @keyframes sxFlow { to { background-position: -200% 0; } }
+@media (max-width: 760px) { .sx-hero { grid-template-columns: 1fr; } .sx-card.list .store-head { flex-basis: 100%; } }
+@media (prefers-reduced-motion: reduce) { .sx-card, .sx-sk-a, .sx-sk-b, .sx-bar > i { animation: none; } .sx-card, .sx-fcard, .sx-chips .chip { transition: none; } }
+.sx-search, .sx-sort { background: color-mix(in srgb, var(--card) 80%, #000 20%); border: 1px solid color-mix(in srgb, var(--text) 22%, transparent); color: var(--text); }
+.sx-search::placeholder { color: var(--muted); opacity: 1; }
+.sx-search:focus, .sx-sort:focus { outline: 2px solid var(--accent); outline-offset: 1px; }

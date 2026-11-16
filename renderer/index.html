@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; frame-src aurora-addon:">
+<title>Aurora Settings</title>
+<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="store.css">
+</head>
+<body>
+  <div class="titlebar"><span class="app-name">Aurora Settings</span><span class="ver" id="ver" title="Aurora Settings version"></span></div>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <button class="search-btn" id="openPalette">
+        <span>Search settings</span><kbd>Ctrl K</kbd>
+      </button>
+      <nav id="nav"></nav>
+    </aside>
+
+    <main class="content">
+      <div id="updateBar" class="update-bar" hidden></div>
+      <div id="page"></div>
+    </main>
+  </div>
+
+  <div class="palette-backdrop" id="paletteBackdrop" hidden>
+    <div class="palette" role="dialog" aria-label="Search settings">
+      <input id="paletteInput" type="text" placeholder="Search every setting..." autocomplete="off">
+      <div id="paletteResults"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="mock-api.js"></script>
+  <script src="pages.js"></script>
+  <script src="app.js"></script>
+  <script src="store-ui.js"></script>
+  <script src="studio.js"></script>
+  <script src="prefsui.js"></script>
+  <script src="apps.js"></script>
+  <script src="apps2.js"></script>
+  <script src="apps3.js"></script>
+  <script src="commands.js"></script>
+<script src="mycmds.js"></script>
+<script src="special.js"></script>
+<script src="special2.js"></script>
+<script src="doctor.js"></script>
+  <script src="plus1.js"></script>
+  <script src="plus2.js"></script>
+  <script src="vendor/jsQR.js"></script>
+  <script src="pro.js"></script>
+  <script src="life.js"></script>
+<script src="extras.js"></script>
+  <script src="addons.js"></script>
+  <script src="space.js"></script>
+  <script src="utils.js"></script>
+  <script src="widgets.js"></script>
+  <script src="desklook.js"></script>
+  <script src="rating.js"></script>
+  <script src="gpumon.js"></script>
+<script src="controller.js"></script>
+<script src="diskmap.js"></script>
+  <script src="journey.js"></script>
+  <script src="uistyle.js"></script>
+  <script src="customize.js"></script>
+  <script src="osui.js"></script>
+</body>
+</html>

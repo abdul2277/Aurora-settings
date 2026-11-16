@@ -1,57 +1,62 @@
-# Aurora-settings
-Aurora settings to quickly de-bloat Windows AI features. You can undo every change with one command.
+# Aurora Settings
 
-## Quick start
-1. Download this repository (Code → Download ZIP) and extract it.
-2. Double-click **`Aurora.cmd`**. It asks for administrator rights and opens the menu.
-3. Press **R** to apply the recommended set, or **P** to preview it first without changing anything.
+An original Settings app for Windows 11 (also runs on Linux). It is not derived from Microsoft code. It does what the Windows Settings app does, adds a lot more, and lets you turn off the parts of Windows you do not want.
 
-```
-  1. *Windows Copilot                Off (blocked)   3/3
-  2. *Recall snapshots               Off (blocked)   3/3
-  3. *Click to Do                    On (default)    0/2
-  ...
-  [R] Apply recommended   [A] Apply all   [1-9] Apply one (e.g. 1,3,5)
-  [P] Preview recommended (no changes)   [U] Undo last run   [C] Remove Copilot app   [Q] Quit
-```
+## Turn off the Microsoft extras
 
-## What it turns off
-| Id | Feature | Recommended | How |
-|---|---|:-:|---|
-| `Copilot` | Windows Copilot + taskbar button | ✔ | `TurnOffWindowsCopilot` policy, `ShowCopilotButton=0` |
-| `Recall` | Recall screen snapshots | ✔ | `DisableAIDataAnalysis`, `AllowRecallEnablement=0` |
-| `ClickToDo` | Click to Do | ✔ | `DisableClickToDo` policy |
-| `Paint` | Cocreator, Generative fill, Image creator | ✔ | Paint policies |
-| `Notepad` | Rewrite / AI in Notepad | ✔ | `DisableAIFeatures` policy |
-| `Edge` | Copilot sidebar in Edge, page-content access | ✔ | `HubsSidebarEnabled=0`, `CopilotPageContext=0` |
-| `BingSearch` | Bing web results in Start search | ✔ | `DisableSearchBoxSuggestions`, `BingSearchEnabled=0` |
-| `TypingInsights` | Typing & inking data collection | | `InputPersonalization` settings |
-| `Ads` | Advertising ID & tailored experiences | | `AdvertisingInfo`, `CloudContent` policy |
+- **De-AI Windows**: switch Copilot, Recall, Click to Do, the Edge AI sidebar and AI web search off in one click, or back on whenever you like.
+- **Turn off Microsoft features**: the AI and background features that use up RAM and CPU (Copilot, Recall, Widgets, Edge running in the background, Store apps in the background), plus lock screen ads, tips, suggestions, OneDrive nags, error reports, online speech, typing data and Edge promotions. Telemetry is a separate switch because Windows asks for permission.
+- Every switch can be turned back on. Most changes are per user, so they need no administrator rights. Where Windows blocks a per-user change, Aurora asks for one permission prompt and checks that the change really happened.
+- Home and Pro editions of Windows always send a basic "required" level of diagnostic data. No app can remove that.
 
-Optional: **Remove Copilot app** (menu **C** or `-RemoveCopilotApp`) uninstalls the Copilot Store app. You can reinstall it from the Microsoft Store.
+## Also included
 
-## Command line
-```powershell
-.\Aurora.ps1 -Status                        # what is on/off
-.\Aurora.ps1 -List                          # ids and descriptions
-.\Aurora.ps1 -Apply Recommended -WhatIf     # preview only
-.\Aurora.ps1 -Apply Recommended -RestorePoint
-.\Aurora.ps1 -Apply Recall,Copilot,Edge
-.\Aurora.ps1 -Undo                          # roll back the latest run
-.\Aurora.ps1 -Undo -BackupFile <path>       # roll back a specific run
-```
-Add `-NoExplorerRestart` to skip restarting Explorer.
+- Aurora Doctor: scans the PC part by part (graphics, CPU, memory, drives, network, display, audio, Windows) and fixes what it can, with a restore point first.
+- Windows basics: System, Bluetooth and devices, Network, Personalization, Start and Taskbar, Apps, Gaming, Accessibility, Time and language, Privacy, Accounts, Windows Update.
+- Mouse pointer fix for a vanishing pointer.
+- Diagnostics: one report file with your Windows version, permissions and any errors, for bug reports.
+- Ctrl+K search across every setting.
+- Optional add-ons you switch on under **Add-ons**: PC health tools (disk map, duplicate finder, backup), prayer times and Hijri date, zakat calculator, world clock, colour picker, exchange rates, profiles and automation, your own commands, themes.
 
-## Safety
-- **Exact undo**: before each run, Aurora saves the old values to `%LOCALAPPDATA%\Aurora\backups\aurora-<time>.json`. Undo puts them back, and deletes any value that did not exist before.
-- **Preview**: `-WhatIf` (or menu **P**) lists every change and touches nothing.
-- **Restore point**: `-RestorePoint` creates a System Restore point first.
-- **Without administrator rights**: per-user (HKCU) settings are still applied. Machine-wide (HKLM) policies are skipped and listed, and those features show as *Partly blocked*.
-- **Re-running is safe**: settings already applied are left alone.
-- It uses only documented registry policies and settings. It removes no system files and does not edit the hosts file. Some changes take effect after signing out or restarting the app.
+Only the essentials are on at first. Everything else is an add-on you can switch on or off.
+
+## New in 1.39
+
+- **Aurora Store, redesigned**: a hero with live stats, popular picks, sort and grid/list views, status badges, loading skeletons, a batch **Update all** with progress, and `/` to search. Update checks are faster (4 apps at a time), tell you when GitHub is rate-limiting instead of saying "everything is up to date", and a manual check always sees the newest versions. Updating a portable app can no longer destroy the working copy if the update fails. A finished update disappears from the Updates list immediately.
+- **Aurora is more robust**: a full disk or a permissions error during a download is now reported instead of crashing the app, a background update check can no longer wipe an update you have already downloaded, and the update-download timer no longer leaks when a download fails.
+- **De-AI is more complete (built in)**: one new switch turns off AI in Paint (Cocreator, Generative fill, Image creator) and Notepad (Rewrite) and locks Recall off for everyone on the PC (one permission prompt). The Edge switch now also stops Copilot reading the page you are viewing. All of it is part of the one-click presets. The standalone PowerShell version lives in `tools/powershell/`.
+- **End-to-end encrypted Drop**: files shared over Wi-Fi are encrypted on your PC with a one-time key that lives only in the link's `#` part, so the network and anyone watching it see only unreadable data. The receiver just opens the link in a browser (the page decrypts the file on their device). Both sides can compare a short code. `tools/aurora-decrypt.js` decrypts the same files without a browser or Aurora. (A person who can change traffic on your network could alter the page, so share links only with people you trust.)
+- **Lock a file with a password** (Toolkit): scrypt + ChaCha20-Poly1305, detects any change to the file, never overwrites your original.
+- **Bluetooth audio & LDAC**: on Linux you can switch between LDAC, aptX and standard modes. On Windows, which cannot do LDAC at all, the page lists your Bluetooth audio devices and explains your real options. LDAC switching has not been tried with real headphones.
+- **New add-ons**: Bluetooth codec guide, audio size calculator, timestamp tools, password meter, text statistics, JWT decoder and percentage calculator. Every one of the 243 add-ons is now tested by running it in a browser, and four add-on id clashes (where two add-ons overwrote each other) were fixed.
 
 ## Tests
-```
-pwsh -File tests/Aurora.Tests.ps1      # or: powershell -File tests\Aurora.Tests.ps1
-```
-87 checks run against an in-memory registry. They cover apply, idempotence, exact undo, WhatIf, non-admin behaviour and the catalog.
+
+    npm test           # unit tests (Store, updater, encryption, Drop, Bluetooth, add-ons, settings)
+    npm run test:ui    # UI tests in headless Chromium (needs Playwright)
+    npm run test:e2e   # launches the real Electron app and visits every page (Linux: xvfb-run)
+
+Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
+
+## Run it
+
+1. Install Node.js LTS from https://nodejs.org
+2. In this folder run:
+
+       npm install
+       npm start
+
+On Windows you can also double-click `start.bat`.
+
+## Build
+
+       npm run build          # Windows portable .exe in dist/
+       npm run build:linux    # Linux AppImage
+
+## Notes
+
+- Nothing is sent anywhere. All settings and tools run on your PC.
+- Registry changes use the same keys and policies Windows documents. Taskbar and File Explorer changes restart Explorer for a second.
+- The Windows-only parts need a real Windows PC to take effect. On Linux the app shows only the pages that work there.
+- Downloaded builds are not code-signed, so Windows SmartScreen may warn. Unblock the zip (Properties, Unblock) before extracting.
+- Licensed under the MIT License (see LICENSE).

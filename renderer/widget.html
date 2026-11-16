@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:">
+<title>Aurora widget</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; font-family: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif; color: #f2f5fb; user-select: none; }
+  #w { position: absolute; inset: 4px; border-radius: 20px; padding: 12px 14px; box-sizing: border-box; background: linear-gradient(145deg, rgba(20, 24, 38, .88), rgba(30, 24, 52, .84)); border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 8px 28px rgba(0, 0, 0, .35); -webkit-app-region: drag; overflow: hidden; display: flex; flex-direction: column; }
+  #x { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #fff; font-size: 11px; cursor: pointer; opacity: 0; transition: opacity .15s; -webkit-app-region: no-drag; }
+  #w:hover #x { opacity: 1; }
+  .a { color: var(--accent, #4cc2ff); }
+  .big { font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .sm { font-size: 13px; opacity: .75; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .bar { height: 8px; border-radius: 6px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+  .bar > i { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--accent, #4cc2ff), #a98bff); transition: width .6s; }
+  textarea, input, button.b { -webkit-app-region: no-drag; font: inherit; color: inherit; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14); border-radius: 10px; padding: 6px 8px; outline: 0; user-select: text; }
+  textarea { flex: 1; resize: none; width: 100%; box-sizing: border-box; }
+  button.b { cursor: pointer; }
+  button.b:hover { background: rgba(255, 255, 255, .16); }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; text-align: center; }
+  td, th { padding: 3px 0; } th { opacity: .55; font-weight: 600; } td.t { background: var(--accent, #4cc2ff); color: #0b1020; border-radius: 8px; font-weight: 700; }
+  ul { list-style: none; margin: 0; padding: 0; overflow: auto; -webkit-app-region: no-drag; flex: 1; }
+  li { display: flex; gap: 6px; align-items: center; padding: 2px 0; font-size: 13px; } li.done span { text-decoration: line-through; opacity: .5; }
+</style>
+</head>
+<body>
+<div id="w"><button id="x" title="Close widget">✕</button><div id="c" style="display:flex;flex-direction:column;flex:1;min-height:0"></div></div>
+<script src="widget.js"></script>
+</body>
+</html>

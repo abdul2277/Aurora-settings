@@ -545,3 +545,22 @@ select.filter option { background: #1e2128; color: #f3f4f6; }
 .studio-ref { display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-top: 1px solid rgba(128,128,128,.25); } .studio-ref code { font-size: 12.5px; } .studio-preview { min-height: 0; }
 
 .ver { margin-left: 8px; padding: 1px 9px; font-size: 11px; font-weight: 700; letter-spacing: .04em; border-radius: 999px; color: var(--accent, #4cc2ff); background: color-mix(in srgb, var(--accent, #4cc2ff) 14%, transparent); border: 1px solid color-mix(in srgb, var(--accent, #4cc2ff) 35%, transparent); -webkit-app-region: no-drag; user-select: text; }
+
+/* ---- Right-to-left (Arabic, Hebrew, Persian...): mirrors the places that were written with fixed left/right ---- */
+[dir="rtl"] .nav-item, [dir="rtl"] .pcard, [dir="rtl"] .pack, [dir="rtl"] .os-table th, [dir="rtl"] .os-table td, [dir="rtl"] .search-item { text-align: right; }
+[dir="rtl"] .nav-item::before { left: auto; right: 0; }
+[dir="rtl"] .switch { direction: ltr; } /* the switch knob always slides the same way */
+[dir="rtl"] .value, [dir="rtl"] .aster-n { text-align: left; }
+[dir="rtl"] .pdel { right: auto; left: 10px; }
+[dir="rtl"] .result.act { border-left: 0; border-right: 3px solid var(--accent); }
+[dir="rtl"] .list-row.doc-bad { border-left: 0; border-right: 3px solid #ff6b6b; padding-left: 0; padding-right: 10px; }
+[dir="rtl"] .list-row.doc-warn { border-left: 0; border-right: 3px solid #ffb347; padding-left: 0; padding-right: 10px; }
+[dir="rtl"] .nav-item.has-new::after { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .ver, [dir="rtl"] .sx-badges { margin-left: 0; }
+[dir="rtl"] .ver { margin-right: 8px; } [dir="rtl"] .sx-badges { margin-right: auto; }
+[dir="rtl"] .splash-logo { padding-left: 0; padding-right: .32em; }
+[dir="rtl"] code, [dir="rtl"] pre, [dir="rtl"] input[type="number"], [dir="rtl"] input[type="time"], [dir="rtl"] input[type="datetime-local"] { direction: ltr; unicode-bidi: plaintext; }
+
+/* Control rows inside narrow cards (for example Desktop widgets) wrap instead of overflowing the page sideways. */
+.card label.sub { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
+.card input[type="range"], .card input.filter, .card select { max-width: 100%; min-width: 0; box-sizing: border-box; }

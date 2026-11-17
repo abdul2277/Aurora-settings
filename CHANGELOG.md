@@ -8,3 +8,7 @@ Added: redesigned Store, built-in machine-wide AI switch, encrypted Drop, file l
 
 ## 1.40.0
 Added six add-ons (download time, cron explainer, tip and split, case converter, sleep cycles, aspect ratio).
+
+## 1.41.0
+Added: Store collections and app-list export/import; Drop multi-file/folder send and receive mode; ten themes; right-to-left layout; seven new Doctor checks and a time-sync fix.
+Fixed: horizontal overflow on the Add-ons page.

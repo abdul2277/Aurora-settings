@@ -1416,6 +1416,10 @@ Object.assign(handlers, {
   appStoreAdd: ({ id }) => appStore.add(id),
   appStoreRemove: ({ id }) => appStore.removeCustom(String(id)),
   appStoreInfo: ({ id }) => appStore.info(String(id)),
+  appStoreCollections: () => { const have = new Set((appStore.exportList().apps).map((a) => a.id)); return require('./lib/collections').COLLECTIONS.map((c) => ({ ...c, installed: c.apps.filter((id) => have.has(id)).length })); },
+  appStoreInstallCollection: ({ id }) => appStore.installMany(appStore.collectionApps(String(id))),
+  appStoreExportList: async () => { const r = await dialog.showSaveDialog({ title: 'Save your app list', defaultPath: 'aurora-apps.json', filters: [{ name: 'Aurora app list', extensions: ['json'] }] }); if (r.canceled || !r.filePath) return null; const list = appStore.exportList(); fs.writeFileSync(r.filePath, JSON.stringify(list, null, 2)); return { path: r.filePath, count: list.apps.length }; },
+  appStoreImportList: async () => { const r = await dialog.showOpenDialog({ title: 'Choose an Aurora app list', properties: ['openFile'], filters: [{ name: 'Aurora app list', extensions: ['json'] }] }); if (r.canceled || !r.filePaths[0]) return null; const st = fs.statSync(r.filePaths[0]); if (st.size > 200000) throw new Error('That file is too big to be an app list'); let doc; try { doc = JSON.parse(fs.readFileSync(r.filePaths[0], 'utf8')); } catch (_) { throw new Error('That file is not valid'); } return appStore.installMany(appStore.parseList(doc)); },
   appStoreUpdates: () => appStore.updates({ force: true }),
   appStoreUpdatesReport: () => appStore.updatesReport({ force: true }),
   appStoreHomepage: async ({ id }) => { const i = await appStore.info(String(id)); if (!/^https:\/\//.test(i.homepage)) throw new Error('No website listed'); await shell.openExternal(i.homepage); return true; }
@@ -1468,13 +1472,20 @@ Object.assign(handlers, {
 });
 /* ---------- Aurora Toolkit: network checks, Drop, disk speed, PDF and ZIP tools (see lib/toolkit.js) ---------- */
 const tk = require('./lib/toolkit');
-const drop = tk.createDrop(); const tkOk = new Set();
+const drop = tk.createDrop(); const dropRx = tk.createReceive(); const tkOk = new Set();
 const btAudio = require('./lib/btaudio').createBtAudio({ ps });
 const approved = (p) => { const f = path.resolve(String(p)); if (!tkOk.has(f)) throw new Error('Only files you picked in the tool can be used'); if (!fs.existsSync(f)) throw new Error(`"${path.basename(f)}" no longer exists`); return f; };
 const uniqueIn = (dir, name) => { const ext = path.extname(name), stem = name.slice(0, name.length - ext.length); let out = path.join(dir, name), k = 1; while (fs.existsSync(out)) out = path.join(dir, `${stem}-${k++}${ext}`); return out; };
 Object.assign(handlers, {
   netDns: async (a) => tk.netDns(a), netPort: async (a) => tk.netPort(a), netSsl: async (a) => tk.netSsl(a), netHeaders: async (a) => tk.netHeaders(a), netPublicIp: async () => tk.netPublicIp(), netWol: async (a) => tk.netWol({ mac: a.mac }),
-  dropStart: async ({ once, encrypt }) => { const r = await dialog.showOpenDialog({ title: 'Choose a file to share', properties: ['openFile'] }); if (r.canceled || !r.filePaths[0]) return null; return drop.start({ file: r.filePaths[0], once: once !== false, encrypt: encrypt !== false }); },
+  dropStart: async ({ once, encrypt, mode }) => {
+    const folder = mode === 'folder', many = mode === 'files';
+    const r = await dialog.showOpenDialog({ title: folder ? 'Choose a folder to share' : many ? 'Choose files to share' : 'Choose a file to share', properties: folder ? ['openDirectory'] : many ? ['openFile', 'multiSelections'] : ['openFile'] });
+    if (r.canceled || !r.filePaths[0]) return null; const o = { once: once !== false, encrypt: encrypt !== false };
+    return (folder || r.filePaths.length > 1) ? drop.start({ ...o, paths: r.filePaths }) : drop.start({ ...o, file: r.filePaths[0] });
+  },
+  dropReceiveStart: async () => dropRx.start({ dir: path.join(app.getPath('downloads'), 'Aurora Drop') }), dropReceiveStop: async () => dropRx.stop(), dropReceiveStatus: async () => dropRx.status(),
+  dropReceiveOpen: async () => { const s = dropRx.status(); const dir = s.active ? s.dir : path.join(app.getPath('downloads'), 'Aurora Drop'); fs.mkdirSync(dir, { recursive: true }); await shell.openPath(dir); return true; },
   dropStop: async () => drop.stop(), dropStatus: async () => drop.status(),
   // Bluetooth audio and LDAC (lib/btaudio.js). Switching codecs works on Linux; on Windows the page explains the limits and lists devices.
   btAudioInfo: async () => btAudio.info(),

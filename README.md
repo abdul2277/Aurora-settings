@@ -38,6 +38,14 @@ Only the essentials are on at first. Everything else is an add-on you can switch
 
 Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
 
+## New in 1.41
+
+- **Store collections**: six one-click bundles (Everyday essentials, Developer kit, Creator studio, Privacy pack, Gamer pack, PC health tools) that install only what you are missing. **Export my apps** saves your list, and **Import a list** reinstalls it on another PC (hostile or malformed lists are rejected).
+- **Drop, more flexible**: share several files or a whole folder (zipped, then encrypted), and a new **Receive** mode where a phone or another PC uploads files to your Downloads folder under "Aurora Drop". Receiving is NOT encrypted, so it says so, has size and count limits, never overwrites, and stops by itself after 15 minutes.
+- **Ten new themes** (16 in all), each checked for readable contrast.
+- **Right-to-left layout** for Arabic and other RTL languages: the whole interface mirrors, and every page is tested for sideways overflow. This also fixed an old overflow on the Add-ons page.
+- **Aurora Doctor, new checks**: clock drift (with a one-click time sync), how old the last Windows update is, other drives running low, Secure Boot, TPM, User Account Control turned off, Remote Desktop enabled, and a big Recycle Bin. The PowerShell for these has not run on real Windows; it passes PowerShell's own parser and the logic is unit tested.
+
 ## New in 1.40
 
 - Six more add-ons: Download time calculator, Cron explainer (plain words plus the next five runs), Tip and split calculator, Text case converter (Arabic friendly), Sleep cycle calculator, Aspect ratio calculator. All 249 add-ons are run in a browser by the tests.

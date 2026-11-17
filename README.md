@@ -38,6 +38,10 @@ Only the essentials are on at first. Everything else is an add-on you can switch
 
 Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
 
+## New in 1.40
+
+- Six more add-ons: Download time calculator, Cron explainer (plain words plus the next five runs), Tip and split calculator, Text case converter (Arabic friendly), Sleep cycle calculator, Aspect ratio calculator. All 249 add-ons are run in a browser by the tests.
+
 ## Run it
 
 1. Install Node.js LTS from https://nodejs.org

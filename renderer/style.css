@@ -575,3 +575,9 @@ select.filter option { background: #1e2128; color: #f3f4f6; }
 .tour-bar { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; } .tour-bar .btn:first-child { margin-right: auto; }
 @keyframes tourIn { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .tour-back { animation: none; } }
+
+/* Time-of-day "Right now" card on Home */
+.now-card { display: flex; align-items: center; gap: 14px; justify-content: space-between; flex-wrap: wrap; margin: 4px 0 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 16px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%), var(--card, transparent); animation: tourIn .3s ease both; }
+.now-left { min-width: 0; } .now-h { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); } .now-t { font-size: 15px; margin-top: 2px; }
+[dir="rtl"] .now-card { text-align: right; }

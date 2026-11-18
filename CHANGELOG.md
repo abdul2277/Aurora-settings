@@ -16,3 +16,7 @@ Fixed: horizontal overflow on the Add-ons page.
 ## 1.42.0
 Added: welcome tour with logo; crash reporter (saved under user data, user name removed, throttled, Copy report).
 Fixed: the old error log was written inside the app folder and exposed the Windows user name in the dialog.
+
+## 1.43.0
+Added: time-of-day greeting, Right-now card on Home, optional theme that follows the clock.
+Fixed: none new; added `auroraPageKnown` so features can tell real pages from ones whose add-on is off.

@@ -38,6 +38,12 @@ Only the essentials are on at first. Everything else is an add-on you can switch
 
 Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
 
+## New in 1.43
+
+- **Time of day, everywhere it helps**: the Home greeting and emoji follow the day (🌅 Early start, ☀️ Good morning, 🌤️ Good afternoon, 🌆 Good evening, 🌙 Good night) and update by themselves.
+- **"Right now" card on Home**: one idea that fits the moment (check for app updates in the morning, send a file privately in the evening, a darker theme late at night), with a button that opens it. It rotates daily.
+- **Theme that follows the clock** (Looks page): Sunset at dawn, Gold in the morning, Ocean in the afternoon, Violet in the evening, Midnight at night. Off by default.
+
 ## New in 1.42
 
 - **Welcome tour**: five short, skippable steps with the Aurora logo, shown once. Bring it back any time with `tour` in Ctrl+K.

@@ -12,3 +12,7 @@ Added six add-ons (download time, cron explainer, tip and split, case converter,
 ## 1.41.0
 Added: Store collections and app-list export/import; Drop multi-file/folder send and receive mode; ten themes; right-to-left layout; seven new Doctor checks and a time-sync fix.
 Fixed: horizontal overflow on the Add-ons page.
+
+## 1.42.0
+Added: welcome tour with logo; crash reporter (saved under user data, user name removed, throttled, Copy report).
+Fixed: the old error log was written inside the app folder and exposed the Windows user name in the dialog.

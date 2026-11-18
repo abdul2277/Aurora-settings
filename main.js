@@ -1918,11 +1918,14 @@ ipcMain.handle('call', async (_e, name, args) => {
 });
 
 /* ---------- Error reporting (so a failed start is never silent) ---------- */
-function logError(err) {
-  const msg = (err && (err.stack || err.message)) || String(err);
-  try { fs.appendFileSync(path.join(__dirname, 'aurora-error.log'), `[${new Date().toISOString()}] ${msg}\n`); } catch (_) {}
-  try { dialog.showErrorBox('Aurora Settings hit a problem', msg.slice(0, 1500) + '\n\n(also saved to aurora-error.log)'); } catch (_) {}
-}
+const crashReporter = require('./lib/crashlog').createReporter({
+  dir: path.join(app.getPath('userData'), 'Errors'), version: app.getVersion(), electron: process.versions.electron, release: os.release(), getPage: () => '',
+  show: (text, file) => {
+    const r = dialog.showMessageBoxSync({ type: 'warning', title: 'Aurora Settings', message: 'Aurora Settings hit a problem', detail: text, buttons: ['OK', 'Copy report'], defaultId: 0, cancelId: 0 });
+    if (r === 1 && file) { try { electron.clipboard.writeText(fs.readFileSync(file, 'utf8')); } catch (_) { /* ignore */ } }
+  }
+});
+function logError(err) { crashReporter(err); }
 process.on('uncaughtException', logError);
 process.on('unhandledRejection', logError);
 

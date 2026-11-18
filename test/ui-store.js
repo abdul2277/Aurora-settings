@@ -4,7 +4,7 @@ const path = require('path'); const assert = require('assert');
 let pw; try { pw = require('playwright'); } catch (_) { pw = require('/opt/node-tools/node_modules/playwright'); }
 (async () => {
   const browser = await pw.chromium.launch(); const page = await browser.newPage({ viewport: { width: 1280, height: 900 } }); const errors = [];
-  await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); } catch (_) {} }); // skip the one-time first-run AI prompt
+  await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); localStorage.setItem('aurora.tour', '1'); } catch (_) {} }); // skip the one-time first-run AI prompt
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message)); page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
   page.on('dialog', (d) => d.accept());
   await page.goto('file://' + path.join(__dirname, '..', 'renderer', 'index.html') + '?platform=win32'); await page.waitForFunction(() => typeof go === 'function' && window.PAGES);

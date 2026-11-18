@@ -5,7 +5,7 @@ const URL_ = (q) => 'file://' + path.join(__dirname, '..', 'renderer', 'index.ht
 const prompt = async (page, text, answer) => { await page.waitForSelector('.ask-back'); assert.ok((await page.textContent('.ask-back .label')).includes(text), 'prompt: ' + text); await page.fill('.ask-back input', answer); await page.click('.ask-back button.primary'); };
 (async () => {
   const browser = await pw.chromium.launch(); const errors = [];
-  const open = async (q, pageId, focus) => { const page = await browser.newPage({ viewport: { width: 1280, height: 900 } }); await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); } catch (_) {} });
+  const open = async (q, pageId, focus) => { const page = await browser.newPage({ viewport: { width: 1280, height: 900 } }); await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); localStorage.setItem('aurora.tour', '1'); } catch (_) {} });
     page.on('pageerror', (e) => errors.push('pageerror: ' + e.message)); page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); }); await page.goto(URL_(q)); await page.waitForFunction(() => typeof go === 'function' && window.PAGES); await page.waitForTimeout(2300); await page.evaluate(([p, f]) => go(p, f), [pageId, focus]); return page; };
 
   // Windows: honest about LDAC

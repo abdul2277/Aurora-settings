@@ -38,6 +38,11 @@ Only the essentials are on at first. Everything else is an add-on you can switch
 
 Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
 
+## New in 1.42
+
+- **Welcome tour**: five short, skippable steps with the Aurora logo, shown once. Bring it back any time with `tour` in Ctrl+K.
+- **Safety net**: the old error handler wrote its log inside the app's own folder (not writable once installed) and showed the raw error, including your Windows user name, in a dialog for every error. Errors are now saved under your user data (user name removed, newest 20 kept), you see one friendly message at a time, and there is a **Copy report** button.
+
 ## New in 1.41
 
 - **Store collections**: six one-click bundles (Everyday essentials, Developer kit, Creator studio, Privacy pack, Gamer pack, PC health tools) that install only what you are missing. **Export my apps** saves your list, and **Import a list** reinstalls it on another PC (hostile or malformed lists are rejected).

@@ -2,7 +2,7 @@
 const path = require('path'); const assert = require('assert'); let pw; try { pw = require('playwright'); } catch (_) { pw = require('/opt/node-tools/node_modules/playwright'); }
 (async () => {
   const browser = await pw.chromium.launch(); const page = await browser.newPage({ viewport: { width: 1280, height: 860 } }); const errors = [];
-  await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); } catch (_) {} }); page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); localStorage.setItem('aurora.tour', '1'); } catch (_) {} }); page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('file://' + path.join(__dirname, '..', 'renderer', 'index.html') + '?platform=win32'); await page.waitForFunction(() => window.__special && typeof go === 'function'); await page.waitForTimeout(2300);
   const r = await page.evaluate(() => {
     const lumOf = (hex) => { const n = parseInt(hex.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0); };

@@ -2,7 +2,7 @@
 const path = require('path'); const assert = require('assert'); let pw; try { pw = require('playwright'); } catch (_) { pw = require('/opt/node-tools/node_modules/playwright'); }
 (async () => {
   const browser = await pw.chromium.launch(); const page = await browser.newPage({ viewport: { width: 1280, height: 860 } }); const errors = [];
-  await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); } catch (_) {} }); page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); localStorage.setItem('aurora.tour', '1'); } catch (_) {} }); page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('file://' + path.join(__dirname, '..', 'renderer', 'index.html') + '?platform=win32'); await page.waitForFunction(() => typeof go === 'function' && window.auroraUi); await page.waitForTimeout(2300);
   const ltr = await page.evaluate(() => { go('home'); const s = document.querySelector('.sidebar').getBoundingClientRect(); return { sidebarLeft: s.left }; });
   await page.evaluate(() => auroraUi.set({ dir: 'rtl' })); await page.waitForTimeout(200);

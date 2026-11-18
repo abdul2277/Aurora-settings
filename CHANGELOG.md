@@ -23,3 +23,6 @@ Fixed: none new; added `auroraPageKnown` so features can tell real pages from on
 
 ## 1.44.0
 Added eight add-ons (days until, meeting planner, team splitter, dice and coin, BMI, trip cost, Markdown table maker, number to words).
+
+## 1.45.0
+Added eight add-ons (subnet, date facts, sale price, exact age, running pace, Morse, unit price, recipe scaler).

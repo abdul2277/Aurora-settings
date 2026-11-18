@@ -38,6 +38,11 @@ Only the essentials are on at first. Everything else is an add-on you can switch
 
 Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
 
+## New in 1.45
+
+- **Eight more add-ons** (265 in all): **Subnet calculator** (network, mask, range and host count from an address like 192.168.1.10/24), **Date facts** (weekday, ISO week, day of year, leap year), **Sale price calculator**, **Exact age calculator** (years, months and days, plus days to the next birthday), **Running pace calculator**, **Morse code translator**, **Unit price compare** (which pack is the better deal) and **Recipe scaler** (handles fractions like 1 1/2).
+- Two bugs in these were caught by the tests before release: a negative-days result in the age calculator for dates such as 31 January to 1 March, and tiny recipe amounts showing as "0".
+
 ## New in 1.44
 
 - **Eight more add-ons** (257 in all, every one run in a browser by the tests): **Days until** (countdowns that you can keep), **Meeting time planner** (finds the hours that work across time zones), **Team splitter** (fair random teams), **Dice and coin** (like 2d6+3), **BMI calculator**, **Trip cost calculator**, **Markdown table maker** (from spreadsheet cells or CSV) and **Number to words** (for cheques and forms).

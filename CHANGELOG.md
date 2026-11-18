@@ -20,3 +20,6 @@ Fixed: the old error log was written inside the app folder and exposed the Windo
 ## 1.43.0
 Added: time-of-day greeting, Right-now card on Home, optional theme that follows the clock.
 Fixed: none new; added `auroraPageKnown` so features can tell real pages from ones whose add-on is off.
+
+## 1.44.0
+Added eight add-ons (days until, meeting planner, team splitter, dice and coin, BMI, trip cost, Markdown table maker, number to words).

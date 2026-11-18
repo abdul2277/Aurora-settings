@@ -38,6 +38,10 @@ Only the essentials are on at first. Everything else is an add-on you can switch
 
 Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
 
+## New in 1.44
+
+- **Eight more add-ons** (257 in all, every one run in a browser by the tests): **Days until** (countdowns that you can keep), **Meeting time planner** (finds the hours that work across time zones), **Team splitter** (fair random teams), **Dice and coin** (like 2d6+3), **BMI calculator**, **Trip cost calculator**, **Markdown table maker** (from spreadsheet cells or CSV) and **Number to words** (for cheques and forms).
+
 ## New in 1.43
 
 - **Time of day, everywhere it helps**: the Home greeting and emoji follow the day (🌅 Early start, ☀️ Good morning, 🌤️ Good afternoon, 🌆 Good evening, 🌙 Good night) and update by themselves.

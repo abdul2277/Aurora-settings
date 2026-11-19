@@ -545,3 +545,39 @@ select.filter option { background: #1e2128; color: #f3f4f6; }
 .studio-ref { display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-top: 1px solid rgba(128,128,128,.25); } .studio-ref code { font-size: 12.5px; } .studio-preview { min-height: 0; }
 
 .ver { margin-left: 8px; padding: 1px 9px; font-size: 11px; font-weight: 700; letter-spacing: .04em; border-radius: 999px; color: var(--accent, #4cc2ff); background: color-mix(in srgb, var(--accent, #4cc2ff) 14%, transparent); border: 1px solid color-mix(in srgb, var(--accent, #4cc2ff) 35%, transparent); -webkit-app-region: no-drag; user-select: text; }
+
+/* ---- Right-to-left (Arabic, Hebrew, Persian...): mirrors the places that were written with fixed left/right ---- */
+[dir="rtl"] .nav-item, [dir="rtl"] .pcard, [dir="rtl"] .pack, [dir="rtl"] .os-table th, [dir="rtl"] .os-table td, [dir="rtl"] .search-item { text-align: right; }
+[dir="rtl"] .nav-item::before { left: auto; right: 0; }
+[dir="rtl"] .switch { direction: ltr; } /* the switch knob always slides the same way */
+[dir="rtl"] .value, [dir="rtl"] .aster-n { text-align: left; }
+[dir="rtl"] .pdel { right: auto; left: 10px; }
+[dir="rtl"] .result.act { border-left: 0; border-right: 3px solid var(--accent); }
+[dir="rtl"] .list-row.doc-bad { border-left: 0; border-right: 3px solid #ff6b6b; padding-left: 0; padding-right: 10px; }
+[dir="rtl"] .list-row.doc-warn { border-left: 0; border-right: 3px solid #ffb347; padding-left: 0; padding-right: 10px; }
+[dir="rtl"] .nav-item.has-new::after { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .ver, [dir="rtl"] .sx-badges { margin-left: 0; }
+[dir="rtl"] .ver { margin-right: 8px; } [dir="rtl"] .sx-badges { margin-right: auto; }
+[dir="rtl"] .splash-logo { padding-left: 0; padding-right: .32em; }
+[dir="rtl"] code, [dir="rtl"] pre, [dir="rtl"] input[type="number"], [dir="rtl"] input[type="time"], [dir="rtl"] input[type="datetime-local"] { direction: ltr; unicode-bidi: plaintext; }
+
+/* Control rows inside narrow cards (for example Desktop widgets) wrap instead of overflowing the page sideways. */
+.card label.sub { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
+.card input[type="range"], .card input.filter, .card select { max-width: 100%; min-width: 0; box-sizing: border-box; }
+
+/* Welcome tour */
+.tour-back { position: fixed; inset: 0; z-index: 9998; background: rgba(0, 0, 0, .5); display: flex; align-items: center; justify-content: center; animation: tourIn .2s ease both; }
+.tour-card { width: min(460px, 92vw); border: 1px solid var(--border); border-radius: 20px; padding: 26px 26px 20px; background: var(--card, #181c25); color: var(--text); text-align: center; box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .6); }
+.tour-art { font-size: 58px; line-height: 1; margin-bottom: 10px; height: 96px; display: flex; align-items: center; justify-content: center; }
+.tour-art img { border-radius: 22px; box-shadow: 0 10px 30px -10px var(--accent); }
+.tour-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; } .tour-text { color: var(--muted); font-size: 14px; line-height: 1.55; min-height: 66px; }
+.tour-dots { display: flex; gap: 6px; justify-content: center; margin: 14px 0; } .tour-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--track); } .tour-dots i.on { background: var(--accent); width: 20px; border-radius: 6px; }
+.tour-bar { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; } .tour-bar .btn:first-child { margin-right: auto; }
+@keyframes tourIn { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tour-back { animation: none; } }
+
+/* Time-of-day "Right now" card on Home */
+.now-card { display: flex; align-items: center; gap: 14px; justify-content: space-between; flex-wrap: wrap; margin: 4px 0 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 16px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%), var(--card, transparent); animation: tourIn .3s ease both; }
+.now-left { min-width: 0; } .now-h { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); } .now-t { font-size: 15px; margin-top: 2px; }
+[dir="rtl"] .now-card { text-align: right; }

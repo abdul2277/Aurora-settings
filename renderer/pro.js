@@ -52,7 +52,7 @@
       if (!force && key === lastKey) { if (countdown && s.active) countdown.textContent = left(s); return; } // nothing changed: keep the page still so buttons never move under your pointer
       const act = document.activeElement; if (!force && act && box.contains(act) && act.tagName === 'INPUT' && act.type !== 'checkbox') return; lastKey = key; countdown = null;
       box.replaceChildren(); box.append(el('div', 'muted', 'Send a file to your phone or another PC on the same Wi-Fi without cables, accounts or the internet. Aurora makes a private link and a QR code. Scan it and the file downloads.'));
-      if (!s.active) { box.append(R(B('📤 Choose a file and share', 'primary', async () => { try { const r = await call('dropStart', { once: once.checked, encrypt: enc.checked }); if (r) toast('Sharing ' + r.name); } catch (e) { err(e); } draw(true); }), ol, el2), el('div', 'sub', 'Only that one file is shared, and the link stops working when sharing stops (15 minutes at most). With encryption on, the file is scrambled on this PC with a one-time key that lives only inside the link, so anyone watching your network sees unreadable data. Share the link or QR code only with the person you mean to. Turn encryption off only for devices that cannot open the link in a browser.')); return; }
+      if (!s.active) { const go1 = (mode) => async () => { try { const r = await call('dropStart', { once: once.checked, encrypt: enc.checked, mode }); if (r) toast('Sharing ' + r.name); } catch (e) { err(e); } draw(true); }; box.append(R(B('📤 Choose a file and share', 'primary', go1('file')), B('🗂️ Several files', '', go1('files')), B('📁 A folder', '', go1('folder')), ol, el2), el('div', 'sub', 'Only that one file is shared, and the link stops working when sharing stops (15 minutes at most). With encryption on, the file is scrambled on this PC with a one-time key that lives only inside the link, so anyone watching your network sees unreadable data. Share the link or QR code only with the person you mean to. Turn encryption off only for devices that cannot open the link in a browser.')); return; }
       box.append(el('div', 'label', `${s.encrypted ? '🔒 ' : ''}Sharing ${s.name} (${bytes(s.size)})`)); countdown = el('div', 'sub', left(s)); box.append(countdown);
       box.append(el('div', s.encrypted ? 'store-ok' : 'store-err', s.encrypted ? `End-to-end encrypted. Both of you can check the code ${s.fingerprint} matches. The key is part of the link after the # sign, so send the whole link.` : 'Not encrypted: anyone on this network who sees the link or the traffic can read the file.'));
       const row = el('div'); row.style.cssText = 'display:flex;gap:16px;flex-wrap:wrap'; for (const u of s.urls.slice(0, 3)) { const c = el('div'); c.style.cssText = 'display:flex;flex-direction:column;gap:6px;max-width:260px'; const img = el('img'); img.style.cssText = 'width:200px;height:200px;background:#fff;border-radius:10px;padding:6px'; call('qrMake', { text: u }).then((svg) => { img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg); }).catch(() => {}); const t = el('div', 'sub', u); t.style.wordBreak = 'break-all'; c.append(img, t, B('Copy link', '', () => cp(u))); row.append(c); } box.append(row);
@@ -108,6 +108,23 @@
       const r = await call('fileLockDecrypt', { password: p }); if (r) { out.hidden = false; out.className = 'store-ok'; out.textContent = 'Unlocked copy saved: ' + r.out; toast('File unlocked'); }
     });
     box.append(note, R(enc, dec), out);
+  };
+
+  /* ---------- Drop receive: get files FROM a phone or another PC ---------- */
+  CUSTOM.dropreceive = (box) => {
+    box.style.gap = '10px'; let timer = null, lastKey = '';
+    const draw = async (force) => {
+      let s; try { s = await call('dropReceiveStatus'); } catch (_) { return fail(box); }
+      const key = JSON.stringify(s.active ? [s.urls, s.received] : 'idle'); if (!force && key === lastKey) return; lastKey = key; box.replaceChildren();
+      box.append(el('div', 'muted', 'Let a phone or another PC send files to this PC. Scan the QR code, choose files, and they land in your Downloads folder under "Aurora Drop". Nothing is overwritten.'));
+      if (!s.active) { box.append(R(B('📥 Start receiving', 'primary', async () => { try { await call('dropReceiveStart'); toast('Ready to receive'); } catch (e) { err(e); } draw(true); })), el('div', 'store-err', 'This connection is not encrypted. Only use it on a Wi-Fi network you trust, and stop it when you are done. It stops by itself after 15 minutes.')); return; }
+      const row = el('div'); row.style.cssText = 'display:flex;gap:16px;flex-wrap:wrap';
+      for (const u of s.urls.slice(0, 2)) { const c = el('div'); c.style.cssText = 'display:flex;flex-direction:column;gap:6px;max-width:260px'; const img = el('img'); img.style.cssText = 'width:200px;height:200px;background:#fff;border-radius:10px;padding:6px'; call('qrMake', { text: u }).then((svg) => { img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg); }).catch(() => {}); const t = el('div', 'sub', u); t.style.wordBreak = 'break-all'; c.append(img, t); row.append(c); }
+      box.append(row, el('div', 'label', s.received.length ? `Received ${s.received.length} file${s.received.length === 1 ? '' : 's'}` : 'Waiting for files…'));
+      s.received.slice(-8).forEach((f) => box.append(el('div', 'sub', '✓ ' + f.name + ' (' + bytes(f.bytes) + ')')));
+      box.append(R(B('Open folder', '', () => call('dropReceiveOpen').catch(err)), B('■ Stop receiving', 'danger', async () => { await call('dropReceiveStop'); draw(true); })));
+    };
+    timer = setInterval(() => { if (!live(box)) clearInterval(timer); else draw(false); }, 1500); draw(true);
   };
 
   /* ---------- Net kit ---------- */

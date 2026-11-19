@@ -38,6 +38,38 @@ Only the essentials are on at first. Everything else is an add-on you can switch
 
 Set `AURORA_GITHUB_TOKEN` to a GitHub token if the Store reports it is being rate-limited.
 
+## New in 1.45
+
+- **Eight more add-ons** (265 in all): **Subnet calculator** (network, mask, range and host count from an address like 192.168.1.10/24), **Date facts** (weekday, ISO week, day of year, leap year), **Sale price calculator**, **Exact age calculator** (years, months and days, plus days to the next birthday), **Running pace calculator**, **Morse code translator**, **Unit price compare** (which pack is the better deal) and **Recipe scaler** (handles fractions like 1 1/2).
+- Two bugs in these were caught by the tests before release: a negative-days result in the age calculator for dates such as 31 January to 1 March, and tiny recipe amounts showing as "0".
+
+## New in 1.44
+
+- **Eight more add-ons** (257 in all, every one run in a browser by the tests): **Days until** (countdowns that you can keep), **Meeting time planner** (finds the hours that work across time zones), **Team splitter** (fair random teams), **Dice and coin** (like 2d6+3), **BMI calculator**, **Trip cost calculator**, **Markdown table maker** (from spreadsheet cells or CSV) and **Number to words** (for cheques and forms).
+
+## New in 1.43
+
+- **Time of day, everywhere it helps**: the Home greeting and emoji follow the day (🌅 Early start, ☀️ Good morning, 🌤️ Good afternoon, 🌆 Good evening, 🌙 Good night) and update by themselves.
+- **"Right now" card on Home**: one idea that fits the moment (check for app updates in the morning, send a file privately in the evening, a darker theme late at night), with a button that opens it. It rotates daily.
+- **Theme that follows the clock** (Looks page): Sunset at dawn, Gold in the morning, Ocean in the afternoon, Violet in the evening, Midnight at night. Off by default.
+
+## New in 1.42
+
+- **Welcome tour**: five short, skippable steps with the Aurora logo, shown once. Bring it back any time with `tour` in Ctrl+K.
+- **Safety net**: the old error handler wrote its log inside the app's own folder (not writable once installed) and showed the raw error, including your Windows user name, in a dialog for every error. Errors are now saved under your user data (user name removed, newest 20 kept), you see one friendly message at a time, and there is a **Copy report** button.
+
+## New in 1.41
+
+- **Store collections**: six one-click bundles (Everyday essentials, Developer kit, Creator studio, Privacy pack, Gamer pack, PC health tools) that install only what you are missing. **Export my apps** saves your list, and **Import a list** reinstalls it on another PC (hostile or malformed lists are rejected).
+- **Drop, more flexible**: share several files or a whole folder (zipped, then encrypted), and a new **Receive** mode where a phone or another PC uploads files to your Downloads folder under "Aurora Drop". Receiving is NOT encrypted, so it says so, has size and count limits, never overwrites, and stops by itself after 15 minutes.
+- **Ten new themes** (16 in all), each checked for readable contrast.
+- **Right-to-left layout** for Arabic and other RTL languages: the whole interface mirrors, and every page is tested for sideways overflow. This also fixed an old overflow on the Add-ons page.
+- **Aurora Doctor, new checks**: clock drift (with a one-click time sync), how old the last Windows update is, other drives running low, Secure Boot, TPM, User Account Control turned off, Remote Desktop enabled, and a big Recycle Bin. The PowerShell for these has not run on real Windows; it passes PowerShell's own parser and the logic is unit tested.
+
+## New in 1.40
+
+- Six more add-ons: Download time calculator, Cron explainer (plain words plus the next five runs), Tip and split calculator, Text case converter (Arabic friendly), Sleep cycle calculator, Aspect ratio calculator. All 249 add-ons are run in a browser by the tests.
+
 ## Run it
 
 1. Install Node.js LTS from https://nodejs.org

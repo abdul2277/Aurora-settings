@@ -43,6 +43,7 @@
     if (typeof currentPage !== 'undefined' && !PAGES.some((p) => p.id === currentPage)) { try { go('home'); return; } catch (_) { /* fall through */ } }
     renderNav();
   };
+  window.auroraPageKnown = (id) => ORIGINAL.some((p) => p.id === id); // a real page, even if its add-on is currently off (opening it turns the add-on on)
   const setPack = (id, value) => { if (!validIds.has(id)) return; const on = read(); value ? on.add(id) : on.delete(id); write(on); apply(); };
   const set = (pageId, value) => { const k = packOf(pageId); if (k) setPack(k, value); }; // kept for older callers that pass a page id
 

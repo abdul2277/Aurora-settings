@@ -8,7 +8,17 @@
     { id: 'ocean', name: 'Ocean', accent: '#2dd4bf', hues: [175, 200, 220] },
     { id: 'rose', name: 'Rose', accent: '#f472b6', hues: [330, 300, 350] },
     { id: 'violet', name: 'Violet', accent: '#a78bfa', hues: [260, 290, 230] },
-    { id: 'gold', name: 'Gold', accent: '#fbbf24', hues: [45, 30, 60] }
+    { id: 'gold', name: 'Gold', accent: '#fbbf24', hues: [45, 30, 60] },
+    { id: 'midnight', name: 'Midnight', accent: '#7c8cff', hues: [235, 260, 215] },
+    { id: 'forest', name: 'Forest', accent: '#4ade80', hues: [140, 160, 120] },
+    { id: 'ember', name: 'Ember', accent: '#f97316', hues: [20, 10, 35] },
+    { id: 'sakura', name: 'Sakura', accent: '#fb7185', hues: [345, 320, 10] },
+    { id: 'mono', name: 'Graphite', accent: '#cbd5e1', hues: [215, 220, 210] },
+    { id: 'neon', name: 'Neon city', accent: '#22d3ee', hues: [185, 300, 160] },
+    { id: 'mint', name: 'Fresh mint', accent: '#34d399', hues: [160, 175, 145] },
+    { id: 'lavender', name: 'Lavender', accent: '#c4b5fd', hues: [255, 275, 240] },
+    { id: 'copper', name: 'Copper', accent: '#f59e0b', hues: [30, 15, 45] },
+    { id: 'crimson', name: 'Crimson', accent: '#f87171', hues: [0, 350, 15] }
   ];
   const MS = [ // milestones; s = state
     { id: 'explorer10', icon: '🧭', name: 'Explorer', desc: 'Open 10 different pages', need: 10, val: (s) => s.visited.length },

@@ -49,3 +49,7 @@ button.sx-stat { cursor: pointer; } button.sx-stat:hover { border-color: var(--a
 .sx-search, .sx-sort { background: color-mix(in srgb, var(--card) 80%, #000 20%); border: 1px solid color-mix(in srgb, var(--text) 22%, transparent); color: var(--text); }
 .sx-search::placeholder { color: var(--muted); opacity: 1; }
 .sx-search:focus, .sx-sort:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.sx-crow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.sx-ccard { flex: 0 0 210px; border: 1px solid var(--border); background: var(--card); border-radius: var(--sx-r); padding: 12px; display: flex; flex-direction: column; gap: 6px; transition: transform .15s, border-color .15s; }
+.sx-ccard:hover { transform: translateY(-2px); border-color: var(--accent); } .sx-ccard .sub { min-height: 32px; } .sx-cicon { font-size: 26px; } .sx-count2 { font-size: 11px; color: var(--muted); }

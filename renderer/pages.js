@@ -451,6 +451,7 @@ PAGES.push({
   sections: [
     { title: 'PC Doctor', items: [{ type: 'custom', id: 'doctor', label: 'PC Doctor health check why is my pc slow memory disk startup devices advice', kw: 'slow lag problems performance check', render: 'doctor' }] },
     { title: 'Lock a file with a password', items: [{ type: 'custom', id: 'filelock', label: 'Lock encrypt decrypt unlock file password protect aur', kw: 'encrypt decrypt lock file password secure aur end to end', render: 'filelock' }] },
+    { title: 'Drop: receive files from a phone', items: [{ type: 'custom', id: 'dropreceive', label: 'Drop receive upload files from phone to pc qr wifi', kw: 'receive upload phone transfer qr', render: 'dropreceive' }] },
     { title: 'Drop: share a file over Wi-Fi', items: [{ type: 'custom', id: 'drop', label: 'Drop share send file phone wifi qr local network no cables', kw: 'airdrop nearby share transfer', render: 'drop' }] },
     { title: 'Network kit', items: [{ type: 'custom', id: 'netkit', label: 'Network kit dns lookup port check ssl certificate headers redirect public ip wake on lan', kw: 'dns ping port ssl whois', render: 'netkit' }] },
     { title: 'PDF tools', items: [{ type: 'custom', id: 'pdf', label: 'PDF tools merge join split extract pages rotate', kw: 'pdf combine', render: 'pdf' }] },

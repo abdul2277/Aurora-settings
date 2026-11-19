@@ -6,7 +6,7 @@ CUSTOM.appstore = (box) => {
   const setPref = (k, v) => { try { localStorage.setItem('aurora.store.' + k, v); } catch (_) { /* private mode: just don't remember */ } };
   const hue = (s) => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
 
-  let data = { categories: [], apps: [] }, jobs = [], cat = 'All', q = '', updates = null, report = null, open = null, infoCache = {}, failMsg = '', loading = true;
+  let collections = [], data = { categories: [], apps: [] }, jobs = [], cat = 'All', q = '', updates = null, report = null, open = null, infoCache = {}, failMsg = '', loading = true;
   let sort = pref('sort', 'name'), view = pref('view', 'grid'), batch = null, timer = null;
   box.classList.add('sx'); box.style.gap = '14px';
 
@@ -15,20 +15,21 @@ CUSTOM.appstore = (box) => {
   heroText.append(el('div', 'sx-title', '🛍️ Aurora Store'), el('div', 'sx-sub', 'Free apps from the public Windows Package Manager catalog. Every download is checked against its published SHA-256 fingerprint before it runs.'));
   const search = el('input', 'filter sx-search'); search.placeholder = 'Search apps…  ( press / )'; search.setAttribute('aria-label', 'Search apps');
   const chk = el('button', 'btn', '🔄 Check for updates'), upAll = el('button', 'btn primary', 'Update all'), add = el('button', 'btn', '➕ Add by package ID'); upAll.hidden = true;
-  heroBtns.append(chk, upAll, add); hero.append(heroText, stats, heroBtns);
+  const expB = el('button', 'btn', '📤 Export my apps'), impB = el('button', 'btn', '📥 Import a list');
+  heroBtns.append(chk, upAll, add, expB, impB); hero.append(heroText, stats, heroBtns);
   const bar = el('div', 'sx-toolbar'), sortSel = document.createElement('select'); sortSel.className = 'filter sx-sort'; sortSel.setAttribute('aria-label', 'Sort apps');
   [['name', 'Sort: A–Z'], ['category', 'Sort: Category'], ['status', 'Sort: Installed first']].forEach(([v, t]) => { const o = el('option', '', t); o.value = v; sortSel.append(o); }); sortSel.value = sort;
   const vg = el('button', 'sx-vbtn', '▦'), vl = el('button', 'sx-vbtn', '☰'); vg.title = 'Grid view'; vl.title = 'List view'; vg.setAttribute('aria-label', 'Grid view'); vl.setAttribute('aria-label', 'List view');
   const vwrap = el('div', 'sx-views'); vwrap.append(vg, vl); bar.append(search, sortSel, vwrap);
   const note = el('div', 'sx-note'); note.hidden = true;
-  const chips = el('div', 'store-chips sx-chips'), featured = el('div', 'sx-featured'), grid = el('div', 'store-grid sx-grid');
-  box.append(hero, bar, note, chips, featured, grid);
+  const chips = el('div', 'store-chips sx-chips'), coll = el('div', 'sx-coll'), featured = el('div', 'sx-featured'), grid = el('div', 'store-grid sx-grid');
+  box.append(hero, bar, note, chips, coll, featured, grid);
 
   /* ---------- helpers ---------- */
   const busy = () => jobs.some((j) => j.status === 'queued' || j.status === 'working');
   const jobOf = (a) => jobs.find((j) => j.appId === a.id && (j.status === 'queued' || j.status === 'working')) || jobs.slice().reverse().find((j) => j.appId === a.id && ['error', 'done', 'cancelled'].includes(j.status));
   const updOf = (a) => updates && updates.find((u) => u.id === a.id);
-  async function reload() { try { data = await call('appStoreCatalog'); jobs = await call('appStoreJobs'); failMsg = ''; } catch (e) { failMsg = errText(e); } loading = false; render(); }
+  async function reload() { try { data = await call('appStoreCatalog'); jobs = await call('appStoreJobs'); collections = await call('appStoreCollections').catch(() => []); failMsg = ''; } catch (e) { failMsg = errText(e); } loading = false; render(); }
   async function start(a, fn, okMsg) { try { await fn(); toast(okMsg); } catch (e) { toast(errText(e), true); } jobs = await call('appStoreJobs').catch(() => jobs); render(); poll(); }
   // An app that finished installing/updating is no longer "outdated": drop it from the update list right away.
   function pruneUpdates() {
@@ -113,6 +114,14 @@ CUSTOM.appstore = (box) => {
     picks.forEach((a) => { const f = el('div', 'sx-fcard'); f.append(tile(a), el('div', 'store-name', a.name)); const b = el('button', 'btn primary', 'Install'); const j = jobOf(a); if (j && (j.status === 'queued' || j.status === 'working')) { b.textContent = j.percent + '%'; b.disabled = true; } else b.onclick = () => start(a, () => call('appStoreInstall', { id: a.id }), 'Installing ' + a.name); f.append(b); row.append(f); });
     featured.append(row);
   }
+  function collectionsRow() {
+    coll.replaceChildren(); coll.hidden = true; if (cat !== 'All' || q || !collections.length) return; coll.hidden = false; coll.append(el('div', 'sx-h', '📦 Collections: set up a PC in one click'));
+    const row = el('div', 'sx-crow');
+    collections.forEach((c) => { const card = el('div', 'sx-ccard'); card.dataset.coll = c.id; card.append(el('div', 'sx-cicon', c.icon), el('div', 'store-name', c.name), el('div', 'sub', c.desc), el('div', 'sx-count2', `${c.installed} of ${c.apps.length} installed`));
+      const b = el('button', 'btn primary', c.installed >= c.apps.length ? '✓ All installed' : `Install ${c.apps.length - c.installed} app${c.apps.length - c.installed === 1 ? '' : 's'}`); b.disabled = c.installed >= c.apps.length || busy();
+      b.onclick = async () => { if (!confirm(`Install the apps in "${c.name}" that you do not have yet?\n\nEach one is checked against its official fingerprint, and Windows asks permission when needed.`)) return; try { const r = await call('appStoreInstallCollection', { id: c.id }); toast(`Installing ${r.queued.length} app${r.queued.length === 1 ? '' : 's'}`); } catch (e) { toast(errText(e), true); } jobs = await call('appStoreJobs').catch(() => jobs); render(); poll(); };
+      card.append(b); row.append(card); }); coll.append(row);
+  }
   function skeleton() { grid.replaceChildren(); for (let i = 0; i < 9; i++) { const s = el('div', 'store-card sx-skel'); s.append(el('div', 'sx-sk-a'), el('div', 'sx-sk-b'), el('div', 'sx-sk-b short')); grid.append(s); } }
 
   function render() {
@@ -121,7 +130,7 @@ CUSTOM.appstore = (box) => {
     const n = updates ? updates.length : 0; upAll.hidden = !n;
     if (batch) { const left = batch.ids.filter((id) => jobs.some((j) => j.appId === id && (j.status === 'queued' || j.status === 'working'))).length; upAll.textContent = left ? `Updating ${batch.ids.length - left + 1} of ${batch.ids.length}…` : 'Update all'; upAll.disabled = !!left; } else { upAll.textContent = `Update all (${n})`; upAll.disabled = false; }
     if (loading) { featured.hidden = true; return skeleton(); }
-    grid.replaceChildren(); featuredRow();
+    grid.replaceChildren(); collectionsRow(); featuredRow();
     if (failMsg) return grid.append(el('div', 'muted', failMsg));
     let list = data.apps.filter((a) => {
       if (q && !(a.name + ' ' + a.desc + ' ' + a.category + ' ' + a.id).toLowerCase().includes(q)) return false;
@@ -153,6 +162,8 @@ CUSTOM.appstore = (box) => {
     } catch (e) { toast(errText(e), true); }
     chk.disabled = false; chk.textContent = '🔄 Check for updates'; render();
   };
+  expB.onclick = async () => { try { const r = await call('appStoreExportList'); if (r) toast(`Saved ${r.count} app${r.count === 1 ? '' : 's'} to ${r.path}`); } catch (e) { toast(errText(e), true); } };
+  impB.onclick = async () => { try { const r = await call('appStoreImportList'); if (!r) return; toast(`Installing ${r.queued.length}` + (r.skipped.length ? `, ${r.skipped.length} already installed` : '') + (r.unknown.length ? `, ${r.unknown.length} not in the catalog (use Add by package ID)` : '')); jobs = await call('appStoreJobs').catch(() => jobs); render(); poll(); } catch (e) { toast(errText(e), true); } };
   add.onclick = async () => {
     const id = await askText('Package ID from the Windows Package Manager catalog, for example Mozilla.Firefox'); if (!id) return;
     try { const a = await call('appStoreAdd', { id: id.trim() }); toast('Added ' + a.name); cat = 'Added by you'; await reload(); } catch (e) { toast(errText(e), true); }

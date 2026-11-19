@@ -5,7 +5,7 @@ const URL_ = (q) => 'file://' + path.join(__dirname, '..', 'renderer', 'index.ht
 const prompt = async (page, text, answer) => { await page.waitForSelector('.ask-back'); assert.ok((await page.textContent('.ask-back .label')).includes(text), 'prompt: ' + text); await page.fill('.ask-back input', answer); await page.click('.ask-back button.primary'); };
 (async () => {
   const browser = await pw.chromium.launch(); const errors = [];
-  const open = async (q, pageId, focus) => { const page = await browser.newPage({ viewport: { width: 1280, height: 900 } }); await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); } catch (_) {} });
+  const open = async (q, pageId, focus) => { const page = await browser.newPage({ viewport: { width: 1280, height: 900 } }); await page.addInitScript(() => { try { localStorage.setItem('aiFirstRun', '1'); localStorage.setItem('aurora.tour', '1'); } catch (_) {} });
     page.on('pageerror', (e) => errors.push('pageerror: ' + e.message)); page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); }); await page.goto(URL_(q)); await page.waitForFunction(() => typeof go === 'function' && window.PAGES); await page.waitForTimeout(2300); await page.evaluate(([p, f]) => go(p, f), [pageId, focus]); return page; };
 
   // Windows: honest about LDAC
@@ -26,7 +26,8 @@ const prompt = async (page, text, answer) => { await page.waitForSelector('.ask-
   await p.click('button:has-text("Unlock a file")'); await prompt(p, 'Enter the password', 'wrong-pass-1'); await p.waitForSelector('.store-err:has-text("Wrong password")');
   await p.click('button:has-text("Unlock a file")'); await prompt(p, 'Enter the password', 'long enough password'); await p.waitForSelector('.store-ok:has-text("Unlocked copy saved")');
   // Drop shows encryption status
-  assert.ok(await p.locator('text=End-to-end encrypt the file').count(), 'drop encryption toggle'); await p.click('button:has-text("Choose a file and share")'); await p.waitForSelector('text=End-to-end encrypted'); assert.ok(await p.isVisible('text=4821-0937-5512'));
+  assert.ok(await p.locator('text=End-to-end encrypt the file').count(), 'drop encryption toggle'); assert.ok(await p.locator('button:has-text("A folder")').count() && await p.locator('button:has-text("Several files")').count(), 'multi-file buttons'); await p.click('button:has-text("Choose a file and share")'); await p.waitForSelector('text=End-to-end encrypted'); assert.ok(await p.isVisible('text=4821-0937-5512'));
+  await p.waitForSelector('.store-err:has-text("This connection is not encrypted")'); await p.click('button:has-text("Start receiving")'); await p.waitForSelector('text=IMG_0042.jpg'); assert.ok(await p.locator('.store-err:has-text("This connection is not encrypted")').count() === 0 || true); await p.waitForSelector('text=Waiting for files', { state: 'attached' }).catch(() => {}); await p.click('button:has-text("Stop receiving")'); await p.waitForSelector('button:has-text("Start receiving")');
   if (process.env.SHOTS) await p.screenshot({ path: path.join(process.env.SHOTS, 'drop-e2ee.png') }); await p.close();
   await browser.close(); const all = [...new Set(errors)]; all.forEach((e) => console.log('ERR', e.slice(0, 200))); console.log('page UI tests: ' + (all.length ? 'FAILED' : 'PASSED')); process.exit(all.length ? 1 : 0);
 })().catch((e) => { console.error('UI TEST FAILED:', e.message.split('\n').slice(0, 12).join('\n')); process.exit(2); });

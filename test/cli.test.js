@@ -1,6 +1,6 @@
 const test = require('node:test'); const assert = require('node:assert/strict'); const fs = require('fs'); const os = require('os'); const path = require('path'); const crypto = require('crypto'); const { spawnSync } = require('child_process');
 const E = require('../lib/e2ee'); const { createDrop } = require('../lib/toolkit'); const http = require('http');
-const CLI = path.join(__dirname, '..', 'tools', 'aurora-decrypt.js'); const run = (args, env = {}) => spawnSync(process.execPath, [CLI, ...args], { encoding: 'utf8', env: { ...process.env, ...env } });
+const CLI = path.join(__dirname, '..', 'tools', 'vorynth-decrypt.js'); const run = (args, env = {}) => spawnSync(process.execPath, [CLI, ...args], { encoding: 'utf8', env: { ...process.env, ...env } });
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'aurora-c-'));
 test('CLI decrypts a Drop download using the full link, keeping the original file name', async () => {
   const d = tmp(); const data = crypto.randomBytes(200000); const f = path.join(d, 'Quarterly plan.xlsx'); fs.writeFileSync(f, data);
@@ -18,5 +18,5 @@ test('CLI unlocks a password-locked file, and wrong or missing passwords fail cl
   fs.rmSync(f); assert.match(run([f + '.aur']).stderr, /password-locked/);
   const ok = run([f + '.aur', '--out', path.join(d, 'b.pdf')], { AURORA_PASSWORD: 'a decent password' }); assert.equal(ok.status, 0, ok.stderr); assert.ok(fs.readFileSync(path.join(d, 'b.pdf')).equals(data));
   fs.writeFileSync(path.join(d, 'pw.txt'), 'a decent password\n'); assert.equal(run([f + '.aur', '--out', path.join(d, 'c.pdf'), '--password-file', path.join(d, 'pw.txt')]).status, 0);
-  assert.match(run([path.join(d, 'nothing.aur')]).stderr, /not found/); fs.writeFileSync(path.join(d, 'plain.txt'), 'hello hello hello hello hello hello hello'); assert.match(run([path.join(d, 'plain.txt')]).stderr, /not an Aurora/);
+  assert.match(run([path.join(d, 'nothing.aur')]).stderr, /not found/); fs.writeFileSync(path.join(d, 'plain.txt'), 'hello hello hello hello hello hello hello'); assert.match(run([path.join(d, 'plain.txt')]).stderr, /not an Vorynth/);
 });

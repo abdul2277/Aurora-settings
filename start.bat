@@ -1,7 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title Aurora Settings launcher
+title Vorynth Settings launcher
 
 where node >nul 2>nul
 if errorlevel 1 (
@@ -16,7 +16,7 @@ if errorlevel 1 (
 
 if not exist "node_modules\electron\dist\electron.exe" (
   echo.
-  echo  First run: installing Aurora Settings. This takes a few minutes...
+  echo  First run: installing Vorynth Settings. This takes a few minutes...
   echo.
   call npm install --no-audit --no-fund
   if errorlevel 1 (
@@ -36,13 +36,13 @@ if not exist "node_modules\electron\dist\electron.exe" (
 if not exist "node_modules\electron\dist\electron.exe" (
   echo.
   echo  Electron could not be downloaded. Check your internet connection and run start.bat again,
-  echo  or just use Aurora-Settings.exe instead (no install needed).
+  echo  or just use Vorynth-Settings.exe instead (no install needed).
   echo.
   pause
   exit /b 1
 )
 
-echo  Starting Aurora Settings...
+echo  Starting Vorynth Settings...
 call npx electron .
 if errorlevel 1 (
   echo.

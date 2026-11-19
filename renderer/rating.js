@@ -34,7 +34,7 @@
         tile('Disk', '💾', r.disk.score, [r.disk.score == null ? r.disk.note : `${r.disk.writeMBs} MB/s write`, r.disk.score == null ? '' : 'Timed by writing a temporary file (deleted afterwards).'].filter(Boolean)),
         tile('Graphics', '🎮', r.graphics.score, [r.graphics.renderer || 'No graphics device reported', r.graphics.note || '']));
       const hist = load(); if (hist.length > 1) { const h = el('div', 'sub', 'Earlier ratings on this PC: ' + hist.slice(-6, -1).map((e) => `${e.base.toFixed(1)} (${new Date(e.when).toLocaleDateString()})`).join(', ')); out.append(h); }
-      out.append(el('div', 'sub', 'These scores compare with other Aurora ratings only, not with Microsoft\'s. The graphics number is estimated from the model name; the other three are timed tests. Close other apps for the fairest result.'));
+      out.append(el('div', 'sub', 'These scores compare with other Vorynth ratings only, not with Microsoft\'s. The graphics number is estimated from the model name; the other three are timed tests. Close other apps for the fairest result.'));
     };
 
     go.onclick = async () => {

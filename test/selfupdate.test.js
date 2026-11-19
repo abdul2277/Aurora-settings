@@ -2,9 +2,9 @@ const test = require('node:test'); const assert = require('node:assert/strict');
 const fs = require('fs'); const os = require('os'); const path = require('path');
 const { createSelfUpdater } = require('../lib/selfupdate');
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'aurora-su-'));
-const bigExe = (dir) => { const f = path.join(dir, 'Aurora-Settings-new.exe'); const b = Buffer.alloc(21 * 1024 * 1024, 1); b[0] = 0x4d; b[1] = 0x5a; fs.writeFileSync(f, b); return f; };
+const bigExe = (dir) => { const f = path.join(dir, 'Vorynth-Settings-new.exe'); const b = Buffer.alloc(21 * 1024 * 1024, 1); b[0] = 0x4d; b[1] = 0x5a; fs.writeFileSync(f, b); return f; };
 const manifestFetch = (version) => async () => new Response(JSON.stringify({ version, url: 'https://example.test/a.exe', sha256: 'a'.repeat(64), notes: 'n' }));
-const mk = (dir, fetchFn) => createSelfUpdater({ exePath: path.join(dir, 'Aurora.exe'), isPortable: true, currentVersion: '1.0.0', dataDir: dir, fetchFn, getUrl: () => 'https://example.test/u.json', quitApp() {}, spawnFn: () => ({ unref() {} }) });
+const mk = (dir, fetchFn) => createSelfUpdater({ exePath: path.join(dir, 'Vorynth.exe'), isPortable: true, currentVersion: '1.0.0', dataDir: dir, fetchFn, getUrl: () => 'https://example.test/u.json', quitApp() {}, spawnFn: () => ({ unref() {} }) });
 
 test('a background check never wipes a staged update', async () => {
   const dir = tmp(); const u = mk(dir, manifestFetch('1.0.0'));

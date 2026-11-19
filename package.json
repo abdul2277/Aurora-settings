@@ -1,7 +1,7 @@
 {
-  "name": "aurora-settings",
+  "name": "vorynth-settings",
   "version": "1.39.0",
-  "description": "Aurora Settings - an original, enhanced Settings app for Windows 11",
+  "description": "Vorynth Settings - an original, enhanced Settings app for Windows 11",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -18,7 +18,7 @@
   },
   "build": {
     "appId": "com.aurora.settings",
-    "productName": "Aurora Settings",
+    "productName": "Vorynth Settings",
     "files": [
       "main.js",
       "preload.js",
@@ -32,7 +32,7 @@
         "portable"
       ],
       "icon": "build/icon.png",
-      "artifactName": "Aurora-Settings.${ext}"
+      "artifactName": "Vorynth-Settings.${ext}"
     },
     "linux": {
       "target": [
@@ -41,10 +41,10 @@
       ],
       "icon": "build/icon.png",
       "category": "Utility",
-      "artifactName": "Aurora-Settings-linux.${ext}",
-      "synopsis": "Settings for Aurora OS and Windows",
-      "description": "Aurora Settings: tweak, customise and tidy your PC.",
-      "maintainer": "Aurora <aurora@aurora-os.invalid>"
+      "artifactName": "Vorynth-Settings-linux.${ext}",
+      "synopsis": "Settings for Vorynth OS and Windows",
+      "description": "Vorynth Settings: tweak, customise and tidy your PC.",
+      "maintainer": "Vorynth <aurora@aurora-os.invalid>"
     },
     "mac": {
       "target": [
@@ -57,7 +57,7 @@
         }
       ],
       "category": "public.app-category.utilities",
-      "artifactName": "Aurora-Settings-mac-${arch}.${ext}",
+      "artifactName": "Vorynth-Settings-mac-${arch}.${ext}",
       "identity": null
     },
     "asarUnpack": [
@@ -69,20 +69,20 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Aurora Settings",
+      "shortcutName": "Vorynth Settings",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
-      "uninstallDisplayName": "Aurora Settings",
-      "artifactName": "Aurora-Settings-Setup.${ext}"
+      "uninstallDisplayName": "Vorynth Settings",
+      "artifactName": "Vorynth-Settings-Setup.${ext}"
     },
     "portable": {
-      "artifactName": "Aurora-Settings-Portable.${ext}"
+      "artifactName": "Vorynth-Settings-Portable.${ext}"
     },
     "deb": {
-      "artifactName": "Aurora-Settings-linux.${ext}"
+      "artifactName": "Vorynth-Settings-linux.${ext}"
     }
   },
-  "author": "Aurora",
+  "author": "Vorynth",
   "dependencies": {
     "adm-zip": "^0.6.1",
     "jsqr": "^1.4.0",

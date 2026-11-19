@@ -2,7 +2,7 @@
 {
   window.auroraWidgetsUI = (box) => {
     box.style.gap = '12px';
-    const intro = el('div', 'muted', 'Little floating cards that stay on your desktop. Drag them anywhere, they remember where you put them and come back when Aurora starts. Hover a widget to close it.');
+    const intro = el('div', 'muted', 'Little floating cards that stay on your desktop. Drag them anywhere, they remember where you put them and come back when Vorynth starts. Hover a widget to close it.');
     const grid = el('div'); grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px';
     box.append(intro, grid);
     const draw = (list) => {

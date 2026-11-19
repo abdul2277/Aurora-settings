@@ -1,4 +1,4 @@
-/* Aurora desktop widgets. Each widget kind draws itself into #c. Nothing here touches the network. */
+/* Vorynth desktop widgets. Each widget kind draws itself into #c. Nothing here touches the network. */
 (() => {
   const kind = new URLSearchParams(location.search).get('kind') || 'clock';
   const c = document.getElementById('c');

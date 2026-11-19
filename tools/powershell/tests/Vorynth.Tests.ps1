@@ -1,7 +1,7 @@
-# Self-contained tests for Aurora.ps1 using an in-memory registry (no Pester needed).
-# Run:  pwsh -NoProfile -File tests/Aurora.Tests.ps1     (or powershell.exe on Windows)
+# Self-contained tests for Vorynth.ps1 using an in-memory registry (no Pester needed).
+# Run:  pwsh -NoProfile -File tests/Vorynth.Tests.ps1     (or powershell.exe on Windows)
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot '..\Aurora.ps1') -NoRun
+. (Join-Path $PSScriptRoot '..\Vorynth.ps1') -NoRun
 
 $script:pass = 0; $script:fail = 0
 function Check([bool] $ok, [string] $name) { if ($ok) { $script:pass++ } else { $script:fail++; Write-Host "FAIL: $name" -ForegroundColor Red } }

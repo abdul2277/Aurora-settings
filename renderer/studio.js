@@ -1,4 +1,4 @@
-/* Aurora Studio: theme packs, live background effects, hover spotlight and the start-up intro. Loaded after app.js. */
+/* Vorynth Studio: theme packs, live background effects, hover spotlight and the start-up intro. Loaded after app.js. */
 {
   const PACKS = {
     borealis: { name: 'Borealis', note: 'The original northern lights', accent: '#4cc2ff', fx: ['#4cc2ff', '#c77dff', '#38d9a9', '#ff6fb5'], mode: 'ribbons' },
@@ -19,7 +19,7 @@
   const HEX = /^#[0-9a-f]{6}$/i;
   const applyCustom = () => { const c = (prefs.get('studio') || {}).customColors; if (Array.isArray(c) && c.length === 4 && c.every((x) => HEX.test(x))) { PACKS.custom.fx = c.slice(); PACKS.custom.accent = c[0]; } };
   applyCustom();
-  const MODES = { off: 'Off (fastest)', ribbons: 'Aurora ribbons', stars: 'Starfield', embers: 'Embers', rain: 'Neon rain', snow: 'Snow', petals: 'Petals', fireflies: 'Fireflies', grid: 'Synthwave grid' };
+  const MODES = { off: 'Off (fastest)', ribbons: 'Vorynth ribbons', stars: 'Starfield', embers: 'Embers', rain: 'Neon rain', snow: 'Snow', petals: 'Petals', fireflies: 'Fireflies', grid: 'Synthwave grid' };
   const DEFAULTS = { pack: 'borealis', mode: 'auto', intensity: 60, spotlight: true, intro: true };
   const cfg = () => { const s = prefs.get('studio') || {}; return { ...DEFAULTS, ...s }; };
   const save = (patch) => prefs.set('studio', { ...cfg(), ...patch });
@@ -108,7 +108,7 @@
       const inten = el('input'); inten.type = 'range'; inten.min = 5; inten.max = 100; inten.value = c.intensity; inten.oninput = () => { inten.style.setProperty('--fill', inten.value + '%'); }; inten.onchange = () => window.auroraStudio.save({ intensity: Number(inten.value) }); inten.style.setProperty('--fill', inten.value + '%');
       const sw = (k, label) => { const l = el('label', 'switch'); const i = el('input'); i.type = 'checkbox'; i.checked = !!c[k]; i.onchange = () => window.auroraStudio.save({ [k]: i.checked }); l.append(i, el('span', 'track'), el('span', 'thumb')); return row(label, l); };
       const keep = el('label', 'sub'); const kc = el('input'); kc.type = 'checkbox'; kc.checked = !!prefs.get('packAccentLock'); kc.onchange = () => { prefs.set('packAccentLock', kc.checked); }; keep.append(kc, ' Keep my own accent colour when I change theme');
-      box.append(grid, wrap, row('Background effect', mode), row('Effect strength', inten), sw('spotlight', 'Card spotlight that follows your pointer'), sw('intro', 'Intro animation when Aurora starts'), keep, el('div', 'sub', 'Effects pause when the window is hidden, and turn off by themselves if Windows is set to reduce motion. Choose "Off" for the lightest possible Aurora.'));
+      box.append(grid, wrap, row('Background effect', mode), row('Effect strength', inten), sw('spotlight', 'Card spotlight that follows your pointer'), sw('intro', 'Intro animation when Vorynth starts'), keep, el('div', 'sub', 'Effects pause when the window is hidden, and turn off by themselves if Windows is set to reduce motion. Choose "Off" for the lightest possible Vorynth.'));
     }; draw();
   };
 }

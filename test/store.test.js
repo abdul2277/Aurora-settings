@@ -61,7 +61,7 @@ test('swapFolder restores the old folder when the swap fails', () => {
 test('updates: a rate limit is reported, not shown as "everything is up to date"', async () => {
   const pkg = fakePackage({ versions: { '1.0.0': Buffer.from('MZ1') } }); const { store } = mk(pkg);
   store.install('Test.App'); await store._idle();
-  const err = new Error('GitHub is limiting how often Aurora can look up apps. Try again in about 12 minutes.'); err.rateLimited = true; pkg.source.failWith = err;
+  const err = new Error('GitHub is limiting how often Vorynth can look up apps. Try again in about 12 minutes.'); err.rateLimited = true; pkg.source.failWith = err;
   const fresh = createAppStore({ source: pkg.source, fetchFn: pkg.fetchFn, dataDir: path.join(path.dirname(store._dirHint || os.tmpdir()), 'x'), appsDir: tmp(), runner: fakeRunner(), catalog: [APP] });
   fresh._state().installed['Test.App'] = { id: 'Test.App', version: '1.0.0' };
   await assert.rejects(fresh.updates(), /limiting/);

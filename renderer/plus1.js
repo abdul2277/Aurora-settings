@@ -1,4 +1,4 @@
-/* Aurora Plus, part 1: organisation tools (saved in Aurora's own store) and calculators. */
+/* Vorynth Plus, part 1: organisation tools (saved in Vorynth's own store) and calculators. */
 {
   const B = (t, c, f) => { const b = el('button', 'btn' + (c ? ' ' + c : ''), t); if (f) b.onclick = f; return b; };
   const R = (...k) => { const r = el('div', 'savebar'); r.append(...k); return r; };
@@ -87,12 +87,12 @@
     });
   };
 
-  /* 7. Reminders (daily, run by Aurora in the background through automation rules) */
+  /* 7. Reminders (daily, run by Vorynth in the background through automation rules) */
   CUSTOM.reminders = (box) => {
     box.style.gap = '8px';
     const draw = async () => {
       let st; try { st = await call('storeGet'); } catch (_) { return fail(box); }
-      box.replaceChildren(); box.append(el('div', 'muted', 'Reminders show a desktop notification at the time you choose, even when the Aurora window is closed (Aurora keeps running in the tray). They are saved as Automation rules, so you can also see them there.'));
+      box.replaceChildren(); box.append(el('div', 'muted', 'Reminders show a desktop notification at the time you choose, even when the Vorynth window is closed (Vorynth keeps running in the tray). They are saved as Automation rules, so you can also see them there.'));
       const txt = F('Remind me to...'), at = F('', 'time'); at.value = '09:00'; const days = el('div', 'store-chips'); const on = new Set([0, 1, 2, 3, 4, 5, 6]); ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach((d, i) => { const c = el('button', 'chip on', d); c.onclick = () => { on.has(i) ? on.delete(i) : on.add(i); c.classList.toggle('on', on.has(i)); }; days.append(c); });
       box.append(R(txt, at), days, R(B('Add reminder', 'primary', async () => { if (!txt.value.trim()) return toast('Say what to remind you about', true); if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(at.value)) return toast('Pick a time', true); if (!on.size) return toast('Pick at least one day', true); const rules = [...st.rules, { id: nid('rm'), name: 'Reminder: ' + txt.value.trim().slice(0, 60), enabled: true, when: { type: 'time', at: at.value, days: [...on].sort() }, actions: [{ type: 'notify', text: txt.value.trim().slice(0, 120) }] }]; try { await call('storeSet', { key: 'rules', value: rules }); toast('Reminder added'); draw(); } catch (e) { toast(errText(e), true); } })));
       const mine = st.rules.filter((r) => /^Reminder: /.test(r.name)); mine.forEach((r) => { const row = el('div', 'list-row'); const l = el('div'); l.append(el('div', '', r.name.replace(/^Reminder: /, '')), el('div', 'sub', `${r.when.at} · ${r.when.days.length === 7 ? 'every day' : r.when.days.map((d) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}`)); row.append(l, B('Delete', 'danger', async () => { try { await call('storeSet', { key: 'rules', value: st.rules.filter((x) => x.id !== r.id) }); draw(); } catch (e) { toast(errText(e), true); } })); box.append(row); });

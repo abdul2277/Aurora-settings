@@ -1,4 +1,4 @@
-// Runs EVERY add-on in the library in headless Chromium (with a stub of the Aurora SDK) and fails on any script error,
+// Runs EVERY add-on in the library in headless Chromium (with a stub of the Vorynth SDK) and fails on any script error,
 // then checks the maths of the newest batch.
 const assert = require('assert'); let pw; try { pw = require('playwright'); } catch (_) { pw = require('/opt/node-tools/node_modules/playwright'); }
 const A = require('../lib/addons');

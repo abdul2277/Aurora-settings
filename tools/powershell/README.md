@@ -1,9 +1,9 @@
-# Aurora-settings
-Aurora settings to quickly de-bloat Windows AI features. You can undo every change with one command.
+# Vorynth-settings
+Vorynth settings to quickly de-bloat Windows AI features. You can undo every change with one command.
 
 ## Quick start
 1. Download this repository (Code → Download ZIP) and extract it.
-2. Double-click **`Aurora.cmd`**. It asks for administrator rights and opens the menu.
+2. Double-click **`Vorynth.cmd`**. It asks for administrator rights and opens the menu.
 3. Press **R** to apply the recommended set, or **P** to preview it first without changing anything.
 
 ```
@@ -32,18 +32,18 @@ Optional: **Remove Copilot app** (menu **C** or `-RemoveCopilotApp`) uninstalls 
 
 ## Command line
 ```powershell
-.\Aurora.ps1 -Status                        # what is on/off
-.\Aurora.ps1 -List                          # ids and descriptions
-.\Aurora.ps1 -Apply Recommended -WhatIf     # preview only
-.\Aurora.ps1 -Apply Recommended -RestorePoint
-.\Aurora.ps1 -Apply Recall,Copilot,Edge
-.\Aurora.ps1 -Undo                          # roll back the latest run
-.\Aurora.ps1 -Undo -BackupFile <path>       # roll back a specific run
+.\Vorynth.ps1 -Status                        # what is on/off
+.\Vorynth.ps1 -List                          # ids and descriptions
+.\Vorynth.ps1 -Apply Recommended -WhatIf     # preview only
+.\Vorynth.ps1 -Apply Recommended -RestorePoint
+.\Vorynth.ps1 -Apply Recall,Copilot,Edge
+.\Vorynth.ps1 -Undo                          # roll back the latest run
+.\Vorynth.ps1 -Undo -BackupFile <path>       # roll back a specific run
 ```
 Add `-NoExplorerRestart` to skip restarting Explorer.
 
 ## Safety
-- **Exact undo**: before each run, Aurora saves the old values to `%LOCALAPPDATA%\Aurora\backups\aurora-<time>.json`. Undo puts them back, and deletes any value that did not exist before.
+- **Exact undo**: before each run, Vorynth saves the old values to `%LOCALAPPDATA%\Aurora\backups\aurora-<time>.json`. Undo puts them back, and deletes any value that did not exist before.
 - **Preview**: `-WhatIf` (or menu **P**) lists every change and touches nothing.
 - **Restore point**: `-RestorePoint` creates a System Restore point first.
 - **Without administrator rights**: per-user (HKCU) settings are still applied. Machine-wide (HKLM) policies are skipped and listed, and those features show as *Partly blocked*.
@@ -52,6 +52,6 @@ Add `-NoExplorerRestart` to skip restarting Explorer.
 
 ## Tests
 ```
-pwsh -File tests/Aurora.Tests.ps1      # or: powershell -File tests\Aurora.Tests.ps1
+pwsh -File tests/Vorynth.Tests.ps1      # or: powershell -File tests\Vorynth.Tests.ps1
 ```
 87 checks run against an in-memory registry. They cover apply, idempotence, exact undo, WhatIf, non-admin behaviour and the catalog.

@@ -1,4 +1,4 @@
-/* Aurora Doctor 2.0 UI: hero card per part, orb scan with animated steps, findings, restore point + auto-fix, gaming readiness (reversible), history. */
+/* Vorynth Doctor 2.0 UI: hero card per part, orb scan with animated steps, findings, restore point + auto-fix, gaming readiness (reversible), history. */
 {
   const LV = { bad: 3, warn: 2, ok: 1 };
   const ICON = { bad: '🔴', warn: '🟠', ok: '🟢', none: '⚪' };
@@ -68,7 +68,7 @@
     (hw.cameras || []).forEach((cm) => cards.push({ key: 'camera', icon: '📷', title: 'Camera', lines: [cm.name, cm.status], level: cm.status === 'OK' ? 'ok' : 'warn' }));
     return cards;
   };
-  const report = (res) => ['Aurora Doctor report', 'Score: ' + res.score + '/100', ''].concat(res.findings.map((f) => (f.level === 'ok' ? '[OK]   ' : f.level === 'warn' ? '[WARN] ' : '[BAD]  ') + f.title + ' - ' + f.detail)).join('\n');
+  const report = (res) => ['Vorynth Doctor report', 'Score: ' + res.score + '/100', ''].concat(res.findings.map((f) => (f.level === 'ok' ? '[OK]   ' : f.level === 'warn' ? '[WARN] ' : '[BAD]  ') + f.title + ' - ' + f.detail)).join('\n');
   const DEEP = [['sfc', '🛠️', 'Repair Windows system files (sfc)', 'Checks and repairs damaged Windows files. Takes 10-30 minutes. Runs in its own window.'], ['dism', '🧰', 'Repair the Windows image (DISM)', 'Fixes the component store that sfc relies on. Needs internet. Takes a while.'], ['wureset', '🔄', 'Reset Windows Update', 'Clears the update download cache when updates are stuck or failing.'], ['memdiag', '🧪', 'Test the RAM', 'Opens Windows Memory Diagnostic. It restarts the PC to run the test.'], ['chkdsk', '💽', 'Scan the system drive', 'Online read-only scan for file system errors.'], ['resetnet', '📡', 'Reset the network stack', 'Fixes broken network settings. Needs a restart afterwards.']];
   const FIX_TITLE = { restorepoint: 'Create a restore point first', cleantemp: 'Clean temporary files', driverupdate: 'Install newer drivers (Windows Update)', appupdate: 'Update all installed apps (winget)', flushdns: 'Flush the DNS cache', startservices: 'Start stopped Windows services', pnpscan: 'Rescan hardware for broken devices', resetnet: 'Reset the network stack', chkdsk: 'Scan the drive for errors', sfc: 'Repair Windows system files (sfc)', dism: 'Repair the Windows image (DISM)', memdiag: 'Test the RAM', wureset: 'Reset Windows Update' };
   const SAFE = ['flushdns', 'cleantemp', 'startservices', 'pnpscan', 'resetnet'];
@@ -111,7 +111,7 @@
     const logc = el('div', 'card'); logc.id = 'dr-log'; logc.hidden = true; logc.style.cssText = 'padding:14px;display:grid;gap:4px';
     const deep = el('div', 'card'); deep.style.cssText = 'padding:14px;display:grid;gap:10px'; deep.append(el('div', 'label', 'Deep repairs (use when something is really broken)')); DEEP.forEach(([id, ic, t, d]) => { const r = el('div', 'dr-row'); r.dataset.fix = id; const l = el('div'); l.append(el('b', null, ic + ' ' + t), el('div', 'sub', d)); const b = el('button', 'btn', 'Run'); b.onclick = () => runFix(id, t); r.append(l, b); deep.append(r); });
     box.append(stepsCard, hero, parts, ctl, prog, gm, list, logc, deep);
-    heroSet({ art: 'generic', kicker: 'Aurora Doctor', name: 'Ready to check your whole PC', lines: [{ text: 'Processor, graphics, memory, motherboard, drives, network, audio and Windows.' }, { text: 'Read-only scan. Every fix asks first.' }] });
+    heroSet({ art: 'generic', kicker: 'Vorynth Doctor', name: 'Ready to check your whole PC', lines: [{ text: 'Processor, graphics, memory, motherboard, drives, network, audio and Windows.' }, { text: 'Read-only scan. Every fix asks first.' }] });
 
     let last = null, hist = loadJ(HK), skipAnim = false; const undoable = new Set();
     const log = (text) => { const l = loadJ(LK); l.unshift({ t: Date.now(), text }); saveJ(LK, l.slice(0, 30)); renderLog(); };
@@ -166,9 +166,9 @@
     skip.onclick = () => { skipAnim = true; };
     orb.onclick = scan;
     auto.onclick = async () => {
-      if (!last) return; const before = last; const plan = autoPlan(before.findings, { deep: deepCb.checked, update: updCb.checked }); if (!plan.length) { toast('Nothing Aurora can fix by itself. Tick the update box to also install newer drivers and apps.'); return; }
+      if (!last) return; const before = last; const plan = autoPlan(before.findings, { deep: deepCb.checked, update: updCb.checked }); if (!plan.length) { toast('Nothing Vorynth can fix by itself. Tick the update box to also install newer drivers and apps.'); return; }
       const rp = before.platform === 'win32' && needsRestore(plan);
-      if (!confirm('Aurora will run these fixes one by one:\n\n' + (rp ? '- Create a restore point first (so you can roll back from Windows)\n' : '') + plan.map((p) => '- ' + p.title).join('\n') + '\n\nWindows may ask for permission. Continue?')) return;
+      if (!confirm('Vorynth will run these fixes one by one:\n\n' + (rp ? '- Create a restore point first (so you can roll back from Windows)\n' : '') + plan.map((p) => '- ' + p.title).join('\n') + '\n\nWindows may ask for permission. Continue?')) return;
       auto.disabled = orb.disabled = true; prog.hidden = false; prog.replaceChildren(el('b', null, 'Fixing...')); const bar = el('div', 'dr-bar'); const bi = el('i'); bar.append(bi); prog.append(bar);
       const steps = (rp ? [{ fix: 'restorepoint', title: FIX_TITLE.restorepoint }] : []).concat(plan); const rows = steps.map((p) => { const r = el('div', 'sub', '⏳ ' + p.title); r.dataset.fix = 'auto-' + p.fix; prog.append(r); return r; });
       let okc = 0, failc = 0, aborted = false;

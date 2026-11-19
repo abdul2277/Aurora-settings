@@ -1,4 +1,4 @@
-/* Aurora Apps, third batch: Journal, Habits, Ledger, Pix (image tools), Rename (bulk renamer) and Focus (pomodoro). */
+/* Vorynth Apps, third batch: Journal, Habits, Ledger, Pix (image tools), Rename (bulk renamer) and Focus (pomodoro). */
 {
   const B = (txt, cls, fn) => { const b = el('button', 'btn' + (cls ? ' ' + cls : ''), txt); if (fn) b.onclick = fn; return b; };
   const R = (...kids) => { const r = el('div', 'savebar'); r.append(...kids); return r; };
@@ -74,7 +74,7 @@
     const rot = el('select', 'filter'); rot.style.width = 'auto'; [[0, 'No rotation'], [90, 'Rotate 90° right'], [180, 'Rotate 180°'], [270, 'Rotate 90° left']].forEach(([v, l]) => rot.append(Object.assign(el('option', '', l), { value: v })));
     const flip = el('input'); flip.type = 'checkbox'; const fl = el('label', 'sub'); fl.append(flip, ' Flip'); const gray = el('input'); gray.type = 'checkbox'; const gl = el('label', 'sub'); gl.append(gray, ' Black & white');
     const list = el('div'); const status = el('div', 'sub', '');
-    const loadImg = (f) => new Promise((ok, no) => { const u = URL.createObjectURL(f); const i = new Image(); i.onload = () => { URL.revokeObjectURL(u); ok(i); }; i.onerror = () => { URL.revokeObjectURL(u); no(new Error(`"${f.name}" is not an image Aurora can read`)); }; i.src = u; });
+    const loadImg = (f) => new Promise((ok, no) => { const u = URL.createObjectURL(f); const i = new Image(); i.onload = () => { URL.revokeObjectURL(u); ok(i); }; i.onerror = () => { URL.revokeObjectURL(u); no(new Error(`"${f.name}" is not an image Vorynth can read`)); }; i.src = u; });
     const render = async (f) => {
       const img = await loadImg(f); let w = img.width, h = img.height; const A = Number(a.value), Bv = Number(b2.value);
       if (mode.value === 'pct') { if (!(A > 0 && A <= 800)) throw new Error('Percent must be between 1 and 800'); w *= A / 100; h *= A / 100; } else if (mode.value === 'w') { if (!(A > 0)) throw new Error('Enter a width'); const k = Math.min(1, A / w); w *= k; h *= k; } else { if (!(A > 0 && Bv > 0)) throw new Error('Enter both sizes'); const k = Math.min(1, A / w, Bv / h); w *= k; h *= k; }

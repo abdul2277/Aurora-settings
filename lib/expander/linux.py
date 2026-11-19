@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# Aurora text expander helper (Linux/X11). Watches typed characters and prints ONE short code per key to stdout:
+# Vorynth text expander helper (Linux/X11). Watches typed characters and prints ONE short code per key to stdout:
 #   C<char>  a typed character     B  backspace     R  anything that should reset (Enter, Tab, Ctrl/Alt/Super combos, mouse click)
-# It never writes anything to disk and never prints more than that. Aurora keeps only the last few characters in memory.
+# It never writes anything to disk and never prints more than that. Vorynth keeps only the last few characters in memory.
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pylib'))
 from Xlib import X, XK, display

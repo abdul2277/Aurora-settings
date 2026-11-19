@@ -1,4 +1,4 @@
-// Run after the build:  node scripts/stamp.js dist/Aurora-Settings.exe
+// Run after the build:  node scripts/stamp.js dist/Vorynth-Settings.exe
 const { stamp, readStamp } = require('../lib/buildstamp');
 const version = require('../package.json').version; const file = process.argv[2];
 if (!file) { console.error('Usage: node scripts/stamp.js <exe>'); process.exit(1); }

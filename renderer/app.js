@@ -1,4 +1,4 @@
-/* Aurora Settings renderer */
+/* Vorynth Settings renderer */
 const $ = (s, r = document) => r.querySelector(s);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.textContent = html; return e; };
 
@@ -397,7 +397,7 @@ CUSTOM.privacyscore = (box) => {
 CUSTOM.aibanner = (box) => {
   const card = el('div', 'list-row'); card.style.cssText = 'display:block;padding:18px;line-height:1.5';
   const head = el('div', '', ''); head.style.cssText = 'font-size:18px;font-weight:700;margin-bottom:6px';
-  const body = el('div', 'muted', 'Aurora never turns an AI feature on for you. Windows may already allow some of them. When a switch is ON, that Windows feature is allowed to run, and some of them send what you type or see to an online service. Our recommended default is OFF: use the button below, or switch each one yourself at any time.');
+  const body = el('div', 'muted', 'Vorynth never turns an AI feature on for you. Windows may already allow some of them. When a switch is ON, that Windows feature is allowed to run, and some of them send what you type or see to an online service. Our recommended default is OFF: use the button below, or switch each one yourself at any time.');
   const state = el('div', ''); state.style.cssText = 'margin-top:10px;font-weight:600';
   const off = el('button', 'btn', 'Turn all AI features off'); off.style.cssText = 'margin-top:12px;display:none'; off.onclick = async () => { off.disabled = true; try { await call('applyPreset', { name: 'aiAllOff' }); toast('All AI features are off'); go(currentPage); } catch (e) { toast(String(e.message || e), true); } off.disabled = false; };
   const onb = el('button', 'btn', 'Turn them back on'); onb.id = 'ai-banner-on'; onb.style.cssText = 'margin-top:12px;display:none'; onb.onclick = async () => { if (!confirm('Allow all Windows AI features again?')) return; onb.disabled = true; try { await call('applyPreset', { name: 'aiAllOn' }); toast('All AI features are allowed again'); go(currentPage); } catch (e) { toast(String(e.message || e), true); } onb.disabled = false; };
@@ -627,7 +627,7 @@ CUSTOM.keepawake = (box) => {
   };
   modes.forEach(([m, n]) => { const b = el('button', '', n); btns[m] = b; b.onclick = async () => { try { state = await guard(() => call('keepAwakeSet', { mode: m, minutes: Number(minsSel.value) }), m === 'off' ? 'Keep awake is off' : 'Keep awake is on'); } catch (_) {} paint(); }; seg.append(b); });
   const row1 = el('div', 'savebar'); row1.append(seg, minsSel);
-  box.append(row1, status, el('div', 'muted', 'Works while Aurora is running. You can minimize it, but closing it ends keep awake.'));
+  box.append(row1, status, el('div', 'muted', 'Works while Vorynth is running. You can minimize it, but closing it ends keep awake.'));
   call('keepAwakeGet').then((st) => { state = st; paint(); }).catch(() => fail(box)); const timer = setInterval(paint, 1000);
 };
 
@@ -829,7 +829,7 @@ CUSTOM.labsgrid = (box) => {
     ['⚙️', 'Services manager', 'Start, stop and tune background services', 'wintools', 'services'],
     ['📜', 'Event log', 'Why did Windows crash or restart?', 'wintools', 'events'],
     ['📋', 'Clipboard history', 'Win+V, rebuilt', 'wintools', 'clipboard'],
-    ['📝', 'Quick notes', 'Sticky notes inside Aurora', 'wintools', 'notes'],
+    ['📝', 'Quick notes', 'Sticky notes inside Vorynth', 'wintools', 'notes'],
     ['🧾', 'PC report', 'Save a full system report as a web page', 'wintools', 'report']
   ];
   const grid = el('div', 'pgrid');
@@ -837,14 +837,14 @@ CUSTOM.labsgrid = (box) => {
   box.append(grid);
 };
 
-/* ---------- Windows Update: install inside Aurora ---------- */
+/* ---------- Windows Update: install inside Vorynth ---------- */
 const WU_ACTIVE = ['starting', 'searching', 'downloading', 'installing'];
 CUSTOM.wuinstall = (box) => {
   box.style.gap = '10px';
   const drivers = el('input'); drivers.type = 'checkbox'; const dl = el('label'); dl.style.cssText = 'display:flex;gap:6px;align-items:center'; dl.append(drivers, el('span', '', 'Include driver updates'));
   const checkBtn = el('button', 'btn primary', 'Check for updates'); const top = el('div', 'savebar'); top.append(checkBtn, dl);
   const found = el('div'); const prog = el('div');
-  box.append(el('div', 'muted', 'Aurora talks to the Windows Update engine directly. Installing needs administrator permission, which Windows asks for once.'), top, found, prog);
+  box.append(el('div', 'muted', 'Vorynth talks to the Windows Update engine directly. Installing needs administrator permission, which Windows asks for once.'), top, found, prog);
   let poll = null, items = [];
 
   const stopPoll = () => { clearInterval(poll); poll = null; };
@@ -896,7 +896,7 @@ CUSTOM.wuinstall = (box) => {
       prog.append(el('div', 'label', txt)); if (st.title) prog.append(el('div', 'muted', st.title));
       const frac = st.total ? Math.min(1, (st.current - 1 + (st.phase === 'installing' ? 0.6 : 0.2)) / st.total) : 0.05; const bar = el('div', 'bar'); const i = el('i'); i.style.width = Math.round(frac * 100) + '%'; bar.append(i); bar.style.margin = '8px 0'; prog.append(bar);
       if (st.phase === 'starting' && ageSec > 45) prog.append(el('div', 'muted', 'Still waiting. Check for a Windows permission prompt (it may be behind other windows).'));
-      prog.append(el('div', 'muted', 'You can leave this page or close Aurora. The install keeps running.'));
+      prog.append(el('div', 'muted', 'You can leave this page or close Vorynth. The install keeps running.'));
       const c = el('button', 'btn', 'Cancel after this update'); c.style.marginTop = '8px'; c.onclick = () => guard(() => call('wuCancel'), 'Will stop after the current update').catch(() => {}); prog.append(c);
       return;
     }
@@ -1040,7 +1040,7 @@ CUSTOM.displaymodes = (box) => {
       setTimeout(draw, 1500);
     };
     const bar = el('div', 'savebar'); bar.append(resSel, hzSel, apply);
-    box.replaceChildren(el('div', 'muted', `Current: ${current.w} × ${current.h} at ${current.hz} Hz (main display). If the new mode looks wrong, do nothing and Aurora switches back after 15 seconds.`), bar, banner);
+    box.replaceChildren(el('div', 'muted', `Current: ${current.w} × ${current.h} at ${current.hz} Hz (main display). If the new mode looks wrong, do nothing and Vorynth switches back after 15 seconds.`), bar, banner);
   }).catch(() => fail(box));
   draw();
 };
@@ -1076,10 +1076,10 @@ CUSTOM.profiles = (box) => {
 };
 
 /* ---------- Automation: background, rules, guard, activity ---------- */
-const TRIGGERS = { startup: 'Aurora starts', power: 'Power source changes', battery: 'Battery level', time: 'Time of day', wifi: 'Wi-Fi network', app: 'An app starts running' };
+const TRIGGERS = { startup: 'Vorynth starts', power: 'Power source changes', battery: 'Battery level', time: 'Time of day', wifi: 'Wi-Fi network', app: 'An app starts running' };
 const ACTIONS = { profile: 'Run a profile', volume: 'Set volume', mute: 'Mute or unmute', brightness: 'Set brightness', plan: 'Power plan', darkMode: 'Dark or light mode', keepAwake: 'Keep awake', notify: 'Show me a notification', cleanTemp: 'Clean temp files', organizeDownloads: 'Organize Downloads' };
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const describeWhen = (w) => ({ startup: () => 'Aurora starts', power: () => (w.value === 'battery' ? 'you unplug the charger' : 'you plug in the charger'), battery: () => `battery is ${w.op === '<' ? 'below' : 'at or above'} ${w.value}%`, time: () => `it is ${w.at} on ${w.days.length === 7 ? 'every day' : w.days.map((d) => DAYS[d]).join(', ')}`, wifi: () => `you connect to "${w.ssid}"`, app: () => `${w.name} starts` }[w.type])();
+const describeWhen = (w) => ({ startup: () => 'Vorynth starts', power: () => (w.value === 'battery' ? 'you unplug the charger' : 'you plug in the charger'), battery: () => `battery is ${w.op === '<' ? 'below' : 'at or above'} ${w.value}%`, time: () => `it is ${w.at} on ${w.days.length === 7 ? 'every day' : w.days.map((d) => DAYS[d]).join(', ')}`, wifi: () => `you connect to "${w.ssid}"`, app: () => `${w.name} starts` }[w.type])();
 const describeAction = (a) => ({ profile: () => `run the ${a.name} profile`, volume: () => `set volume to ${a.value}%`, mute: () => (a.value ? 'mute' : 'unmute'), brightness: () => `set brightness to ${a.value}%`, plan: () => `use the ${{ saver: 'power saver', balanced: 'balanced', high: 'high performance' }[a.match]} power plan`, darkMode: () => (a.value ? 'switch to dark mode' : 'switch to light mode'), keepAwake: () => (a.mode === 'off' ? 'stop keeping awake' : `keep the ${a.mode === 'display' ? 'screen' : 'PC'} awake${a.minutes ? ' for ' + a.minutes + ' min' : ''}`), notify: () => `notify me: "${a.text}"`, cleanTemp: () => 'clean temp files', organizeDownloads: () => 'organize Downloads' }[a.type])();
 const TEMPLATES = [
   ['🔋 On battery → Battery saver', { name: 'On battery, save power', when: { type: 'power', value: 'battery' }, actions: [{ type: 'profile', name: 'Battery saver' }] }],
@@ -1101,7 +1101,7 @@ CUSTOM.bgsettings = (box) => {
     const sw = (label, desc, key) => { const r = el('div', 'list-row'); const l = el('div'); l.append(el('div', '', label), el('div', 'sub', desc)); const w = el('label', 'switch'); const i = el('input'); i.type = 'checkbox'; i.checked = !!s[key]; w.append(i, el('span', 'track'), el('span', 'thumb'));
       i.onchange = async () => { try { await guard(() => saveGroup('settings', { ...storeCache.settings, [key]: i.checked }), 'Saved'); } catch (_) { i.checked = !i.checked; } setTimeout(() => CUSTOM.bgsettings(box), 300); }; r.append(l, w); box.append(r); };
     sw('Keep running in the tray when I close the window', st.hasTray ? 'Rules, hotkeys and the settings guard keep working. Right-click the tray icon to quit.' : 'Needs the Windows tray, which is not available right now.', 'background');
-    sw('Start with Windows', 'Aurora starts quietly in the tray when you sign in.', 'autostart');
+    sw('Start with Windows', 'Vorynth starts quietly in the tray when you sign in.', 'autostart');
     sw('Global hotkeys', 'Ctrl+Alt+A show or hide · M mute · D dark mode · K keep awake · Space command bar' + (st.hotkeys.failed.length ? `  (in use by another app: ${st.hotkeys.failed.join(', ').replace(/CommandOrControl/g, 'Ctrl')})` : ''), 'hotkeys');
     sw('Internet watchdog', 'Notifies you when the internet drops and comes back, and keeps an outage log.', 'watchdog');
     sw('Clipboard history', 'Remember copied text so you can paste it again (memory only, never saved). Manage it in Windows tools.', 'clipboard');
@@ -1144,7 +1144,7 @@ CUSTOM.rules = (box) => {
     else if (t === 'time') { const tm = el('input', 'filter'); tm.type = 'time'; tm.value = w?.at ?? '23:00'; tm.style.cssText = 'width:130px;margin:0'; const days = DAYS.map((d, i) => { const l = el('label'); l.style.cssText = 'display:flex;gap:3px;align-items:center'; const c = el('input'); c.type = 'checkbox'; c.checked = w ? w.days.includes(i) : true; l.append(c, el('span', '', d)); return [c, l]; }); tp.append(el('span', 'muted', 'At'), tm, ...days.map(([, l]) => l)); readWhen = () => ({ type: 'time', at: tm.value, days: days.map(([c], i) => (c.checked ? i : -1)).filter((i) => i >= 0) }); }
     else if (t === 'wifi') { const i = el('input', 'filter'); i.placeholder = 'Network name (SSID)'; i.value = w?.ssid ?? ''; i.style.cssText = 'width:230px;margin:0'; tp.append(el('span', 'muted', 'When I connect to'), i); readWhen = () => ({ type: 'wifi', ssid: i.value.trim() }); }
     else if (t === 'app') { const i = el('input', 'filter'); i.placeholder = 'Program name, for example steam'; i.value = w?.name ?? ''; i.style.cssText = 'width:230px;margin:0'; tp.append(el('span', 'muted', 'When'), i, el('span', 'muted', 'starts running')); readWhen = () => ({ type: 'app', name: i.value.trim() }); }
-    else { tp.append(el('span', 'muted', 'Runs once each time Aurora starts (including at sign-in).')); readWhen = () => ({ type: 'startup' }); }
+    else { tp.append(el('span', 'muted', 'Runs once each time Vorynth starts (including at sign-in).')); readWhen = () => ({ type: 'startup' }); }
   };
   const buildAct = () => {
     ap.replaceChildren(); const t = act.value; const profiles = (storeCache?.profiles || []).map((p) => p.name);
@@ -1154,7 +1154,7 @@ CUSTOM.rules = (box) => {
     else if (t === 'darkMode') { const s2 = sel([['true', 'Dark mode'], ['false', 'Light mode']]); ap.append(s2); readAction = () => ({ type: 'darkMode', value: s2.value === 'true' }); }
     else if (t === 'plan') { const s2 = sel([['saver', 'Power saver'], ['balanced', 'Balanced'], ['high', 'High performance']]); ap.append(s2); readAction = () => ({ type: 'plan', match: s2.value }); }
     else if (t === 'keepAwake') { const m = sel([['display', 'Keep screen on'], ['system', 'Keep PC awake'], ['off', 'Stop keeping awake']]); const n = num(0, 0, 1440, 90); ap.append(m, n, el('span', 'muted', 'minutes (0 = until stopped)')); readAction = () => ({ type: 'keepAwake', mode: m.value, minutes: Number(n.value) }); }
-    else if (t === 'notify') { const i = el('input', 'filter'); i.placeholder = 'Message'; i.style.cssText = 'width:300px;margin:0'; i.value = 'Hello from Aurora'; ap.append(i); readAction = () => ({ type: 'notify', text: i.value.trim() }); }
+    else if (t === 'notify') { const i = el('input', 'filter'); i.placeholder = 'Message'; i.style.cssText = 'width:300px;margin:0'; i.value = 'Hello from Vorynth'; ap.append(i); readAction = () => ({ type: 'notify', text: i.value.trim() }); }
     else { ap.append(el('span', 'muted', 'No options.')); readAction = () => ({ type: t }); }
   };
   const drawChips = () => { chips.replaceChildren(); if (!actions.length) chips.append(el('div', 'muted', 'No actions added yet.')); actions.forEach((a, i) => { const c = el('div', 'list-row'); c.append(el('div', '', `${i + 1}. ${describeAction(a)}`)); const x = el('button', 'btn', 'Remove'); x.onclick = () => { actions.splice(i, 1); drawChips(); }; c.append(x); chips.append(c); }); };
@@ -1174,7 +1174,7 @@ CUSTOM.guard = (box) => {
   box.style.gap = '6px';
   const draw = async () => {
     let st; try { st = await loadStore(); } catch (_) { return fail(box); }
-    box.replaceChildren(el('div', 'muted', 'Windows updates sometimes switch your privacy and comfort settings back. Tick a setting to protect it: Aurora remembers how it is set now and puts it back if Windows changes it (checked every 10 minutes and after sleep).'));
+    box.replaceChildren(el('div', 'muted', 'Windows updates sometimes switch your privacy and comfort settings back. Tick a setting to protect it: Vorynth remembers how it is set now and puts it back if Windows changes it (checked every 10 minutes and after sleep).'));
     const guarded = new Map(st.guard.map((g) => [g.id, g.value]));
     const labelOf = (id) => { const f = typeof findItem === 'function' ? findItem(id) : null; return f ? f.it.label : id; };
     st.guardable.forEach((id) => {
@@ -1203,7 +1203,7 @@ CUSTOM.activity = (box) => {
 CUSTOM.watchdog = (box) => {
   const draw = () => { call('watchdogGet').then((w) => {
     box.replaceChildren();
-    if (!w.enabled) { const b = el('button', 'btn primary', 'Turn on the watchdog'); b.style.alignSelf = 'flex-start'; b.onclick = async () => { await loadStore(); try { await guard(() => saveGroup('settings', { ...storeCache.settings, watchdog: true }), 'Watchdog is on'); } catch (_) {} draw(); }; return box.append(el('div', 'muted', 'Checks your connection every 20 seconds, tells you when the internet drops and returns, and logs every outage. Runs while Aurora is in the tray.'), b); }
+    if (!w.enabled) { const b = el('button', 'btn primary', 'Turn on the watchdog'); b.style.alignSelf = 'flex-start'; b.onclick = async () => { await loadStore(); try { await guard(() => saveGroup('settings', { ...storeCache.settings, watchdog: true }), 'Watchdog is on'); } catch (_) {} draw(); }; return box.append(el('div', 'muted', 'Checks your connection every 20 seconds, tells you when the internet drops and returns, and logs every outage. Runs while Vorynth is in the tray.'), b); }
     box.append(el('div', 'label', w.online ? '🟢 Online' : '🔴 Offline right now'), row('Uptime (last 24 hours)', `Watching for ${Math.round(w.watchedMs / 60000)} min`, w.uptimePct + '%'));
     if (!w.outages.length) box.append(el('div', 'muted', 'No outages recorded.')); else { box.append(el('div', 'label', 'Recent outages')); w.outages.forEach((o) => box.append(row(new Date(o.start).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }), o.end ? 'Back after ' + (Math.round((o.end - o.start) / 1000) < 90 ? Math.round((o.end - o.start) / 1000) + ' s' : Math.round((o.end - o.start) / 60000) + ' min') : 'Still down', o.end ? '' : '⚠️'))); }
   }).catch(() => fail(box)); };
@@ -1344,7 +1344,7 @@ CUSTOM.clipboard = (box) => {
     if (document.activeElement && box.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') return;
     box.replaceChildren();
     if (!d.enabled) { const b = el('button', 'btn primary', 'Turn on clipboard history'); b.style.alignSelf = 'flex-start'; b.onclick = async () => { await loadStore(); try { await guard(() => saveGroup('settings', { ...storeCache.settings, clipboard: true }), 'Clipboard history is on'); } catch (_) {} draw(); };
-      return box.append(el('div', 'muted', 'Remembers the text you copy so you can paste it again later (like Win+V). It is kept in memory only, never saved to disk, and cleared when Aurora closes. It does not know which items are passwords, so turn it off if you copy sensitive text often.'), b); }
+      return box.append(el('div', 'muted', 'Remembers the text you copy so you can paste it again later (like Win+V). It is kept in memory only, never saved to disk, and cleared when Vorynth closes. It does not know which items are passwords, so turn it off if you copy sensitive text often.'), b); }
     const bar = el('div', 'savebar'); const clr = el('button', 'btn', 'Clear (keeps pinned)'); clr.onclick = async () => { await call('clipClear'); draw(); }; const off = el('button', 'btn', 'Turn off'); off.onclick = async () => { await loadStore(); await saveGroup('settings', { ...storeCache.settings, clipboard: false }); draw(); }; bar.append(clr, off); box.append(bar);
     if (!d.items.length) box.append(el('div', 'muted', 'Nothing yet. Copy some text and it will show up here.'));
     d.items.forEach((i) => { const r = el('div', 'list-row'); const l = el('div'); l.style.minWidth = 0; const pv = el('div', '', (i.pinned ? '📌 ' : '') + i.preview.replace(/\s+/g, ' ').slice(0, 140)); l.append(pv, el('div', 'sub', `${i.length} characters · ${new Date(i.t).toLocaleTimeString()}`));
@@ -1356,7 +1356,7 @@ CUSTOM.clipboard = (box) => {
 
 
 
-/* ---------- Update Aurora + automatic update detection ---------- */
+/* ---------- Update Vorynth + automatic update detection ---------- */
 CUSTOM.selfupdate = (box) => {
   box.style.gap = '10px'; let timer = null;
   let lastKey = '';
@@ -1365,15 +1365,15 @@ CUSTOM.selfupdate = (box) => {
     const act = document.activeElement; if (act && box.contains(act) && act.tagName === 'INPUT' && act.type !== 'checkbox') return;
     const key = JSON.stringify([d.version, d.url, d.auto, d.portable, d.status, d.detected]); if (auto === true && key === lastKey) return; lastKey = key; // the timer only redraws when something changed, so buttons never move while you click
     box.replaceChildren(); const st = d.status, det = d.detected || {};
-    box.append(el('div', '', `You have Aurora ${d.version}.` + (det.lastCheck ? ` Last checked ${new Date(det.lastCheck).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}.` : '')));
-    if (!d.portable) box.append(el('div', 'muted', 'You are running Aurora from its source folder. Installing updates works in the portable Aurora-Settings.exe.'));
+    box.append(el('div', '', `You have Vorynth ${d.version}.` + (det.lastCheck ? ` Last checked ${new Date(det.lastCheck).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}.` : '')));
+    if (!d.portable) box.append(el('div', 'muted', 'You are running Vorynth from its source folder. Installing updates works in the portable Vorynth-Settings.exe.'));
     const info = (txt) => box.append(el('div', 'store-ok', txt));
     if (det.online) info(`Version ${det.online.version} is available online.` + (det.online.notes ? ' ' + det.online.notes : ''));
-    if (det.file) info(`Verified: a newer Aurora build ${det.file.version} (built ${new Date(det.file.builtAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}) was found in Downloads: ${det.file.name} (${det.file.sizeMB} MB).`);
+    if (det.file) info(`Verified: a newer Vorynth build ${det.file.version} (built ${new Date(det.file.builtAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}) was found in Downloads: ${det.file.name} (${det.file.sizeMB} MB).`);
     if (st.state === 'downloading') { const bar = el('div', 'bar'); const i = document.createElement('i'); i.style.width = Math.max(3, st.percent) + '%'; bar.append(i); box.append(el('div', 'sub', 'Downloading ' + st.percent + '%'), bar); }
     if (st.state === 'ready') {
-      const i = st.info || {}; box.append(el('div', 'store-ok', `Ready to install${i.buildVersion ? ' Aurora ' + i.buildVersion : (i.latest ? ' version ' + i.latest : '')}${i.fromFile ? ' from ' + i.fromFile : ''} (${i.sizeMB} MB).`), el('div', i.fromFile && !i.verified ? 'store-err' : 'sub', i.verified ? 'Verified as an Aurora build. SHA-256: ' + i.sha256 : (i.fromFile ? 'This file has no Aurora build tag, so Aurora cannot confirm what it is. Only continue if you trust where it came from. SHA-256: ' + i.sha256 : 'SHA-256: ' + i.sha256)));
-      const go2 = el('button', 'btn primary', 'Install and restart'); go2.onclick = async () => { if (!confirm('Aurora will close and reopen as the new version. Continue?')) return; try { await call('updateApply'); toast('Restarting...'); } catch (e) { toast(errText(e), true); } }; const no = el('button', 'btn', 'Discard'); no.onclick = async () => { await call('updateDiscard'); draw(); }; const r = el('div', 'savebar'); r.append(go2, no); box.append(r);
+      const i = st.info || {}; box.append(el('div', 'store-ok', `Ready to install${i.buildVersion ? ' Vorynth ' + i.buildVersion : (i.latest ? ' version ' + i.latest : '')}${i.fromFile ? ' from ' + i.fromFile : ''} (${i.sizeMB} MB).`), el('div', i.fromFile && !i.verified ? 'store-err' : 'sub', i.verified ? 'Verified as an Vorynth build. SHA-256: ' + i.sha256 : (i.fromFile ? 'This file has no Vorynth build tag, so Vorynth cannot confirm what it is. Only continue if you trust where it came from. SHA-256: ' + i.sha256 : 'SHA-256: ' + i.sha256)));
+      const go2 = el('button', 'btn primary', 'Install and restart'); go2.onclick = async () => { if (!confirm('Vorynth will close and reopen as the new version. Continue?')) return; try { await call('updateApply'); toast('Restarting...'); } catch (e) { toast(errText(e), true); } }; const no = el('button', 'btn', 'Discard'); no.onclick = async () => { await call('updateDiscard'); draw(); }; const r = el('div', 'savebar'); r.append(go2, no); box.append(r);
     }
     if (st.state === 'error') box.append(el('div', 'store-err', st.message));
     if (st.state === 'applying') box.append(el('div', 'sub', 'Restarting...'));
@@ -1383,24 +1383,24 @@ CUSTOM.selfupdate = (box) => {
     if (det.online && st.state !== 'ready' && st.state !== 'downloading') { const b = el('button', 'btn primary', 'Download ' + det.online.version); b.onclick = async () => { b.disabled = true; const t = setInterval(draw, 700); try { await call('updateDownload'); } catch (e) { toast(errText(e), true); } finally { clearInterval(t); } draw(); }; bar.append(b); }
     if (det.file && st.state !== 'ready') { const b = el('button', 'btn primary', 'Use ' + det.file.name); b.onclick = async () => { try { await call('updateUseFound'); } catch (e) { toast(errText(e), true); } draw(); }; bar.append(b); }
     const pick = el('button', 'btn', 'Update from a file...'); pick.onclick = async () => { try { await call('updatePickFile'); } catch (e) { toast(errText(e), true); } draw(); }; bar.append(pick); box.append(bar);
-    const lab = el('label', 'sub'); const cb = el('input'); cb.type = 'checkbox'; cb.checked = d.auto; cb.onchange = async () => { try { await call('updateSettings', { auto: cb.checked }); toast(cb.checked ? 'Aurora will look for updates by itself' : 'Automatic checks are off'); } catch (e) { toast(errText(e), true); cb.checked = !cb.checked; } }; lab.append(cb, ' Look for updates automatically (a few seconds after start, then every 6 hours)'); box.append(lab);
-    const u = el('input', 'filter'); u.placeholder = 'Optional: update address (https://.../aurora-update.json)'; u.value = d.url; const sv = el('button', 'btn', 'Save address'); sv.onclick = async () => { try { await call('updateSettings', { url: u.value }); toast('Saved'); } catch (e) { toast(errText(e), true); } }; const r2 = el('div', 'savebar'); r2.append(u, sv); box.append(r2, el('div', 'sub', 'The update address is a small JSON file you host yourself: {"version":"1.3.0","url":"https://.../Aurora-Settings.exe","sha256":"...","notes":"..."}. Aurora only installs a download whose SHA-256 matches. Aurora also notices newer Aurora-Settings files in your Downloads folder.'));
+    const lab = el('label', 'sub'); const cb = el('input'); cb.type = 'checkbox'; cb.checked = d.auto; cb.onchange = async () => { try { await call('updateSettings', { auto: cb.checked }); toast(cb.checked ? 'Vorynth will look for updates by itself' : 'Automatic checks are off'); } catch (e) { toast(errText(e), true); cb.checked = !cb.checked; } }; lab.append(cb, ' Look for updates automatically (a few seconds after start, then every 6 hours)'); box.append(lab);
+    const u = el('input', 'filter'); u.placeholder = 'Optional: update address (https://.../vorynth-update.json)'; u.value = d.url; const sv = el('button', 'btn', 'Save address'); sv.onclick = async () => { try { await call('updateSettings', { url: u.value }); toast('Saved'); } catch (e) { toast(errText(e), true); } }; const r2 = el('div', 'savebar'); r2.append(u, sv); box.append(r2, el('div', 'sub', 'The update address is a small JSON file you host yourself: {"version":"1.3.0","url":"https://.../Vorynth-Settings.exe","sha256":"...","notes":"..."}. Vorynth only installs a download whose SHA-256 matches. Vorynth also notices newer Vorynth-Settings files in your Downloads folder.'));
   };
   timer = setInterval(() => { if (!document.body.contains(box)) clearInterval(timer); else draw(true); }, 2500); draw();
 };
 async function refreshUpdateBar() {
   const bar = document.getElementById('updateBar'); if (!bar) return;
   let s; try { s = await call('updateStatus'); } catch (_) { bar.hidden = true; return; }
-  const parts = []; if (s.online) parts.push(`Aurora ${s.online.version} is available`); if (s.file) parts.push(`a newer Aurora build ${s.file.version} is in your Downloads`); if (s.apps) parts.push(`${s.apps} app update${s.apps === 1 ? '' : 's'} in Aurora Store`);
+  const parts = []; if (s.online) parts.push(`Vorynth ${s.online.version} is available`); if (s.file) parts.push(`a newer Vorynth build ${s.file.version} is in your Downloads`); if (s.apps) parts.push(`${s.apps} app update${s.apps === 1 ? '' : 's'} in Vorynth Store`);
   if (!parts.length || s.state === 'applying') { bar.hidden = true; return; }
   bar.replaceChildren(); const t = el('div', 'grow', '🔔 ' + parts.join(' · ').replace(/^./, (c) => c.toUpperCase()));
-  const b = el('button', 'btn primary', (s.online || s.file) ? 'Update Aurora' : 'Open Store'); b.onclick = () => ((s.online || s.file) ? go('backup', 'selfupdate') : go('store', 'appstore')); const x = el('button', 'btn', 'Later'); x.onclick = () => { bar.hidden = true; };
+  const b = el('button', 'btn primary', (s.online || s.file) ? 'Update Vorynth' : 'Open Store'); b.onclick = () => ((s.online || s.file) ? go('backup', 'selfupdate') : go('store', 'appstore')); const x = el('button', 'btn', 'Later'); x.onclick = () => { bar.hidden = true; };
   bar.append(t, b); if ((s.online || s.file) && s.apps) { const b2 = el('button', 'btn', 'Open Store'); b2.onclick = () => go('store', 'appstore'); bar.append(b2); } bar.append(x); bar.hidden = false;
 }
 setTimeout(refreshUpdateBar, 1500); setInterval(refreshUpdateBar, 60000);
 
-/* ---------- Aurora Store ---------- */
-/* Aurora Store UI lives in store-ui.js */
+/* ---------- Vorynth Store ---------- */
+/* Vorynth Store UI lives in store-ui.js */
 
 /* ---------- Quick notes ---------- */
 CUSTOM.notes = (box) => {
@@ -1424,7 +1424,7 @@ CUSTOM.notes = (box) => {
 CUSTOM.disks = (box) => {
   box.style.gap = '10px';
   call('disksList').then((d) => {
-    box.replaceChildren(el('div', 'muted', 'A clear view of every disk, its partitions and volumes. It is read-only on purpose: formatting and repartitioning can destroy data, so Aurora does not do it.'));
+    box.replaceChildren(el('div', 'muted', 'A clear view of every disk, its partitions and volumes. It is read-only on purpose: formatting and repartitioning can destroy data, so Vorynth does not do it.'));
     if (!d.disks.length) return box.append(el('div', 'muted', 'No disks found.'));
     d.disks.forEach((k) => {
       const head = el('div', 'list-row'); const l = el('div'); l.append(el('div', 'label', `💽 Disk ${k.number}: ${k.name}`), el('div', 'sub', `${fmtBytes(k.size)} · ${k.style} · ${k.bus}`)); const pill = el('span', 'pill', (/healthy/i.test(k.health) ? '✅ ' : '⚠️ ') + k.health); head.append(l, pill); box.append(head);
@@ -1443,7 +1443,7 @@ CUSTOM.readaloud = (box) => {
   const voice = el('select', 'filter'); voice.style.cssText = 'width:260px;margin:0'; const rate = el('input'); rate.type = 'range'; rate.min = 0.5; rate.max = 2; rate.step = 0.1; rate.value = 1; const rv = el('span', 'value', '1.0x');
   const play = el('button', 'btn primary', 'Read aloud'), stop = el('button', 'btn', 'Stop'), clip = el('button', 'btn', 'Read my clipboard');
   const bar = el('div', 'savebar'); bar.append(play, stop, clip); const bar2 = el('div', 'savebar'); bar2.append(voice, el('span', 'muted', 'Speed'), rate, rv);
-  const note = el('div', 'muted', ''); box.append(el('div', 'muted', 'Aurora reads text aloud with the voices installed on this PC. Works offline.'), ta, bar, bar2, note);
+  const note = el('div', 'muted', ''); box.append(el('div', 'muted', 'Vorynth reads text aloud with the voices installed on this PC. Works offline.'), ta, bar, bar2, note);
   const synth = window.speechSynthesis;
   if (!synth) { note.textContent = 'Text to speech is not available here.'; play.disabled = stop.disabled = clip.disabled = true; return; }
   const fillVoices = () => { const vs = synth.getVoices(); const keep = voice.value; voice.replaceChildren(); vs.forEach((v, i) => { const o = el('option', '', `${v.name} (${v.lang})`); o.value = i; voice.append(o); }); const ar = vs.findIndex((v) => /^ar/i.test(v.lang)); if (keep) voice.value = keep; else if (ar >= 0 && /[؀-ۿ]/.test(ta.value)) voice.value = ar; if (!vs.length) note.textContent = 'No voices are installed. Add a language voice in Windows to use this.'; };
@@ -1451,7 +1451,7 @@ CUSTOM.readaloud = (box) => {
   const speak = (text) => { if (!text.trim()) return toast('There is nothing to read', true); synth.cancel(); const u = new SpeechSynthesisUtterance(text); const vs = synth.getVoices(); let v = vs[Number(voice.value)]; if (/[\u0600-\u06ff]/.test(text) && !(v && /^ar/i.test(v.lang))) v = vs.find((x) => /^ar/i.test(x.lang)) || v; /* Arabic text -> an Arabic voice when one is installed */ if (v) { u.voice = v; u.lang = v.lang; } u.rate = Number(rate.value); u.onend = () => (note.textContent = ''); u.onerror = () => (note.textContent = ''); note.textContent = 'Reading...'; synth.speak(u); };
   rate.oninput = () => (rv.textContent = Number(rate.value).toFixed(1) + 'x');
   play.onclick = () => speak(ta.value); stop.onclick = () => { synth.cancel(); note.textContent = ''; };
-  clip.onclick = async () => { try { const t = await navigator.clipboard.readText(); ta.value = t; speak(t); } catch (_) { toast('Aurora could not read the clipboard. Paste the text above instead.', true); } };
+  clip.onclick = async () => { try { const t = await navigator.clipboard.readText(); ta.value = t; speak(t); } catch (_) { toast('Vorynth could not read the clipboard. Paste the text above instead.', true); } };
 };
 
 /* ---------- navigation ---------- */
@@ -1538,7 +1538,7 @@ const validProfile = (p) => p && typeof p.name === 'string' && p.name.length <= 
 async function importPrefs() {
   const data = await call('importSettings');
   if (!data) return 'Cancelled';
-  if (data.app !== 'aurora-settings') throw new Error('Not an Aurora Settings backup');
+  if (data.app !== 'aurora-settings') throw new Error('Not an Vorynth Settings backup');
   if (data.prefs && typeof data.prefs === 'object') {
     if (/^#[0-9a-f]{6}$/i.test(data.prefs.accent)) { prefs.set('accent', data.prefs.accent); applyAccent(data.prefs.accent); }
     if (Array.isArray(data.prefs.favs)) prefs.set('favs', data.prefs.favs.filter((f) => typeof f === 'string' && findItem(f)));
@@ -1562,7 +1562,7 @@ go('home');
 call('appVersion').then((v) => { const e = document.getElementById('ver'); if (e && v) e.textContent = 'v' + v; }).catch(() => {});
 
 
-/* First run: Aurora's default for AI features is OFF. Ask once, never change anything without a click. */
+/* First run: Vorynth's default for AI features is OFF. Ask once, never change anything without a click. */
 (() => {
   const ids = ['aiCopilot', 'copilotButton', 'aiRecall', 'aiEdge', 'aiClickToDo', 'webSearch'];
   let seen = false; try { seen = localStorage.getItem('aiFirstRun') === '1'; } catch (_) {}
@@ -1572,7 +1572,7 @@ call('appVersion').then((v) => { const e = document.getElementById('ver'); if (e
     const ov = el('div'); ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:9999';
     const card = el('div', 'list-row'); card.style.cssText = 'display:block;max-width:480px;padding:22px;line-height:1.5;background:var(--card,#fff);border-radius:16px';
     const h = el('div', '', '🔒 AI features: your choice'); h.style.cssText = 'font-size:20px;font-weight:700;margin-bottom:8px';
-    const t = el('div', 'muted', `Windows currently allows ${on} of ${ids.length} AI features on this PC (Copilot, Recall, the Edge AI sidebar and online search suggestions). Aurora's recommended default is OFF. Nothing changes unless you press a button, and you can change your mind any time in "De-AI Windows".`);
+    const t = el('div', 'muted', `Windows currently allows ${on} of ${ids.length} AI features on this PC (Copilot, Recall, the Edge AI sidebar and online search suggestions). Vorynth's recommended default is OFF. Nothing changes unless you press a button, and you can change your mind any time in "De-AI Windows".`);
     const row = el('div'); row.style.cssText = 'display:flex;gap:10px;margin-top:16px;flex-wrap:wrap';
     const yes = el('button', 'btn', 'Turn them all off'); const no = el('button', 'btn', 'Leave them as they are');
     const done = () => { try { localStorage.setItem('aiFirstRun', '1'); } catch (_) {} ov.remove(); };

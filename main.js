@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 
 const isWin = process.platform === 'win32';
+// Keep using the data folder from before the rename (settings, add-ons, Store, Doctor undo file), so nothing is lost.
+try { app.setPath('userData', path.join(app.getPath('appData'), 'Aurora Settings')); } catch (_) { /* keep the default */ }
 // Ubuntu 24.04 and other newer Linux systems block Electron's sandbox helper, so the app would refuse to open. The app only shows its own pages.
 if (process.platform === 'linux') app.commandLine.appendSwitch('no-sandbox');
 // Add-ons are served from their own scheme with a strict content policy (see lib/addons.js). It must be registered before the app is ready.
@@ -93,7 +95,7 @@ async function runSpeedTest(base = 'https://speed.cloudflare.com') {
   return { latency, jitter, downMbps, upMbps, at: new Date().toISOString() };
 }
 
-/* Keep-awake (like PowerToys Awake): works while Aurora is running; you can minimize it. */
+/* Keep-awake (like PowerToys Awake): works while Vorynth is running; you can minimize it. */
 const awake = { id: null, mode: 'off', endsAt: 0, timer: null };
 function awakeStop() {
   if (awake.id != null && powerSaveBlocker.isStarted(awake.id)) powerSaveBlocker.stop(awake.id);
@@ -236,7 +238,7 @@ function Await($op, $type) { $t = $asTask.MakeGenericMethod($type).Invoke($null,
 [void][Windows.Devices.Radios.RadioState, Windows.System.Devices, ContentType = WindowsRuntime]
 [void](Await ([Windows.Devices.Radios.Radio]::RequestAccessAsync()) ([Windows.Devices.Radios.RadioAccessStatus]))
 $radios = Await ([Windows.Devices.Radios.Radio]::GetRadiosAsync()) ([System.Collections.Generic.IReadOnlyList[Windows.Devices.Radios.Radio]])`;
-// Services Aurora will not stop or disable: doing so can break Windows itself.
+// Services Vorynth will not stop or disable: doing so can break Windows itself.
 const CORE_SERVICES = ['rpcss', 'dcomlaunch', 'rpcepmapper', 'lsm', 'samss', 'eventlog', 'plugplay', 'power', 'winmgmt', 'profsvc', 'gpsvc', 'cryptsvc', 'bfe', 'mpssvc', 'windefend', 'sens', 'usermanager', 'coremessaging', 'brokerinfrastructure', 'systemeventsbroker', 'schedule', 'lanmanworkstation', 'nsi', 'dhcp', 'dnscache', 'netprofm', 'nlasvc', 'audiosrv', 'audioendpointbuilder', 'themes', 'trustedinstaller', 'wuauserv', 'sppsvc', 'securityhealthservice', 'wscsvc', 'keyiso', 'lsass'];
 const SERVICE_ACTIONS = { start: 'Start-Service -Name $n', stop: 'Stop-Service -Name $n -Force', restart: 'Restart-Service -Name $n -Force', auto: "Set-Service -Name $n -StartupType Automatic", manual: "Set-Service -Name $n -StartupType Manual", disabled: "Set-Service -Name $n -StartupType Disabled" };
 const esch = (t) => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -245,7 +247,7 @@ function buildReportHtml(d) {
   const kv = (o) => Object.entries(o).filter(([, v]) => v !== undefined && v !== null && v !== '').map(([k, v]) => `<tr><th>${esch(k)}</th><td>${esch(v)}</td></tr>`).join('');
   const gb = (n) => (Number(n) / 1073741824).toFixed(1) + ' GB';
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>PC report</title><style>body{font:14px Segoe UI,system-ui,sans-serif;margin:32px;color:#16181d}h1{margin:0 0 4px}h2{margin:28px 0 8px;border-bottom:2px solid #4cc2ff;padding-bottom:4px}table{border-collapse:collapse;width:100%;max-width:900px}th,td{text-align:left;padding:6px 10px;border-bottom:1px solid #e3e6ec;vertical-align:top}th{width:240px;color:#55606f;font-weight:600}.small{color:#6b7482}</style></head><body>
-<h1>PC report</h1><div class="small">Created by Aurora Settings on ${esch(new Date(d.when || Date.now()).toLocaleString())}</div>
+<h1>PC report</h1><div class="small">Created by Vorynth Settings on ${esch(new Date(d.when || Date.now()).toLocaleString())}</div>
 <h2>System</h2><table>${kv({ 'Device name': d.sys?.device, Windows: d.sys?.os, Version: d.sys?.version, Architecture: d.sys?.arch, Processor: d.sys?.cpu, 'Cores / threads': d.sys ? `${d.sys.cores} / ${d.sys.threads}` : '', Graphics: d.sys?.gpu, Memory: d.sys ? d.sys.ramGB + ' GB' : '', Manufacturer: d.sys?.maker, Model: d.sys?.model, BIOS: d.sys?.bios })}</table>
 <h2>Storage</h2><table><tr><th>Drive</th><th>Used</th><th>Free</th></tr>${(d.drives || []).map((x) => `<tr><td>${esch(x.name)}:</td><td>${gb(x.used)}</td><td>${gb(x.free)}</td></tr>`).join('')}</table>
 ${(d.disks || []).length ? `<h2>Disk health</h2><table>${rows(d.disks, ['name', 'type', 'health'])}</table>` : ''}
@@ -313,7 +315,7 @@ const TOGGLES = {
   stickyKeys: flagToggle('HKCU:\\Control Panel\\Accessibility\\StickyKeys'),
   filterKeys: flagToggle('HKCU:\\Control Panel\\Accessibility\\Keyboard Response'),
   toggleKeys: flagToggle('HKCU:\\Control Panel\\Accessibility\\ToggleKeys'),
-  // Aurora Mods: small reversible per-user tweaks (no system files are touched)
+  // Vorynth Mods: small reversible per-user tweaks (no system files are touched)
   taskbarEndTask: { path: ADV + '\\TaskbarDeveloperSettings', names: ['TaskbarEndTask'], on: 1, off: 0, explorer: true },
   taskbarNeverCombine: { path: ADV, names: ['TaskbarGlomLevel'], on: 2, off: 0, explorer: true },
   taskbarDesktopBtn: { path: ADV, names: ['TaskbarSd'], on: 1, off: 0, explorer: true },
@@ -533,7 +535,7 @@ const handlers = {
   diskRoots: async () => { const o = [{ name: 'Home', path: os.homedir() }]; if (isWin) { for (const l of 'CDEFGHIJ') { const d = l + ':\\'; try { if (fs.existsSync(d)) o.push({ name: l + ':', path: d }); } catch (_) {} } } else o.push({ name: 'System (/)', path: '/' }); return o; },
   diskReveal: async (a) => { const p = a && (a.p || a.path); if (typeof p !== 'string' || !p || !fs.existsSync(p)) throw new Error('That path no longer exists'); shell.showItemInFolder(path.resolve(p)); return true; },
   dupScanPath: async (a) => { const root = a && typeof a.root === 'string' && a.root.trim() ? a.root.trim() : os.homedir(); const mb = Math.max(0.1, Math.min(10000, Number(a && a.minMB) || 1)); return require('./lib/dupscan').scan(root, { minSize: Math.round(mb * 1048576) }); },
-  // ---- Aurora Doctor ----
+  // ---- Vorynth Doctor ----
   doctorScan: async () => {
     const D = require('./lib/doctor'); let facts;
     if (isWin) { const out = await ps(D.WIN_PROBE, 90000); const line = String(out).split(/\r?\n/).map((l) => l.trim()).filter((l) => l.startsWith('{')).pop(); if (!line) throw new Error('The hardware scan returned nothing'); facts = JSON.parse(line); } else facts = await D.nodeProbe();
@@ -566,7 +568,7 @@ const handlers = {
   diagReport: async (a) => { // one readable report: this PC, whether Windows changes work, every switch, and the errors the app has hit
     const L = []; const add = (k, v) => L.push(k.padEnd(26) + String(v)); const home = os.homedir();
     const clean = (t) => String(t == null ? '' : t).split(home).join('~').replace(/\\Users\\[^\\\s"']+/gi, '\\Users\\<user>').slice(0, 600);
-    L.push('Aurora Settings diagnostics', new Date().toISOString(), '');
+    L.push('Vorynth Settings diagnostics', new Date().toISOString(), '');
     add('App version', app.getVersion()); add('Electron / Node', process.versions.electron + ' / ' + process.versions.node); add('Platform', process.platform + ' ' + os.release() + ' ' + os.arch());
     add('Run from', clean(process.execPath)); if (process.env.PORTABLE_EXECUTABLE_DIR) add('Portable folder', clean(process.env.PORTABLE_EXECUTABLE_DIR));
     if (/\\Temp\\|\\AppData\\Local\\Temp/i.test(process.execPath)) L.push('  WARNING: running from a Temp folder. Extract the zip first, then run the app from the extracted folder.');
@@ -587,7 +589,7 @@ try { $o.pointerVanishCheck = (Get-ItemProperty 'HKCU:\\Control Panel\\Mouse').M
 $o | ConvertTo-Json -Compress`, 60000);
         const j = JSON.parse(String(raw).trim().split('\n').pop()); for (const [k, v] of Object.entries(j)) add(k, clean(v));
       } catch (e) { L.push('  Windows checks failed: ' + clean(e.message || e)); }
-      L.push('', '--- Switches (what Aurora reads from Windows) ---');
+      L.push('', '--- Switches (what Vorynth reads from Windows) ---');
       const ids = Object.keys(TOGGLES);
       try { const r = await toggleGetMany(ids); L.push(ids.map((id) => id + '=' + (r[id] === true ? 'on' : r[id] === false ? 'off' : String(r[id]))).join('  ')); } catch (e) { L.push('  Reading the switches failed: ' + clean(e.message || e)); }
     } else L.push('', 'Not Windows: the Windows checks are skipped.');
@@ -595,7 +597,7 @@ $o | ConvertTo-Json -Compress`, 60000);
     const errs = Array.isArray(a && a.errors) ? a.errors.slice(-40) : []; if (!errs.length) L.push('  none recorded'); for (const e of errs) L.push('  ' + clean(e.at) + '  ' + clean(e.call) + '  ->  ' + clean(e.error));
     return L.join('\n');
   },
-  diagSave: async ({ text }) => { let dir = app.getPath('desktop'); try { fs.mkdirSync(dir, { recursive: true }); fs.accessSync(dir, fs.constants.W_OK); } catch (_) { dir = app.getPath('documents'); try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { dir = app.getPath('userData'); } } const f = path.join(dir, 'Aurora-diagnostics.txt'); fs.writeFileSync(f, String(text || ''), 'utf8'); try { shell.showItemInFolder(f); } catch (_) { /* ignore */ } return f; },
+  diagSave: async ({ text }) => { let dir = app.getPath('desktop'); try { fs.mkdirSync(dir, { recursive: true }); fs.accessSync(dir, fs.constants.W_OK); } catch (_) { dir = app.getPath('documents'); try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { dir = app.getPath('userData'); } } const f = path.join(dir, 'Vorynth-diagnostics.txt'); fs.writeFileSync(f, String(text || ''), 'utf8'); try { shell.showItemInFolder(f); } catch (_) { /* ignore */ } return f; },
   cursorState: async () => JSON.parse(String(await ps(CURSOR_PS + '\nRead')).trim().split('\n').pop()),
   cursorFix: async () => { // switches off the usual causes of a vanishing pointer and reloads the pointer images
     await ps(CURSOR_PS + `
@@ -740,7 +742,7 @@ $after=(Get-ChildItem $env:TEMP -Recurse -Force -ErrorAction SilentlyContinue | 
   },
 
 
-  /* ----- Aurora extras ----- */
+  /* ----- Vorynth extras ----- */
   processes: async () => {
     const out = await ps(`Get-Process | Where-Object { $_.ProcessName -ne 'Idle' } | Group-Object ProcessName | ForEach-Object { [pscustomobject]@{name=$_.Name;count=$_.Count;mem=[int64](($_.Group | Measure-Object WorkingSet64 -Sum).Sum);cpu=[math]::Round((($_.Group | Measure-Object CPU -Sum).Sum),1)} } | Sort-Object mem -Descending | Select-Object -First 15 | ConvertTo-Json -Compress`);
     return asJson(out);
@@ -912,8 +914,8 @@ New-ItemProperty -Path $a -Name ${q(name)} -PropertyType Binary -Value ([byte[]]
       case 'signout': return run('shutdown.exe', ['/l']);
       case 'sleep': return run('rundll32.exe', ['powrprof.dll,SetSuspendState', '0,1,0']);
       case 'hibernate': return run('shutdown.exe', ['/h']);
-      case 'restart': return run('shutdown.exe', ['/r', '/t', sec, '/c', 'Aurora Settings']);
-      case 'shutdown': return run('shutdown.exe', ['/s', '/t', sec, '/c', 'Aurora Settings']);
+      case 'restart': return run('shutdown.exe', ['/r', '/t', sec, '/c', 'Vorynth Settings']);
+      case 'shutdown': return run('shutdown.exe', ['/s', '/t', sec, '/c', 'Vorynth Settings']);
       case 'cancel': return run('shutdown.exe', ['/a']).catch(() => false); // nothing scheduled -> false
       default: throw new Error('Unknown action');
     }
@@ -1001,7 +1003,7 @@ ConvertTo-Json @(Get-ChildItem -LiteralPath $root -Recurse -File -Force -ErrorAc
     const out = await ps(`
 Add-Type -AssemblyName System.Drawing
 $src=Join-Path $env:LOCALAPPDATA 'Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets'
-$dest=Join-Path ([Environment]::GetFolderPath('MyPictures')) 'Aurora Spotlight'
+$dest=Join-Path ([Environment]::GetFolderPath('MyPictures')) 'Vorynth Spotlight'
 if (-not (Test-Path -LiteralPath $src)) { [pscustomobject]@{saved=0;total=0;folder=$dest;missing=$true} | ConvertTo-Json -Compress; return }
 New-Item -ItemType Directory -Path $dest -Force | Out-Null
 $saved=0; $total=0
@@ -1033,7 +1035,7 @@ Register-ScheduledTask -TaskName 'AuroraAutoClean' -Action $act -Trigger $trg -S
     return true;
   },
 
-  restorePoint: async () => { await elevate("Checkpoint-Computer -Description 'Aurora Settings restore point' -RestorePointType 'MODIFY_SETTINGS'"); return true; },
+  restorePoint: async () => { await elevate("Checkpoint-Computer -Description 'Vorynth Settings restore point' -RestorePointType 'MODIFY_SETTINGS'"); return true; },
 
   wifiPasswords: async () => {
     // One administrator prompt exports every saved profile (language-independent XML), we read the keys, then delete the files.
@@ -1047,7 +1049,7 @@ Register-ScheduledTask -TaskName 'AuroraAutoClean' -Action $act -Trigger $trg -S
     } finally { try { fs.rmSync(dir, { recursive: true, force: true }); } catch (_) {} }
   },
 
-  /* ----- Windows Update: search, install, pause (all inside Aurora) ----- */
+  /* ----- Windows Update: search, install, pause (all inside Vorynth) ----- */
   wuSearch: async (a) => {
     const criteria = a && a.drivers ? 'IsInstalled=0 and IsHidden=0' : "IsInstalled=0 and IsHidden=0 and Type='Software'";
     const out = await ps(`
@@ -1234,7 +1236,7 @@ if ("$res" -ne 'Allowed') { throw "Windows did not allow that ($res)" }`, 40000)
     const name = String(a.name || '');
     if (!/^[\w.$-]{1,256}$/.test(name)) throw new Error('Bad service name');
     if (!Object.prototype.hasOwnProperty.call(SERVICE_ACTIONS, a.action)) throw new Error('Bad action');
-    if (CORE_SERVICES.includes(name.toLowerCase()) && a.action !== 'start') throw new Error('This is a core Windows service. Aurora will not stop or disable it.');
+    if (CORE_SERVICES.includes(name.toLowerCase()) && a.action !== 'start') throw new Error('This is a core Windows service. Vorynth will not stop or disable it.');
     await elevate(`$n=${q(name)}; ${SERVICE_ACTIONS[a.action]}`);
     const out = await ps(`$s=Get-Service -Name ${q(name)}; [pscustomobject]@{name=$s.Name;status="$($s.Status)";start="$($s.StartType)"} | ConvertTo-Json -Compress`);
     return JSON.parse(out);
@@ -1325,7 +1327,7 @@ Object.assign(handlers, {
     fs.writeFileSync(p, text, 'utf8'); padOk.add(path.resolve(p)); return { path: p, name: path.basename(p) };
   }
 });
-/* ---------- Snap (screenshots), clipboard image and QR for Aurora Apps ---------- */
+/* ---------- Snap (screenshots), clipboard image and QR for Vorynth Apps ---------- */
 Object.assign(handlers, {
   screenSnap: async () => {
     const { screen, desktopCapturer } = electron;
@@ -1397,7 +1399,7 @@ Object.assign(handlers, {
     return { saved: n, dir };
   }
 });
-/* ---------- Aurora Store (see lib/appstore.js) ---------- */
+/* ---------- Vorynth Store (see lib/appstore.js) ---------- */
 const appStore = require('./lib/appstore').createAppStore({
   source: require('./lib/appstore').githubSource({ token: process.env.AURORA_GITHUB_TOKEN || '' }),
   dataDir: path.join(app.getPath('userData'), 'store'),
@@ -1420,7 +1422,7 @@ Object.assign(handlers, {
   appStoreUpdatesReport: () => appStore.updatesReport({ force: true }),
   appStoreHomepage: async ({ id }) => { const i = await appStore.info(String(id)); if (!/^https:\/\//.test(i.homepage)) throw new Error('No website listed'); await shell.openExternal(i.homepage); return true; }
 });
-/* ---------- Aurora self-update and automatic update detection (see lib/selfupdate.js) ---------- */
+/* ---------- Vorynth self-update and automatic update detection (see lib/selfupdate.js) ---------- */
 const updCfgFile = path.join(app.getPath('userData'), 'update-settings.json');
 const updCfg = (() => { try { const j = JSON.parse(fs.readFileSync(updCfgFile, 'utf8')); return { url: typeof j.url === 'string' && /^https:\/\//i.test(j.url) ? j.url.slice(0, 500) : '', auto: j.auto !== false }; } catch (_) { return { url: '', auto: true }; } })();
 const saveUpdCfg = () => { try { fs.writeFileSync(updCfgFile, JSON.stringify(updCfg)); } catch (_) {} };
@@ -1437,9 +1439,9 @@ async function detectUpdates({ quiet } = {}) {
   try { const rep = await appStore.updatesReport({ aurora: true }); out.apps = rep.updates; if (rep.limited && !rep.updates.length) out.errors.push(rep.limited); } catch (e) { out.errors.push(e.message); }
   Object.assign(detected, out, { lastCheck: Date.now() });
   const say = (key, text) => { if (!detected.notified.has(key)) { detected.notified.add(key); integration.notify(text); } };
-  if (out.online) say('o' + out.online.version, `Aurora ${out.online.version} is available. Open Aurora to update.`);
-  if (out.file) say('f' + out.file.path + out.file.builtAt, `A newer Aurora file was found in Downloads (${out.file.name}). Open Aurora to update.`);
-  if (out.apps.length) say('a' + out.apps.map((a) => a.id + a.latest).join(), `${out.apps.length} app update${out.apps.length === 1 ? '' : 's'} available in Aurora Store.`);
+  if (out.online) say('o' + out.online.version, `Vorynth ${out.online.version} is available. Open Vorynth to update.`);
+  if (out.file) say('f' + out.file.path + out.file.builtAt, `A newer Vorynth file was found in Downloads (${out.file.name}). Open Vorynth to update.`);
+  if (out.apps.length) say('a' + out.apps.map((a) => a.id + a.latest).join(), `${out.apps.length} app update${out.apps.length === 1 ? '' : 's'} available in Vorynth Store.`);
   void quiet; return out;
 }
 let updTimer = null, updWatch = null, updDebounce = null;
@@ -1455,7 +1457,7 @@ Object.assign(handlers, {
   updateCheck: async () => { const r = await detectUpdates(); return { online: r.online, file: r.file, apps: r.apps, errors: r.errors, status: selfUpd.info().status }; },
   updateStatus: async () => ({ online: detected.online, file: detected.file, apps: detected.apps.length, state: selfUpd.info().status.state }),
   updateDownload: async () => selfUpd.download(),
-  updatePickFile: async () => { const r = await dialog.showOpenDialog({ properties: ['openFile'], filters: [{ name: 'Aurora Settings program', extensions: ['exe'] }] }); if (r.canceled || !r.filePaths[0]) return null; return selfUpd.useFile(r.filePaths[0]); },
+  updatePickFile: async () => { const r = await dialog.showOpenDialog({ properties: ['openFile'], filters: [{ name: 'Vorynth Settings program', extensions: ['exe'] }] }); if (r.canceled || !r.filePaths[0]) return null; return selfUpd.useFile(r.filePaths[0]); },
   updateUseFound: async () => { if (!detected.file) throw new Error('No downloaded update was found'); return selfUpd.useFile(detected.file.path); },
   updateApply: async () => selfUpd.apply(),
   updateDiscard: async () => selfUpd.discard()
@@ -1466,7 +1468,7 @@ Object.assign(handlers, {
   windowPin: async ({ on }) => { if (!mainWin || mainWin.isDestroyed()) throw new Error('No window'); mainWin.setAlwaysOnTop(!!on, 'floating'); return mainWin.isAlwaysOnTop(); },
   windowZoom: async ({ factor }) => { const f = Number(factor); if (!Number.isFinite(f) || f < 0.6 || f > 1.8) throw new Error('Zoom must be between 60% and 180%'); if (!mainWin || mainWin.isDestroyed()) throw new Error('No window'); mainWin.webContents.setZoomFactor(Math.round(f * 100) / 100); return mainWin.webContents.getZoomFactor(); }
 });
-/* ---------- Aurora Toolkit: network checks, Drop, disk speed, PDF and ZIP tools (see lib/toolkit.js) ---------- */
+/* ---------- Vorynth Toolkit: network checks, Drop, disk speed, PDF and ZIP tools (see lib/toolkit.js) ---------- */
 const tk = require('./lib/toolkit');
 const drop = tk.createDrop(); const tkOk = new Set();
 const btAudio = require('./lib/btaudio').createBtAudio({ ps });
@@ -1483,13 +1485,13 @@ Object.assign(handlers, {
   // Password-lock any file (lib/e2ee.js: scrypt + ChaCha20-Poly1305). The result is written next to the original; the original is never touched.
   fileLockEncrypt: async ({ password }) => {
     const e2ee = require('./lib/e2ee'); const r = await dialog.showOpenDialog({ title: 'Choose a file to lock', properties: ['openFile'] }); if (r.canceled || !r.filePaths[0]) return null;
-    const src = r.filePaths[0]; const s = await dialog.showSaveDialog({ title: 'Save the locked file', defaultPath: src + '.aur', filters: [{ name: 'Aurora locked file', extensions: ['aur'] }] }); if (s.canceled || !s.filePath) return null;
+    const src = r.filePaths[0]; const s = await dialog.showSaveDialog({ title: 'Save the locked file', defaultPath: src + '.aur', filters: [{ name: 'Vorynth locked file', extensions: ['aur'] }] }); if (s.canceled || !s.filePath) return null;
     if (path.resolve(s.filePath) === path.resolve(src)) throw new Error('Choose a different name for the locked copy');
     const tmpOut = s.filePath + '.' + require('crypto').randomBytes(4).toString('hex') + '.tmp';
     try { const res = await e2ee.encryptFileWithPassword(src, tmpOut, String(password || '')); fs.renameSync(tmpOut, s.filePath); return { out: s.filePath, bytes: res.bytes }; } catch (e) { try { fs.rmSync(tmpOut, { force: true }); } catch (_) {} throw e; }
   },
   fileLockDecrypt: async ({ password }) => {
-    const e2ee = require('./lib/e2ee'); const r = await dialog.showOpenDialog({ title: 'Choose a locked file', properties: ['openFile'], filters: [{ name: 'Aurora locked file', extensions: ['aur'] }, { name: 'All files', extensions: ['*'] }] }); if (r.canceled || !r.filePaths[0]) return null;
+    const e2ee = require('./lib/e2ee'); const r = await dialog.showOpenDialog({ title: 'Choose a locked file', properties: ['openFile'], filters: [{ name: 'Vorynth locked file', extensions: ['aur'] }, { name: 'All files', extensions: ['*'] }] }); if (r.canceled || !r.filePaths[0]) return null;
     const src = r.filePaths[0]; const s = await dialog.showSaveDialog({ title: 'Save the unlocked file', defaultPath: /\.aur$/i.test(src) ? src.replace(/\.aur$/i, '') : src + '.unlocked' }); if (s.canceled || !s.filePath) return null;
     if (path.resolve(s.filePath) === path.resolve(src)) throw new Error('Choose a different name for the unlocked copy');
     const tmpOut = s.filePath + '.' + require('crypto').randomBytes(4).toString('hex') + '.tmp';
@@ -1528,7 +1530,7 @@ Object.assign(handlers, {
   addonList: async () => integration.store.get().addons.map((a) => ({ ...a, permissionLabels: a.permissions.map((k) => addonLib.PERMISSIONS[k]) })),
   addonStage: async (a) => {
     try {
-      if (a.kind === 'file') { const r = await dialog.showOpenDialog({ properties: ['openFile'], filters: [{ name: 'Aurora add-on', extensions: ['zip', 'aurora-addon'] }] }); if (r.canceled || !r.filePaths[0]) return null; return stagePkg(addonLib.checkPackage(addonLib.readZip(r.filePaths[0]))); }
+      if (a.kind === 'file') { const r = await dialog.showOpenDialog({ properties: ['openFile'], filters: [{ name: 'Vorynth add-on', extensions: ['zip', 'aurora-addon'] }] }); if (r.canceled || !r.filePaths[0]) return null; return stagePkg(addonLib.checkPackage(addonLib.readZip(r.filePaths[0]))); }
       if (a.kind === 'sample') { if (!Object.prototype.hasOwnProperty.call(addonLib.SAMPLES, a.name)) throw new Error('Unknown sample'); return stagePkg(addonLib.checkPackage(addonLib.SAMPLES[a.name]())); }
       if (a.kind === 'create') {
         const studio = typeof a.js === 'string' || typeof a.css === 'string'; const m = { id: a.id, name: a.name, version: String(a.version || '1.0.0'), icon: a.icon, description: a.description || '', author: a.author || '', permissions: a.permissions || [] }; addonLib.validateManifest(m);
@@ -1557,7 +1559,7 @@ Object.assign(handlers, {
   addonExport: async ({ id }) => {
     id = String(id); const a = addonRec(id); if (!a) throw new Error('Unknown add-on'); const files = new Map(); const root = path.join(addonsDir, id);
     const walk = (d, base) => { for (const n of fs.readdirSync(d)) { const f = path.join(d, n); const st = fs.lstatSync(f); if (st.isSymbolicLink()) continue; if (st.isDirectory()) walk(f, base + n + '/'); else files.set(base + n, fs.readFileSync(f)); } }; walk(root, '');
-    const r = await dialog.showSaveDialog({ defaultPath: id + '.aurora-addon', filters: [{ name: 'Aurora add-on', extensions: ['aurora-addon', 'zip'] }] }); if (r.canceled || !r.filePath) return null; fs.writeFileSync(r.filePath, addonLib.packageToZip(files)); return r.filePath;
+    const r = await dialog.showSaveDialog({ defaultPath: id + '.aurora-addon', filters: [{ name: 'Vorynth add-on', extensions: ['aurora-addon', 'zip'] }] }); if (r.canceled || !r.filePath) return null; fs.writeFileSync(r.filePath, addonLib.packageToZip(files)); return r.filePath;
   },
   addonStorage: async ({ id, op, key, value }) => {
     needPerm(String(id), 'storage'); const data = readData(id);
@@ -1639,7 +1641,7 @@ Object.assign(handlers, {
       throw new Error('Brightness is not available on this system');
     }
     if (op === 'warmth') {
-      if (process.platform !== 'linux') throw new Error('Warmth works on Aurora OS. On Windows use overlay with an orange colour.');
+      if (process.platform !== 'linux') throw new Error('Warmth works on Vorynth OS. On Windows use overlay with an orange colour.');
       screenLinuxState.k = Math.round(screenNum(value, 1500, 6500, 6500)); await screenLinuxApply(); return true;
     }
     if (op === 'reset') { screenClear(id); if (process.platform === 'linux') { screenLinuxState.b = 1; screenLinuxState.k = 6500; await screenLinuxApply(); } return true; }
@@ -1695,9 +1697,9 @@ Object.assign(handlers, {
   },
   joinReveal: async () => { if (!joinLast || !fs.existsSync(joinLast)) throw new Error('Nothing joined yet'); shell.showItemInFolder(joinLast); return true; }
 });
-/* ---------- Add-on library: names and descriptions of the add-ons that ship inside Aurora (installed one at a time, on request) ---------- */
+/* ---------- Add-on library: names and descriptions of the add-ons that ship inside Vorynth (installed one at a time, on request) ---------- */
 Object.assign(handlers, { addonLibrary: async () => { const out = []; for (const key of Object.keys(addonLib.SAMPLES)) { try { const mf = addonLib.checkPackage(addonLib.SAMPLES[key]()).manifest; out.push({ key, id: mf.id, name: mf.name, icon: mf.icon, description: mf.description, permissions: mf.permissions }); } catch (_) { /* skip a broken one */ } } return out; } });
-/* ---------- Aurora Utilities: hash check, folder compare, empty folders (see lib/utils.js). All read-only. ---------- */
+/* ---------- Vorynth Utilities: hash check, folder compare, empty folders (see lib/utils.js). All read-only. ---------- */
 const utils = require('./lib/utils'); const utilsOk = new Set(); const utilsPick = { file: '', a: '', b: '' };
 const pickDir = async (title) => { const r = await dialog.showOpenDialog({ title, properties: ['openDirectory'] }); return r.canceled || !r.filePaths[0] ? null : r.filePaths[0]; };
 Object.assign(handlers, {
@@ -1717,7 +1719,7 @@ Object.assign(handlers, {
   },
   utilsReveal: async ({ path: p }) => { const r = path.resolve(String(p || '')); if (!utilsOk.has(r) || !fs.existsSync(r)) throw new Error('Scan first, then pick an item from the list'); shell.showItemInFolder(r); return true; }
 });
-/* ---------- Aurora OS: download, check and join the image (see lib/osimage.js). Slow jobs run in a worker so the window stays responsive. ---------- */
+/* ---------- Vorynth OS: download, check and join the image (see lib/osimage.js). Slow jobs run in a worker so the window stays responsive. ---------- */
 const osimage = require('./lib/osimage'); const heavy = require('./lib/heavy');
 const osJob = { id: 0, kind: '', state: 'idle', done: 0, total: 0, result: null, error: '' }; let osAbort = null; let osLast = '';
 const osBegin = (kind) => { if (osJob.state === 'running') throw new Error('Wait for the current job to finish first'); osJob.id++; Object.assign(osJob, { kind, state: 'running', done: 0, total: 0, result: null, error: '' }); const id = osJob.id; return { id, prog: (p) => { if (osJob.id === id) { osJob.done = p.done; osJob.total = p.total; } }, finish: (r) => { if (osJob.id === id) { osJob.state = 'done'; osJob.result = r; } }, fail: (e) => { if (osJob.id === id) { osJob.state = 'error'; osJob.error = String((e && e.message) || e); } } }; };
@@ -1726,30 +1728,30 @@ Object.assign(handlers, {
   osStatus: async () => ({ ...osJob }),
   osCancel: async () => { if (osAbort) { osAbort.abort(); osAbort = null; } if (osJob.state === 'running') { osJob.state = 'error'; osJob.error = 'Cancelled'; osJob.id++; } return true; },
   osPartsPick: async () => {
-    const r = await dialog.showOpenDialog({ title: 'Choose ALL the Aurora OS parts (Ctrl+A selects everything)', properties: ['openFile', 'multiSelections'] }); if (r.canceled || !r.filePaths.length) return null;
+    const r = await dialog.showOpenDialog({ title: 'Choose ALL the Vorynth OS parts (Ctrl+A selects everything)', properties: ['openFile', 'multiSelections'] }); if (r.canceled || !r.filePaths.length) return null;
     const list = r.filePaths.filter((p) => !/\.sha256$/i.test(p)).slice(0, 2000).sort((a, b) => joiner.natural(path.basename(a), path.basename(b))); if (!list.length) throw new Error('No parts were chosen');
     joinOk.clear(); for (const p of list) joinOk.add(path.resolve(p)); const j = osBegin('parts');
     heavy.run('checkParts', { files: list }, j.prog).then((check) => j.finish({ parts: list.map((p) => ({ name: path.basename(p), size: fs.statSync(p).size })), check, expected: osimage.DATA.parts.length })).catch(j.fail); return { started: true };
   },
   osJoin: async () => {
     if (!joinOk.size) throw new Error('Choose the parts first'); const parts = [...joinOk]; const dir = path.dirname(parts[0]);
-    const r = await dialog.showSaveDialog({ title: 'Save the Aurora OS image as', defaultPath: path.join(dir, osimage.DATA.iso.name) }); if (r.canceled || !r.filePath) return null; const out = r.filePath; const j = osBegin('join');
+    const r = await dialog.showSaveDialog({ title: 'Save the Vorynth OS image as', defaultPath: path.join(dir, osimage.DATA.iso.name) }); if (r.canceled || !r.filePath) return null; const out = r.filePath; const j = osBegin('join');
     heavy.run('join', { parts, out }, j.prog).then((res) => { joinLast = res.path; osLast = res.path; j.finish(res); }).catch(j.fail); return { started: true };
   },
   osVerifyPick: async () => {
-    const r = await dialog.showOpenDialog({ title: 'Choose the Aurora OS image (.iso)', properties: ['openFile'], filters: [{ name: 'Disc image', extensions: ['iso'] }] }); if (r.canceled || !r.filePaths[0]) return null; const file = r.filePaths[0]; const j = osBegin('verify'); osLast = file;
+    const r = await dialog.showOpenDialog({ title: 'Choose the Vorynth OS image (.iso)', properties: ['openFile'], filters: [{ name: 'Disc image', extensions: ['iso'] }] }); if (r.canceled || !r.filePaths[0]) return null; const file = r.filePaths[0]; const j = osBegin('verify'); osLast = file;
     heavy.run('verifyIso', { file }, j.prog).then((res) => j.finish({ ...res, path: file })).catch(j.fail); return { started: true };
   },
   osDownload: async ({ url }) => {
     let u; try { u = new URL(String(url || '').trim()); } catch (_) { throw new Error('Paste the full web address (it must start with https://)'); } if (u.protocol !== 'https:') throw new Error('Only secure (https) addresses are allowed');
-    const r = await dialog.showSaveDialog({ title: 'Save the Aurora OS image as', defaultPath: path.join(app.getPath('downloads'), osimage.DATA.iso.name) }); if (r.canceled || !r.filePath) return null; const dest = r.filePath; const j = osBegin('download'); osAbort = new AbortController(); const sig = osAbort.signal;
+    const r = await dialog.showSaveDialog({ title: 'Save the Vorynth OS image as', defaultPath: path.join(app.getPath('downloads'), osimage.DATA.iso.name) }); if (r.canceled || !r.filePath) return null; const dest = r.filePath; const j = osBegin('download'); osAbort = new AbortController(); const sig = osAbort.signal;
     osimage.downloadIso(u.toString(), dest, { onProgress: (d, t) => j.prog({ done: d, total: t || osimage.DATA.iso.size }), signal: sig }).then((res) => { osLast = dest; j.finish({ path: dest, bytes: res.bytes, sha256: res.sha256 }); }).catch((e) => j.fail(sig.aborted ? new Error('Cancelled') : e)); return { started: true };
   },
   osReveal: async () => { if (!osLast || !fs.existsSync(osLast)) throw new Error('Nothing to show yet'); shell.showItemInFolder(osLast); return true; },
   osOpenSite: async ({ site }) => { if (!Object.prototype.hasOwnProperty.call(osimage.SITES, site)) throw new Error('Unknown site'); await shell.openExternal(osimage.SITES[site]); return true; }
 });
 
-/* ---------- Aurora OS desktop look (macOS style): calls /usr/local/bin/aurora-look ---------- */
+/* ---------- Vorynth OS desktop look (macOS style): calls /usr/local/bin/aurora-look ---------- */
 const LOOK_BIN = '/usr/local/bin/aurora-look';
 const LOOK_RULES = {
   theme: [['light', 'dark']], accent: [['blue', 'purple', 'pink', 'red', 'orange', 'yellow', 'green', 'grey']],
@@ -1774,7 +1776,7 @@ Object.assign(handlers, {
   },
   lookSet: async ({ cmd, args }) => {
     args = Array.isArray(args) ? args.map(String) : [];
-    if (process.platform !== 'linux' || !fs.existsSync(LOOK_BIN)) throw new Error('Only on Aurora OS');
+    if (process.platform !== 'linux' || !fs.existsSync(LOOK_BIN)) throw new Error('Only on Vorynth OS');
     if (String(cmd) === 'style') {
       if (args.length !== 1 || !/^[a-z0-9-]{1,24}$/.test(args[0])) throw new Error('That style is not allowed');
       await new Promise((res, rej) => execFile('/usr/local/bin/aurora-style', [args[0]], { timeout: 60000 }, (e) => (e ? rej(new Error('Could not apply: ' + e.message.split('\n')[0])) : res())));
@@ -1790,14 +1792,14 @@ Object.assign(handlers, {
     try { return { available: true, items: JSON.parse(out) }; } catch (_) { return { available: false }; }
   },
   tweakSet: async ({ id, value }) => {
-    if (process.platform !== 'linux') throw new Error('Only on Aurora OS');
+    if (process.platform !== 'linux') throw new Error('Only on Vorynth OS');
     id = String(id); value = String(value);
     if (!/^[a-z0-9-]{3,80}$/.test(id) || value.length > 90) throw new Error('That setting is not allowed');
     await new Promise((res, rej) => execFile('/usr/local/bin/aurora-tweak', ['set', id, value], { timeout: 15000 }, (e, o, er) => (e ? rej(new Error((er || e.message).split('\n')[0])) : res())));
     return true;
   },
   tweakReset: async ({ id }) => {
-    if (process.platform !== 'linux') throw new Error('Only on Aurora OS');
+    if (process.platform !== 'linux') throw new Error('Only on Vorynth OS');
     id = String(id || '');
     if (id !== 'all' && !/^[a-z0-9-]{3,80}$/.test(id)) throw new Error('That setting is not allowed');
     await new Promise((res, rej) => execFile('/usr/local/bin/aurora-tweak', [id === 'all' ? 'reset-all' : 'reset', ...(id === 'all' ? [] : [id])], { timeout: 30000 }, (e) => (e ? rej(new Error('Could not reset')) : res())));
@@ -1809,13 +1811,13 @@ Object.assign(handlers, {
       greet: ['aurora-greet', []], greetname: ['aurora-greet', ['name']], prayer: ['aurora-prayer', ['menu']], epic: ['aurora-epic', ['menu']], livewall: ['aurora-livewall', ['menu']], hud: ['aurora-hud', ['toggle']], hacker: ['aurora-hacker', []], appstore: ['aurora-appstore', []], gamestore: ['aurora-gamestore', []], cosmetics: ['aurora-cosmetics', []], repair: ['aurora-repair', []], safelook: ['aurora-repair', ['safe']], emoji: ['aurora-emoji', []], updateall: ['aurora-update', []], tour: ['aurora-welcome', []], fetch: ['aurora-fetch', []], dropterm: ['xfce4-terminal', ['--drop-down']], autonoise: ['aurora-autonoise', ['on']], autonoiseoff: ['aurora-autonoise', ['off']], hotspot: ['aurora-hotspot', []], qr: ['aurora-qr', []], weather: ['aurora-weather', []], autoclick: ['aurora-autoclick', ['menu']], linuxgames: ['aurora-linuxgames', []], androidgames: ['aurora-playstore', ['games']], androidtune: ['aurora-playstore', ['tune']], playstore: ['aurora-playstore', []],
       brand: ['aurora-brand', ['menu']], gameboost: ['aurora-brand', ['gameboost']], ocr: ['aurora-brand', ['ocr']], record: ['aurora-brand', ['record']], sidebar: ['aurora-brand', ['sidebar']], zen: ['aurora-brand', ['zen', '25']], clean: ['aurora-brand', ['clean']], routine: ['aurora-brand', ['routine']], popup: ['aurora-brand', ['popup']], quicklook: ['aurora-brand', ['quicklook']], usage: ['aurora-brand', ['usage']], nvidia: ['aurora-hw', ['nvidia']], ryzen: ['aurora-hw', ['ryzen']], hwinfo: ['aurora-hw', ['info']], storesearch: ['aurora-storesearch', []], stores: ['aurora-stores', ['menu']], clip: ['aurora-clip', []], pulse: ['aurora-pulse', []], awake: ['aurora-awake', ['toggle']], emoji: ['aurora-emoji', []], timer: ['aurora-timer', []], dailywall: ['aurora-dailywall', []], mods: ['aurora-hw', ['mods']],
       drivers: ['x-terminal-emulator', ['-T', 'Drivers', '-e', 'sh', '-c', 'aurora-drivers install; echo; echo Press Enter; read x']] };
-    const it = map[what]; if (!it || process.platform !== 'linux') throw new Error('Only on Aurora OS');
+    const it = map[what]; if (!it || process.platform !== 'linux') throw new Error('Only on Vorynth OS');
     require('child_process').spawn(it[0], it[1], { detached: true, stdio: 'ignore' }).unref(); return true;
   },
 });
 
 
-/* Aurora OS display: refresh rate picker (calls /usr/local/bin/aurora-refresh) */
+/* Vorynth OS display: refresh rate picker (calls /usr/local/bin/aurora-refresh) */
 const REFRESH_BIN = '/usr/local/bin/aurora-refresh';
 Object.assign(handlers, {
   displayGet: async () => {
@@ -1824,19 +1826,19 @@ Object.assign(handlers, {
     try { return { available: true, monitors: JSON.parse(out) }; } catch (_) { return { available: false }; }
   },
   displaySet: async ({ output, res, rate }) => {
-    if (process.platform !== 'linux' || !fs.existsSync(REFRESH_BIN)) throw new Error('Only on Aurora OS');
+    if (process.platform !== 'linux' || !fs.existsSync(REFRESH_BIN)) throw new Error('Only on Vorynth OS');
     if (!/^[A-Za-z0-9_.-]+$/.test(String(output)) || !/^\d+x\d+$/.test(String(res)) || !/^\d+(\.\d+)?$/.test(String(rate))) throw new Error('That display setting is not allowed');
     await new Promise((ok, no) => execFile(REFRESH_BIN, ['set', String(output), String(res), String(rate)], { timeout: 15000 }, (e) => (e ? no(new Error('The monitor did not accept that mode')) : ok())));
     return true;
   },
   displayBest: async () => {
-    if (process.platform !== 'linux' || !fs.existsSync(REFRESH_BIN)) throw new Error('Only on Aurora OS');
+    if (process.platform !== 'linux' || !fs.existsSync(REFRESH_BIN)) throw new Error('Only on Vorynth OS');
     await new Promise((ok) => execFile(REFRESH_BIN, [], { timeout: 20000 }, () => ok())); return true;
   },
 });
 
 
-/* Aurora OS audio modes (calls /usr/local/bin/aurora-audio) */
+/* Vorynth OS audio modes (calls /usr/local/bin/aurora-audio) */
 const AUDIO_BIN = '/usr/local/bin/aurora-audio';
 const AUDIO_OK = { mode: ['music', 'movie', 'call', 'gaming', 'night'], codec: ['ldac', 'aptx_hd', 'aptx', 'aac', 'sbc_xq', 'sbc'], 'mic-cancel': ['on', 'off'], eq: ['bass', 'vocal', 'treble', 'off'] };
 Object.assign(handlers, {
@@ -1846,7 +1848,7 @@ Object.assign(handlers, {
     return { available: true, text: out.trim() };
   },
   audioSet: async ({ cmd, value }) => {
-    if (process.platform !== 'linux' || !fs.existsSync(AUDIO_BIN)) throw new Error('Only on Aurora OS');
+    if (process.platform !== 'linux' || !fs.existsSync(AUDIO_BIN)) throw new Error('Only on Vorynth OS');
     if (!AUDIO_OK[cmd] || !AUDIO_OK[cmd].includes(String(value))) throw new Error('That audio setting is not allowed');
     const out = await new Promise((res) => execFile(AUDIO_BIN, [cmd, String(value)], { timeout: 30000, encoding: 'utf8' }, (e, o) => res((o || '').trim() || (e ? 'It did not work' : 'Done'))));
     return out.split('\n').pop();
@@ -1874,7 +1876,7 @@ function widgetOpenWin(kind) {
   const wa = electron.screen.getPrimaryDisplay().workArea, idx = Object.keys(WIDGETS).indexOf(kind);
   let x = Number.isFinite(c.x) ? Math.round(c.x) : wa.x + wa.width - w - 24, y = Number.isFinite(c.y) ? Math.round(c.y) : wa.y + 24 + (idx % 5) * 40;
   if (!widgetOnScreen(x, y, w, h)) { x = wa.x + wa.width - w - 24; y = wa.y + 24; }
-  const win = new BrowserWindow({ width: w, height: h, x, y, frame: false, transparent: true, resizable: false, maximizable: false, minimizable: false, skipTaskbar: true, hasShadow: false, show: false, title: 'Aurora widget', webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true } });
+  const win = new BrowserWindow({ width: w, height: h, x, y, frame: false, transparent: true, resizable: false, maximizable: false, minimizable: false, skipTaskbar: true, hasShadow: false, show: false, title: 'Vorynth widget', webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true } });
   win.setMenuBarVisibility(false);
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', (e) => e.preventDefault());
@@ -1910,7 +1912,7 @@ ipcMain.handle('call', async (_e, name, args) => {
 function logError(err) {
   const msg = (err && (err.stack || err.message)) || String(err);
   try { fs.appendFileSync(path.join(__dirname, 'aurora-error.log'), `[${new Date().toISOString()}] ${msg}\n`); } catch (_) {}
-  try { dialog.showErrorBox('Aurora Settings hit a problem', msg.slice(0, 1500) + '\n\n(also saved to aurora-error.log)'); } catch (_) {}
+  try { dialog.showErrorBox('Vorynth Settings hit a problem', msg.slice(0, 1500) + '\n\n(also saved to aurora-error.log)'); } catch (_) {}
 }
 process.on('uncaughtException', logError);
 process.on('unhandledRejection', logError);
@@ -1948,13 +1950,13 @@ function createWindow() {
   const startHidden = process.argv.includes('--hidden') && integration.store.get().settings.background && integration.background.hasTray();
   win.once('ready-to-show', () => { if (!startHidden) win.show(); });
   setTimeout(() => { if (!startHidden && !win.isDestroyed() && !win.isVisible()) win.show(); }, 4000); // never stay hidden
-  // Closing the window keeps Aurora running in the tray (only if a tray icon really exists, so it can never become invisible).
+  // Closing the window keeps Vorynth running in the tray (only if a tray icon really exists, so it can never become invisible).
   win.on('close', (e) => {
     if (quitting || !integration.store.get().settings.background || !integration.background.hasTray()) return;
     e.preventDefault(); win.hide();
-    if (!trayNoteShown) { trayNoteShown = true; integration.notify('Aurora is still running in the tray. Right-click the icon to quit.'); }
+    if (!trayNoteShown) { trayNoteShown = true; integration.notify('Vorynth is still running in the tray. Right-click the icon to quit.'); }
   });
-  // Only a failure of Aurora's own page matters. A frame that an add-on tries to load (and that the add-on policy blocks) must never pop up a dialog or freeze the window.
+  // Only a failure of Vorynth's own page matters. A frame that an add-on tries to load (and that the add-on policy blocks) must never pop up a dialog or freeze the window.
   win.webContents.on('did-fail-load', (_e, code, desc, _url, isMainFrame) => { if (isMainFrame && code !== -3) logError(new Error(`Page failed to load: ${desc} (${code})`)); });
   win.webContents.on('render-process-gone', (_e, d) => logError(new Error('Renderer crashed: ' + d.reason)));
   win.setMenuBarVisibility(false);

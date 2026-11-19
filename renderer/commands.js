@@ -1,4 +1,4 @@
-/* Aurora Command: a command bar that runs things (not just finds settings), Settings Time Machine, quick timer,
+/* Vorynth Command: a command bar that runs things (not just finds settings), Settings Time Machine, quick timer,
    recent pages, keyboard shortcuts, always-on-top and zoom. Loaded after app.js and apps.js. */
 {
   const B = (txt, cls, fn) => { const b = el('button', 'btn' + (cls ? ' ' + cls : ''), txt); if (fn) b.onclick = fn; return b; };
@@ -16,7 +16,7 @@
   function timerStart(ms, label) {
     if (!(ms >= 1000 && ms <= 24 * 3600e3)) throw new Error('A timer can be from 1 second to 24 hours');
     timerStop(); qt.end = Date.now() + ms; qt.label = label || ''; pill.hidden = false;
-    const tick = () => { const left = qt.end - Date.now(); if (left <= 0) { timerStop(); beep(); toast('⏰ ' + (qt.label ? qt.label + ': ' : '') + 'time is up'); try { new Notification('Aurora timer', { body: (qt.label || 'Your timer') + ' finished' }); } catch (_) {} return; } pill.textContent = '⏱ ' + fmtT(left); };
+    const tick = () => { const left = qt.end - Date.now(); if (left <= 0) { timerStop(); beep(); toast('⏰ ' + (qt.label ? qt.label + ': ' : '') + 'time is up'); try { new Notification('Vorynth timer', { body: (qt.label || 'Your timer') + ' finished' }); } catch (_) {} return; } pill.textContent = '⏱ ' + fmtT(left); };
     qt.tid = setInterval(tick, 250); tick();
   }
   pill.onclick = () => { timerStop(); toast('Timer cancelled'); };
@@ -53,16 +53,16 @@
     { const m = /^note[:\s]+(.+)$/i.exec(q); if (m) out.push(act('Save note: ' + m[1].slice(0, 50), 'Quick notes', async () => { const st = await loadStore(); await saveGroup('notes', [{ text: m[1].slice(0, 5000), t: Date.now(), pinned: false }, ...st.notes]); return 'Note saved'; }, '📝')); }
     { const m = /^(?:todo|task|remind)[:\s]+(.+)$/i.exec(q); if (m) out.push(act('Add to today: ' + m[1].slice(0, 50), 'Planner', async () => { const st = await call('storeGet'); await call('storeSet', { key: 'planner', value: [...(st.planner || []), { id: newId('p'), date: iso(new Date()), text: m[1].slice(0, 200), done: false }] }); return 'Added to today'; }, '✅')); }
     if (/^(?:snapshot|snap settings|checkpoint)(?:\s+(.+))?$/i.test(q)) { const nm = (/^\S+(?:\s+settings)?\s+(.+)$/i.exec(q) || [])[1] || ''; out.push(act('Save a settings snapshot' + (nm ? ': ' + nm : ''), 'Time Machine', async () => { await call('snapCapture', { name: nm }); return 'Snapshot saved'; }, '🕰')); }
-    { const m = /^theme\s+(\w+)$/.exec(low); if (m && THEME_IDS().includes(m[1])) out.push(act('Theme: ' + window.auroraStudio.PACKS[m[1]].name, 'Aurora Studio', async () => { prefs.set('packAccentLock', false); window.auroraStudio.save({ pack: m[1] }); return window.auroraStudio.PACKS[m[1]].name + ' theme'; }, '🎨')); }
+    { const m = /^theme\s+(\w+)$/.exec(low); if (m && THEME_IDS().includes(m[1])) out.push(act('Theme: ' + window.auroraStudio.PACKS[m[1]].name, 'Vorynth Studio', async () => { prefs.set('packAccentLock', false); window.auroraStudio.save({ pack: m[1] }); return window.auroraStudio.PACKS[m[1]].name + ' theme'; }, '🎨')); }
     { const m = /^zoom\s+(\d{2,3})$/.exec(low); if (m && Number(m[1]) >= 60 && Number(m[1]) <= 180) out.push(act(`Zoom ${m[1]}%`, 'Window', async () => { await setZoom(Number(m[1]) / 100); return 'Zoom ' + m[1] + '%'; }, '🔎')); }
-    if (/^(?:pin|on top|always on top)$/.test(low)) out.push(act('Toggle always on top', 'Window', async () => { const on = await togglePin(); return on ? 'Aurora stays on top' : 'Back to normal'; }, '📌'));
+    if (/^(?:pin|on top|always on top)$/.test(low)) out.push(act('Toggle always on top', 'Window', async () => { const on = await togglePin(); return on ? 'Vorynth stays on top' : 'Back to normal'; }, '📌'));
     if (/^(?:uuid|guid)$/.test(low)) out.push(act('Make a new UUID', 'Enter copies it', async () => { const u = crypto.randomUUID(); await copy(u); return 'Copied ' + u; }, '🆔'));
     if (/^(?:pass|password|pw)(?:\s+(\d{1,2}))?$/.test(low)) { const n = Number((/(\d+)/.exec(low) || [])[1] || 20); if (n >= 8 && n <= 64) out.push(act(`Make a strong ${n}-character password`, 'Created here, copied, never stored', async () => { await copy(genPass(n)); return 'Password copied to the clipboard'; }, '🔑')); }
     if (/^(?:coin|flip|flip a coin|heads or tails)$/.test(low)) out.push(act('Flip a coin', '', async () => (rnd(2) ? '🪙 Heads' : '🪙 Tails'), '🪙'));
     { const m = /^(?:roll\s*)?d(\d{1,4})$/.exec(low); if (m && Number(m[1]) >= 2) out.push(act(`Roll a d${m[1]}`, '', async () => '🎲 ' + (rnd(Number(m[1])) + 1), '🎲')); }
     { const m = /^(?:random|rand)\s+(-?\d+)\s*[-–to ]+\s*(-?\d+)$/.exec(low); if (m) { const lo = Math.min(Number(m[1]), Number(m[2])), hi = Math.max(Number(m[1]), Number(m[2])); if (hi - lo < 4e9) out.push(act(`Random number from ${lo} to ${hi}`, '', async () => { const v = lo + rnd(hi - lo + 1); await copy(v); return '🎯 ' + v + ' (copied)'; }, '🎯')); } }
     { const m = /^days?\s+(?:until|to)\s+(\d{4}-\d{2}-\d{2})$/.exec(low); if (m) { const d = new Date(m[1] + 'T12:00:00'); if (!isNaN(d)) { const t = new Date(); t.setHours(12, 0, 0, 0); const n = Math.round((d - t) / 86400000); out.push(act(n === 0 ? 'That is today' : n > 0 ? `${n} days until ${m[1]}` : `${-n} days since ${m[1]}`, '', async () => `${Math.abs(n)} days`, '📅')); } } }
-    { const m = /^(?:install|get)\s+(.+)$/.exec(low); if (m) out.push(act('Find "' + m[1] + '" in Aurora Store', 'Aurora Store', async () => { window.__storeQuery = m[1]; go('store', 'appstore'); return ''; }, '🛍️')); }
+    { const m = /^(?:install|get)\s+(.+)$/.exec(low); if (m) out.push(act('Find "' + m[1] + '" in Vorynth Store', 'Vorynth Store', async () => { window.__storeQuery = m[1]; go('store', 'appstore'); return ''; }, '🛍️')); }
     // profiles
     PROFILE_NAMES.forEach((n) => { if (low === n.toLowerCase() || low === 'profile ' + n.toLowerCase() || low === 'scene ' + n.toLowerCase()) out.push(act('Run profile: ' + n, 'Profiles', async () => { const r = await call('profileRun', { name: n }); return `${n}: ${r.ok} of ${r.total} steps applied`; }, '⚡')); });
     return out;
@@ -73,9 +73,9 @@
 
   /* ---------- window conveniences ---------- */
   let pinned = false, zoom = Number(prefs.get('zoom')) || 1;
-  async function togglePin() { pinned = await call('windowPin', { on: !pinned }); pinBtn.classList.toggle('on', pinned); pinBtn.title = pinned ? 'Always on top: on' : 'Keep Aurora on top of other windows'; return pinned; }
+  async function togglePin() { pinned = await call('windowPin', { on: !pinned }); pinBtn.classList.toggle('on', pinned); pinBtn.title = pinned ? 'Always on top: on' : 'Keep Vorynth on top of other windows'; return pinned; }
   async function setZoom(f) { f = Math.max(0.6, Math.min(1.8, Math.round(f * 100) / 100)); zoom = await call('windowZoom', { factor: f }); prefs.set('zoom', zoom); return zoom; }
-  const tb = document.querySelector('.titlebar'); const pinBtn = document.createElement('button'); pinBtn.className = 'tb-btn'; pinBtn.textContent = '📌'; pinBtn.title = 'Keep Aurora on top of other windows'; pinBtn.onclick = () => togglePin().catch((e) => toast(errText(e), true));
+  const tb = document.querySelector('.titlebar'); const pinBtn = document.createElement('button'); pinBtn.className = 'tb-btn'; pinBtn.textContent = '📌'; pinBtn.title = 'Keep Vorynth on top of other windows'; pinBtn.onclick = () => togglePin().catch((e) => toast(errText(e), true));
   const keyBtn = document.createElement('button'); keyBtn.className = 'tb-btn'; keyBtn.textContent = '⌨'; keyBtn.title = 'Keyboard shortcuts (?)'; keyBtn.onclick = () => sheet(true);
   tb.append(pinBtn, keyBtn);
   if (zoom !== 1) setZoom(zoom).catch(() => {});
@@ -84,7 +84,7 @@
   try { if (window.api && window.api.launcher && typeof PAGES !== 'undefined') window.api.launcher('setPages', { pages: PAGES.map((p) => ({ id: p.id, title: p.title, kw: String(p.keywords || p.desc || '') })) }).catch(() => {}); } catch (_) { /* ignore */ }
 
   /* ---------- keyboard shortcuts + cheat sheet ---------- */
-  const SHORTS = [['Ctrl K', 'Command bar: search settings or type a command'], ['Ctrl Alt Space', 'Summon Aurora from anywhere, command bar ready'], ['Alt 1 to 9', 'Jump to a page in the sidebar'], ['Alt ← / Alt →', 'Back and forward between pages'], ['Ctrl + / Ctrl −  /  Ctrl 0', 'Zoom in, out, reset'], ['Ctrl Shift P', 'Keep Aurora on top'], ['?', 'Show this list'], ['Esc', 'Close the command bar or this list']];
+  const SHORTS = [['Ctrl K', 'Command bar: search settings or type a command'], ['Ctrl Alt Space', 'Summon Vorynth from anywhere, command bar ready'], ['Alt 1 to 9', 'Jump to a page in the sidebar'], ['Alt ← / Alt →', 'Back and forward between pages'], ['Ctrl + / Ctrl −  /  Ctrl 0', 'Zoom in, out, reset'], ['Ctrl Shift P', 'Keep Vorynth on top'], ['?', 'Show this list'], ['Esc', 'Close the command bar or this list']];
   const sh = document.createElement('div'); sh.id = 'shortcuts'; sh.hidden = true; const card = document.createElement('div'); card.className = 'sheet'; card.append(el('div', 'label', 'Keyboard shortcuts'));
   SHORTS.forEach(([k, d]) => { const r = el('div', 'list-row'); r.append(el('kbd', '', k), el('div', 'sub', d)); card.append(r); });
   const cmdHelp = el('div', 'sub', 'Command bar examples: 2*(3+4)^2 · 5 km to miles · volume 30 · dark · timer 10 tea · note buy milk · todo call Sara · snapshot before update · theme neon · install firefox · pass 24 · roll d20 · days until 2027-01-01'); cmdHelp.style.marginTop = '8px'; card.append(cmdHelp); sh.append(card); document.body.append(sh);
@@ -191,7 +191,7 @@
     box.style.gap = '10px'; let diffFor = null, diffRows = [], picked = new Set();
     const draw = async () => {
       let list, st; try { [list, st] = await Promise.all([call('snapList'), call('storeGet')]); } catch (_) { return fail(box); }
-      box.replaceChildren(); box.append(el('div', 'muted', 'Aurora keeps a history of how your settings looked, so you can see what changed and roll back one setting or all of them. A "Before restoring" copy is saved automatically, so even a restore can be undone.'));
+      box.replaceChildren(); box.append(el('div', 'muted', 'Vorynth keeps a history of how your settings looked, so you can see what changed and roll back one setting or all of them. A "Before restoring" copy is saved automatically, so even a restore can be undone.'));
       const nm = el('input', 'filter'); nm.placeholder = 'Name this moment (optional)'; const take = B('📸 Save snapshot now', 'primary', async () => { take.disabled = true; try { await call('snapCapture', { name: nm.value.trim() }); toast('Snapshot saved'); nm.value = ''; } catch (e) { toast(errText(e), true); } diffFor = null; draw(); }); const r1 = el('div', 'savebar'); r1.append(nm, take); box.append(r1);
       const lab = el('label', 'sub'); const cb = el('input'); cb.type = 'checkbox'; cb.checked = !!st.snapshotsOn; cb.onchange = async () => { try { await saveGroup('settings', { ...storeCache.settings, autosnap: cb.checked }); toast(cb.checked ? 'A snapshot will be saved once a day' : 'Daily snapshots are off'); } catch (e) { toast(errText(e), true); cb.checked = !cb.checked; } }; lab.append(cb, ' Save a snapshot automatically once a day'); box.append(lab);
       if (!list.length) return box.append(el('div', 'muted', 'No snapshots yet. Save one before you try something risky.'));

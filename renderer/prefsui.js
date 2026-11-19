@@ -1,4 +1,4 @@
-/* Aurora-only settings: how Aurora itself looks and behaves. These do not exist in Windows; they live inside Aurora. */
+/* Vorynth-only settings: how Vorynth itself looks and behaves. These do not exist in Windows; they live inside Vorynth. */
 {
   const DEF = { startPage: 'home', compactNav: false, hiddenPages: [], density: 'comfortable', textSize: 100, radius: 'normal', clickSounds: false, toastSeconds: 2.4, toastPos: 'bottom', reduceGlass: false, dir: 'auto', clock: 'system', confirmCommands: false };
   const cfg = () => ({ ...DEF, ...(prefs.get('ui') || {}) });
@@ -31,9 +31,9 @@
     const sw = (val, fn) => { const l = el('label', 'switch'); const i = el('input'); i.type = 'checkbox'; i.checked = !!val; i.onchange = () => fn(i.checked); l.append(i, el('span', 'track'), el('span', 'thumb')); return l; };
     const draw = () => {
       box.replaceChildren(); const c = cfg();
-      box.append(el('div', 'muted', 'These settings belong to Aurora only. Windows has no equivalent, and nothing here changes Windows.'));
+      box.append(el('div', 'muted', 'These settings belong to Vorynth only. Windows has no equivalent, and nothing here changes Windows.'));
       const pageOpts = [['home', 'Home'], ['last', 'The page I was on last'], ...PAGES.filter((p) => p.id !== 'home').map((p) => [p.id, p.title])];
-      box.append(row('Open Aurora on', 'Which page you see first', sel(pageOpts, c.startPage, (v) => { set({ startPage: v }); toast('Aurora will open on that page next time'); })));
+      box.append(row('Open Vorynth on', 'Which page you see first', sel(pageOpts, c.startPage, (v) => { set({ startPage: v }); toast('Vorynth will open on that page next time'); })));
       box.append(row('Compact sidebar', 'Icons only, more room for content', sw(c.compactNav, (v) => { set({ compactNav: v }); })));
       box.append(row('Spacing', 'How tightly things are packed', sel([['comfortable', 'Comfortable'], ['compact', 'Compact']], c.density, (v) => set({ density: v }))));
       box.append(row('Text size', 'Scales the content area', sel([[90, 'Small (90%)'], [100, 'Normal'], [110, 'Large (110%)'], [125, 'Larger (125%)'], [140, 'Largest (140%)']], c.textSize, (v) => set({ textSize: Number(v) }))));
@@ -48,7 +48,7 @@
       const pages = el('div'); pages.append(el('div', 'label', 'Pages in the sidebar')); pages.append(el('div', 'sub', 'Untick pages you never use. They stay available from the command bar (Ctrl+K). Home and Personalization always stay.'));
       const grid = el('div'); grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:4px;margin-top:6px';
       PAGES.forEach((p) => { const l = el('label', 'sub'); const i = el('input'); i.type = 'checkbox'; i.checked = !c.hiddenPages.includes(p.id); i.disabled = ['home', 'personalization'].includes(p.id); i.dataset.page = p.id; i.onchange = () => { const hs = new Set(cfg().hiddenPages); i.checked ? hs.delete(p.id) : hs.add(p.id); set({ hiddenPages: [...hs] }); }; l.append(i, ` ${p.icon} ${p.title}`); grid.append(l); });
-      pages.append(grid); box.append(pages, el('div', 'savebar')); const reset = el('button', 'btn', 'Reset all of these to the defaults'); reset.onclick = () => { if (!confirm('Reset every Aurora-only setting?')) return; prefs.set('ui', { ...DEF }); apply(); draw(); toast('Back to the defaults'); }; box.lastChild.append(reset);
+      pages.append(grid); box.append(pages, el('div', 'savebar')); const reset = el('button', 'btn', 'Reset all of these to the defaults'); reset.onclick = () => { if (!confirm('Reset every Vorynth-only setting?')) return; prefs.set('ui', { ...DEF }); apply(); draw(); toast('Back to the defaults'); }; box.lastChild.append(reset);
     }; draw();
   };
 }

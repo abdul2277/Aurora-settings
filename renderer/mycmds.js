@@ -7,7 +7,7 @@
   // ---- pure parsing ----
   const parseDef = (text) => { // "cmd add morning = dark; timer 25 focus"
     const m = /^cmd\s+add\s+([a-z0-9][a-z0-9_-]{0,23})\s*=\s*(.+)$/i.exec(text.trim()); if (!m) return null;
-    const trigger = m[1].toLowerCase(); if (RESERVED.test(trigger)) return { error: '"' + trigger + '" is already used by Aurora' };
+    const trigger = m[1].toLowerCase(); if (RESERVED.test(trigger)) return { error: '"' + trigger + '" is already used by Vorynth' };
     const steps = m[2].split(';').map((s) => s.trim()).filter(Boolean).slice(0, 12); if (!steps.length) return { error: 'Add at least one step after the = sign' };
     return { trigger, steps };
   };

@@ -1,4 +1,7 @@
-# Aurora Settings
+# Vorynth Settings (formerly Aurora Settings)
+
+> **Rebrand:** Aurora OS is now **Vorynth OS** (v73), with a new V logo, boot splash, login screen and premium look. The Settings app keeps its code and file names for now; its Vorynth OS pages (Add-ons) use the new `vorynth-*` commands.
+
 
 An original Settings app for Windows 11 (also runs on Linux). It is not derived from Microsoft code. It does what the Windows Settings app does, adds a lot more, and lets you turn off the parts of Windows you do not want.
 

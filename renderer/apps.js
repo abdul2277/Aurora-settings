@@ -1,5 +1,5 @@
-/* Aurora Apps: your own Notepad, Calculator, Paint, Clock, Calendar, Voice recorder, Photo/Media viewer and Character map.
-   Everything runs inside Aurora: no Windows apps are opened. Loaded after app.js (uses its el/toast/call helpers). */
+/* Vorynth Apps: your own Notepad, Calculator, Paint, Clock, Calendar, Voice recorder, Photo/Media viewer and Character map.
+   Everything runs inside Vorynth: no Windows apps are opened. Loaded after app.js (uses its el/toast/call helpers). */
 { // block scope: keeps these helper names from clashing with app.js
 const dl = (blob, name) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
 const mkBtn = (txt, cls, fn) => { const b = el('button', 'btn' + (cls ? ' ' + cls : ''), txt); if (fn) b.onclick = fn; return b; };
@@ -157,7 +157,7 @@ CUSTOM.timer = (box) => {
   const mins = el('input', 'filter'); mins.type = 'number'; mins.min = 0; mins.value = 5; mins.style.width = '90px'; const secs = el('input', 'filter'); secs.type = 'number'; secs.min = 0; secs.max = 59; secs.value = 0; secs.style.width = '90px';
   const show = () => { big.textContent = fmtT(tid ? end - Date.now() : left); };
   const stop = () => { clearInterval(tid); tid = null; };
-  const start = () => { if (!tid) { if (!left) { left = (Math.max(0, Number(mins.value) || 0) * 60 + Math.min(59, Math.max(0, Number(secs.value) || 0))) * 1000; base = left; } if (!left) return toast('Set a time first', true); end = Date.now() + left; tid = setInterval(() => { if (!alive(box)) return stop(); if (end - Date.now() <= 0) { stop(); left = 0; big.textContent = '0:00'; beep(); toast('⏰ Timer finished'); try { new Notification('Aurora timer', { body: 'Time is up' }); } catch (_) {} } else show(); }, 100); show(); } };
+  const start = () => { if (!tid) { if (!left) { left = (Math.max(0, Number(mins.value) || 0) * 60 + Math.min(59, Math.max(0, Number(secs.value) || 0))) * 1000; base = left; } if (!left) return toast('Set a time first', true); end = Date.now() + left; tid = setInterval(() => { if (!alive(box)) return stop(); if (end - Date.now() <= 0) { stop(); left = 0; big.textContent = '0:00'; beep(); toast('⏰ Timer finished'); try { new Notification('Vorynth timer', { body: 'Time is up' }); } catch (_) {} } else show(); }, 100); show(); } };
   const pause = () => { if (tid) { left = end - Date.now(); stop(); show(); } };
   const reset = () => { stop(); left = 0; big.textContent = '0:00'; };
   const presets = el('div', 'store-chips'); [1, 5, 10, 15, 25, 45].forEach((m) => { const b = el('button', 'chip', m + ' min'); b.onclick = () => { reset(); mins.value = m; secs.value = 0; big.textContent = fmtT(m * 60000); }; presets.append(b); });
@@ -179,7 +179,7 @@ const icsDay = (iso) => iso.replace(/-/g, '');
 const icsNext = (iso) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + 1); return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`; };
 window.auroraIcs = {
   build: (items) => {
-    const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, ''); const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Aurora Settings//Planner//EN', 'CALSCALE:GREGORIAN'];
+    const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, ''); const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Vorynth Settings//Planner//EN', 'CALSCALE:GREGORIAN'];
     items.forEach((x) => { L.push('BEGIN:VEVENT', `UID:${x.id}@aurora.local`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${icsDay(x.date)}`, `DTEND;VALUE=DATE:${icsNext(x.date)}`, `SUMMARY:${icsEsc((x.done ? '\u2713 ' : '') + x.text)}`, ...(x.done ? ['X-AURORA-DONE:TRUE'] : []), 'END:VEVENT'); });
     L.push('END:VCALENDAR'); return L.map(icsFold).join('\r\n') + '\r\n';
   },
@@ -231,14 +231,14 @@ CUSTOM.recorder = (box) => {
   let rec = null, chunks = [], stream = null, t0 = 0, tm = null; const clock = el('div', ''); clock.style.cssText = 'font-size:34px;font-weight:600;font-variant-numeric:tabular-nums'; clock.textContent = '0:00'; const list = el('div'); const msg = el('div', 'sub', '');
   const startB = mkBtn('● Record', 'primary'), stopB = mkBtn('■ Stop', ''); stopB.disabled = true;
   startB.onclick = async () => {
-    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (_) { msg.textContent = 'Aurora could not use the microphone. Check that one is plugged in and that Microphone access is on in Privacy.'; return; }
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (_) { msg.textContent = 'Vorynth could not use the microphone. Check that one is plugged in and that Microphone access is on in Privacy.'; return; }
     msg.textContent = ''; chunks = []; rec = new MediaRecorder(stream); rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
     rec.onstop = () => { stream.getTracks().forEach((t) => t.stop()); clearInterval(tm); const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' }); const url = URL.createObjectURL(blob); const name = 'Recording ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       const r = el('div', 'list-row'); const a = el('audio'); a.controls = true; a.src = url; const l = el('div'); l.append(el('div', '', name), a); const s = mkBtn('Save', '', () => dl(blob, name.replace(/[^\w ]/g, '') + '.webm')); const d = mkBtn('Delete', 'danger', () => { URL.revokeObjectURL(url); r.remove(); }); const b = el('div'); b.style.cssText = 'display:flex;gap:8px'; b.append(s, d); r.append(l, b); list.prepend(r); startB.disabled = false; stopB.disabled = true; };
     rec.start(); t0 = Date.now(); tm = setInterval(() => { if (!alive(box)) { clearInterval(tm); try { rec.stop(); } catch (_) {} return; } clock.textContent = fmtT(Date.now() - t0); }, 250); startB.disabled = true; stopB.disabled = false;
   };
   stopB.onclick = () => { try { rec.stop(); } catch (_) {} };
-  box.append(clock, row(startB, stopB), msg, el('div', 'sub', 'Recordings stay in this window until you save them. Closing Aurora discards unsaved ones.'), list);
+  box.append(clock, row(startB, stopB), msg, el('div', 'sub', 'Recordings stay in this window until you save them. Closing Vorynth discards unsaved ones.'), list);
 };
 
 /* ---------- Viewer (Photos + media player) ---------- */

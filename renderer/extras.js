@@ -1,4 +1,4 @@
-/* Built-in add-ons: Aurora starts with only the Windows basics in the sidebar. Everything else is grouped into add-ons you switch on or off
+/* Built-in add-ons: Vorynth starts with only the Windows basics in the sidebar. Everything else is grouped into add-ons you switch on or off
    (Add-ons page, or the one-time picker). Switched-off tools are still found by Ctrl+K search, which offers to switch them on. */
 {
   const PACKS = [
@@ -7,14 +7,14 @@
     { id: 'pers', essential: true, icon: '🎨', title: 'Personalize, language & gaming', desc: 'Colours and themes, Start and taskbar, time and language, accessibility, Windows gaming settings.', pages: ['personalization', 'startmenu', 'time', 'access', 'gaming'] },
     { id: 'priv', essential: true, icon: '🔒', title: 'Privacy & De-AI', desc: 'Privacy settings, De-AI Windows (Copilot, Recall, Click to Do) and Turn off Microsoft features (ads, tips, tracking, Edge promos).', pages: ['privacy', 'ai', 'msoff'] },
     { id: 'life', icon: '🌙', title: 'Daily life', desc: 'Prayer times and Hijri date, zakat, world clock for suppliers, colour picker, exchange rates.', pages: ['salah', 'zakat', 'worldclock', 'picker', 'fx'] },
-    { id: 'health', icon: '🩺', title: 'PC health & cleanup', desc: 'Aurora Doctor, PC rating, disk space map, duplicate finder, space finder, backup, toolbox.', pages: ['autodoc', 'pcrating', 'diskmap', 'dupes', 'space', 'backup', 'toolbox'] },
+    { id: 'health', icon: '🩺', title: 'PC health & cleanup', desc: 'Vorynth Doctor, PC rating, disk space map, duplicate finder, space finder, backup, toolbox.', pages: ['autodoc', 'pcrating', 'diskmap', 'dupes', 'space', 'backup', 'toolbox'] },
     { id: 'gamer', icon: '🎮', title: 'Gaming extras', desc: 'Controller setup and the live GPU monitor.', pages: ['controllers', 'gpumon'] },
-    { id: 'looks', icon: '✨', title: 'Looks & fun', desc: 'Aurora looks and themes, milestones, desktop look, customize OS, journey, labs.', pages: ['looks', 'milestones', 'desklook', 'oscustomize', 'journey', 'labs'] },
+    { id: 'looks', icon: '✨', title: 'Looks & fun', desc: 'Vorynth looks and themes, milestones, desktop look, customize OS, journey, labs.', pages: ['looks', 'milestones', 'desklook', 'oscustomize', 'journey', 'labs'] },
     { id: 'power', icon: '⚡', title: 'Power tools', desc: 'Profiles, automation, your own commands, mods, utilities, tweaks, Windows tools.', pages: ['profiles', 'automation', 'mycmds', 'mods', 'utils', 'tweaks', 'wintools'] },
-    { id: 'apps', icon: '🛍️', title: 'Aurora apps & store', desc: 'Aurora Store, Aurora Apps, Plus, Toolkit and Aurora OS.', pages: ['store', 'aurora-apps', 'aurora-plus', 'aurora-pro', 'aurora-os'] }
+    { id: 'apps', icon: '🛍️', title: 'Vorynth apps & store', desc: 'Vorynth Store, Vorynth Apps, Plus, Toolkit and Vorynth OS.', pages: ['store', 'aurora-apps', 'aurora-plus', 'aurora-pro', 'aurora-os'] }
   ];
   const ORIGINAL = PAGES.slice(); const known = new Set(ORIGINAL.map((p) => p.id));
-  PACKS.forEach((p) => { p.pages = p.pages.filter((id) => known.has(id)); }); // Aurora OS (Linux) has fewer pages
+  PACKS.forEach((p) => { p.pages = p.pages.filter((id) => known.has(id)); }); // Vorynth OS (Linux) has fewer pages
   const ACTIVE = PACKS.filter((p) => p.pages.length); const validIds = new Set(ACTIVE.map((p) => p.id));
   const PACK_OF = {}; ACTIVE.forEach((p) => p.pages.forEach((id) => { PACK_OF[id] = p.id; }));
   const packOf = (pageId) => PACK_OF[pageId] || null; const packById = (id) => ACTIVE.find((p) => p.id === id);
@@ -62,14 +62,14 @@
     c.append(packList(sel, (p, v) => { write(sel); apply(); count(); if (p) toast(p.title + (v ? ' add-on is on' : ' add-on is off')); else toast('Add-ons updated'); }));
     return c;
   };
-  // Any link to a page whose add-on is off (a search result, "Install in Aurora Store", a tile) switches the add-on on first, so nothing breaks.
+  // Any link to a page whose add-on is off (a search result, "Install in Vorynth Store", a tile) switches the add-on on first, so nothing breaks.
   const baseGo = goBase;
   goBase = function (pageId, focusId) { const k = packOf(pageId); if (k && !isPackOn(k)) { setPack(k, true); toast(packById(k).title + ' add-on switched on'); } return baseGo(pageId, focusId); };
 
   function showPicker() {
     if (document.getElementById('pk-veil')) return;
     const sel = read(); const veil = el('div', 'pk-veil'); veil.id = 'pk-veil'; const panel = el('div', 'pk-panel');
-    panel.append(el('h2', '', 'Make Aurora yours'), el('div', 'muted', 'Choose the add-ons you want. You can change this any time on the Add-ons page, and Ctrl+K search still finds everything.'));
+    panel.append(el('h2', '', 'Make Vorynth yours'), el('div', 'muted', 'Choose the add-ons you want. You can change this any time on the Add-ons page, and Ctrl+K search still finds everything.'));
     panel.append(packList(sel, () => {})); const bar = el('div', 'pk-bar'); bar.style.cssText += 'display:flex;gap:8px;justify-content:flex-end';
     const done = el('button', 'btn primary', 'Done'); done.id = 'packs-done'; done.onclick = () => { write(sel); prefs.set('packsAsked', true); veil.remove(); apply(); toast(sel.size ? sel.size + ' add-ons on' : 'Starting light. Add more any time.'); }; bar.append(done); panel.append(bar); veil.append(panel); document.body.append(veil);
   }
@@ -78,7 +78,7 @@
   migrate();
   window.auroraExtras = { PACKS: ACTIVE, packOf, isOn, isPackOn, setPack, set, card: extrasCard, apply, allPages: () => ORIGINAL.slice(), showPicker, PRESETS };
   apply();
-  // No popup: Aurora just starts with the essentials. One quiet hint, once.
+  // No popup: Vorynth just starts with the essentials. One quiet hint, once.
   if (!prefs.get('packsAsked')) { prefs.set('packsAsked', true); setTimeout(() => { try { toast('Only the essentials are on. Get more under Add-ons (or press Ctrl+K).'); } catch (_) { /* ignore */ } }, 2500); }
 }
 CUSTOM.extras = (box) => { box.append(window.auroraExtras.card()); };

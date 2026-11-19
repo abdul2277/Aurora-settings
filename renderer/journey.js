@@ -1,21 +1,21 @@
-/* Aurora Journey: levels, daily streaks, achievements, daily quests and unlockable accent colours. Everything stays on this PC. */
+/* Vorynth Journey: levels, daily streaks, achievements, daily quests and unlockable accent colours. Everything stays on this PC. */
 {
   const B = (t, c, f) => { const b = el('button', 'btn' + (c ? ' ' + c : ''), t); if (f) b.onclick = f; return b; };
   const day = (t) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
   const level = (xp) => Math.floor(Math.sqrt(Math.max(0, xp) / 50)) + 1;
   const levelStart = (lv) => 50 * (lv - 1) ** 2;
   const ACH = [
-    ['first', '👋 First steps', 'Open Aurora Journey', (s) => !!s.pages.journey],
+    ['first', '👋 First steps', 'Open Vorynth Journey', (s) => !!s.pages.journey],
     ['explorer5', '🧭 Explorer', 'Visit 5 different pages', (s) => Object.keys(s.pages).length >= 5],
     ['explorer12', '🗺️ Cartographer', 'Visit 12 different pages', (s) => Object.keys(s.pages).length >= 12],
     ['hash', '🔐 Trust but verify', 'Check a file with the File checker', (s) => !!s.calls.utilsHash],
     ['space', '🔎 Space detective', 'Scan a folder with Space Finder', (s) => !!s.calls.spaceScan],
     ['compare', '⚖️ Side by side', 'Compare two folders', (s) => !!s.calls.utilsCompare],
     ['join', '🧩 Puzzle master', 'Join split files', (s) => !!s.calls.joinRun],
-    ['streak3', '🔥 On a roll', 'Use Aurora 3 days in a row', (s) => s.best >= 3],
-    ['streak7', '🌋 Unstoppable', 'Use Aurora 7 days in a row', (s) => s.best >= 7],
-    ['owl', '🦉 Night owl', 'Open Aurora between midnight and 4 am', (s) => !!s.flags.owl],
-    ['bird', '🐦 Early bird', 'Open Aurora between 5 and 7 am', (s) => !!s.flags.bird],
+    ['streak3', '🔥 On a roll', 'Use Vorynth 3 days in a row', (s) => s.best >= 3],
+    ['streak7', '🌋 Unstoppable', 'Use Vorynth 7 days in a row', (s) => s.best >= 7],
+    ['owl', '🦉 Night owl', 'Open Vorynth between midnight and 4 am', (s) => !!s.flags.owl],
+    ['bird', '🐦 Early bird', 'Open Vorynth between 5 and 7 am', (s) => !!s.flags.bird],
     ['busy', '⚡ Power user', 'Use 100 features', (s) => s.total >= 100],
     ['lv5', '⭐ Level 5', 'Reach level 5', (s) => level(s.xp) >= 5],
     ['lv10', '🌟 Level 10', 'Reach level 10', (s) => level(s.xp) >= 10]
@@ -44,7 +44,7 @@
   const load = () => { const v = prefs.get('journey'); return v && typeof v === 'object' && typeof v.xp === 'number' ? { ...fresh(), ...v } : fresh(); };
   let state = load();
   /* news about achievements never pops up over your work: a dot appears on the Journey item in the sidebar, and messages show only while you are on that page */
-  let unseen = 0; const mark = () => { const b = document.querySelector('.nav-item[title="Aurora Journey"]'); if (b) b.classList.toggle('has-new', unseen > 0); };
+  let unseen = 0; const mark = () => { const b = document.querySelector('.nav-item[title="Vorynth Journey"]'); if (b) b.classList.toggle('has-new', unseen > 0); };
   const announce = (events) => { const n = events.filter((e) => e.type !== 'daily').length; if (!n) return; if (currentPage === 'journey') { events.filter((e) => e.type !== 'daily').forEach((e, i) => setTimeout(() => toast(e.type === 'level' ? `🎉 Level ${e.level}!` : e.type === 'ach' ? '🏅 Achievement: ' + ACH.find((a) => a[0] === e.id)[1] : '✅ Daily quest done: +30 XP'), i * 2600)); } else { unseen += n; mark(); } };
   const apply = (ev) => { try { const r = step(state, ev, Date.now()); state = r.state; prefs.set('journey', state); announce(r.events); } catch (_) { /* a game must never break settings */ } };
   window.auroraOnCall = (name) => { if (window.auroraExtras && !window.auroraExtras.isOn('journey')) return; if (typeof name === 'string' && name !== 'toggleGet' && name !== 'volumeGet') apply({ call: name }); };

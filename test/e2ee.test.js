@@ -15,7 +15,7 @@ test('ciphertext leaks nothing obvious and is different every time with the same
 test('wrong key is rejected', () => { const ct = E.encryptBuffer(Buffer.from('hello'), key); assert.throws(() => E.decryptBuffer(ct, E.newKey()), /Wrong password or key/); });
 test('any flipped bit is detected (header, every chunk, tag)', () => {
   const p = crypto.randomBytes(3000); const ct = E.encryptBuffer(p, key, { chunkLog2: 10 });
-  for (const pos of [5, 6, 9, 31, 32, 100, 1040, 2100, ct.length - 1, ct.length - 17]) { const bad = Buffer.from(ct); bad[pos] ^= 1; assert.throws(() => E.decryptBuffer(bad, key), /Wrong password or key|not an Aurora|settings Aurora does not understand|damaged/, 'bit ' + pos); }
+  for (const pos of [5, 6, 9, 31, 32, 100, 1040, 2100, ct.length - 1, ct.length - 17]) { const bad = Buffer.from(ct); bad[pos] ^= 1; assert.throws(() => E.decryptBuffer(bad, key), /Wrong password or key|not an Vorynth|settings Vorynth does not understand|damaged/, 'bit ' + pos); }
 });
 test('truncation, reordering and chunk duplication are detected', () => {
   const p = crypto.randomBytes(3 * CH + 500); const ct = E.encryptBuffer(p, key, { chunkLog2: 10 }); const full = CH + 16; const h = ct.subarray(0, 32);
@@ -28,8 +28,8 @@ test('truncation, reordering and chunk duplication are detected', () => {
   assert.throws(() => E.decryptBuffer(ct.subarray(0, ct.length - 5), key), /Wrong password or key|damaged/, 'cut inside the last chunk');
   assert.throws(() => E.decryptBuffer(ct.subarray(0, 40), key), /damaged|Wrong/, 'only a header');
 });
-test('rejects non-Aurora data and bad headers', () => {
-  assert.throws(() => E.decryptBuffer(Buffer.from('hello world, this is plain text. 0123456789'), key), /not an Aurora-encrypted file/);
+test('rejects non-Vorynth data and bad headers', () => {
+  assert.throws(() => E.decryptBuffer(Buffer.from('hello world, this is plain text. 0123456789'), key), /not an Vorynth-encrypted file/);
   assert.throws(() => E.makeHeader({ chunkLog2: 5 }), /Bad chunk size`?|Bad chunk size/);
 });
 test('password mode: roundtrip, wrong password, short password, tamper', async () => {

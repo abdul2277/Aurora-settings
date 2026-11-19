@@ -1,21 +1,21 @@
 <#
 .SYNOPSIS
-    Aurora - quickly turn off Windows AI features (Copilot, Recall, Click to Do,
+    Vorynth - quickly turn off Windows AI features (Copilot, Recall, Click to Do,
     AI in Paint/Notepad/Edge, Bing in Start, typing insights...) and undo it later.
 
 .DESCRIPTION
     Every change is a documented registry policy/setting. Before changing anything,
-    Aurora saves the previous values to %LOCALAPPDATA%\Aurora\backups so -Undo restores
+    Vorynth saves the previous values to %LOCALAPPDATA%\Aurora\backups so -Undo restores
     exactly what was there (including deleting values that did not exist before).
 
 .EXAMPLE
-    .\Aurora.ps1                      # interactive menu
-    .\Aurora.ps1 -Status              # show what is on/off
-    .\Aurora.ps1 -Apply All -WhatIf   # preview every change, touch nothing
-    .\Aurora.ps1 -Apply Recall,Copilot
-    .\Aurora.ps1 -Apply Recommended -RestorePoint
-    .\Aurora.ps1 -Undo                # roll back the latest Aurora run
-    .\Aurora.ps1 -List
+    .\Vorynth.ps1                      # interactive menu
+    .\Vorynth.ps1 -Status              # show what is on/off
+    .\Vorynth.ps1 -Apply All -WhatIf   # preview every change, touch nothing
+    .\Vorynth.ps1 -Apply Recall,Copilot
+    .\Vorynth.ps1 -Apply Recommended -RestorePoint
+    .\Vorynth.ps1 -Undo                # roll back the latest Vorynth run
+    .\Vorynth.ps1 -List
 #>
 [CmdletBinding(SupportsShouldProcess = $true, DefaultParameterSetName = 'Menu')]
 param(
@@ -129,7 +129,7 @@ function Get-AuroraDataDir {
     if ($script:Backend -and $script:Backend.DataDir) { return $script:Backend.DataDir }
     $base = $env:LOCALAPPDATA
     if (-not $base) { $base = [IO.Path]::GetTempPath() }
-    return (Join-Path $base 'Aurora')
+    return (Join-Path $base 'Vorynth')
 }
 
 # --------------------------------------------------------------------------
@@ -200,7 +200,7 @@ function Save-AuroraBackup($Entries) {
     if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
     $stamp = (Get-Date).ToString('yyyyMMdd-HHmmss-fff')
     $file = Join-Path $dir "aurora-$stamp.json"
-    $doc = [pscustomobject]@{ Tool = 'Aurora'; Version = $script:AuroraVersion; Created = (Get-Date).ToString('o'); Computer = $env:COMPUTERNAME; Changes = @($Entries) }
+    $doc = [pscustomobject]@{ Tool = 'Vorynth'; Version = $script:AuroraVersion; Created = (Get-Date).ToString('o'); Computer = $env:COMPUTERNAME; Changes = @($Entries) }
     $doc | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $file -Encoding UTF8
     return $file
 }
@@ -216,11 +216,11 @@ function Invoke-AuroraUndo {
     param([string] $File)
     if (-not $File) {
         $latest = Get-AuroraBackups | Select-Object -First 1
-        if (-not $latest) { throw 'No Aurora backup found - nothing to undo.' }
+        if (-not $latest) { throw 'No Vorynth backup found - nothing to undo.' }
         $File = $latest.FullName
     }
     $doc = Get-Content -LiteralPath $File -Raw | ConvertFrom-Json
-    if ($doc.Tool -ne 'Aurora') { throw "$File is not an Aurora backup." }
+    if ($doc.Tool -ne 'Vorynth') { throw "$File is not an Vorynth backup." }
     $isAdmin = Test-AuroraAdmin
     $restored = 0; $skipped = New-Object System.Collections.ArrayList
     $changes = @($doc.Changes)
@@ -231,7 +231,7 @@ function Invoke-AuroraUndo {
         if ($c.Existed) {
             if ($PSCmdlet.ShouldProcess($what, "Restore to $($c.Old)")) { Write-AuroraValue $c.Hive $c.Path $c.Name ([int]$c.Old); $restored++ }
         } else {
-            if ($PSCmdlet.ShouldProcess($what, 'Remove (did not exist before Aurora)')) { Remove-AuroraValue $c.Hive $c.Path $c.Name; $restored++ }
+            if ($PSCmdlet.ShouldProcess($what, 'Remove (did not exist before Vorynth)')) { Remove-AuroraValue $c.Hive $c.Path $c.Name; $restored++ }
         }
     }
     if ($skipped.Count -eq 0 -and -not $WhatIfPreference) {
@@ -255,10 +255,10 @@ function Remove-AuroraCopilotApp {
 
 function New-AuroraRestorePoint {
     try {
-        Checkpoint-Computer -Description 'Aurora - before disabling AI features' -RestorePointType MODIFY_SETTINGS -ErrorAction Stop
+        Checkpoint-Computer -Description 'Vorynth - before disabling AI features' -RestorePointType MODIFY_SETTINGS -ErrorAction Stop
         Write-Host '  System restore point created.' -ForegroundColor Green
     } catch {
-        Write-Warning "Could not create a restore point ($($_.Exception.Message)). Aurora's own backup will still be saved."
+        Write-Warning "Could not create a restore point ($($_.Exception.Message)). Vorynth's own backup will still be saved."
     }
 }
 

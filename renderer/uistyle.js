@@ -1,6 +1,6 @@
-/* Interface look: choose how the whole app is laid out and styled (Aurora, macOS, Windows, Android, GNOME) and where the menu sits. */
+/* Interface look: choose how the whole app is laid out and styled (Vorynth, macOS, Windows, Android, GNOME) and where the menu sits. */
 (function () {
-  const STYLES = [['aurora', 'Aurora (default)'], ['macos', 'macOS'], ['windows', 'Windows 11'], ['android', 'Android (Material You)'], ['gnome', 'GNOME / Linux']];
+  const STYLES = [['aurora', 'Vorynth (default)'], ['macos', 'macOS'], ['windows', 'Windows 11'], ['android', 'Android (Material You)'], ['gnome', 'GNOME / Linux']];
   const NAVS = [['left', 'Menu on the left'], ['right', 'Menu on the right'], ['top', 'Menu on top']];
   const css = `
 html[data-ui="macos"] { --radius: 12px; --font: -apple-system, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif; }

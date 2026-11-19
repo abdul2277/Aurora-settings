@@ -1,4 +1,4 @@
-/* Aurora "special" layer: living aurora background, theme presets, personal home hero, milestones, launch splash. */
+/* Vorynth "special" layer: living aurora background, theme presets, personal home hero, milestones, launch splash. */
 {
   const LS = { get: (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} } };
   const JS = (k, d) => { try { return JSON.parse(LS.get(k, '')) ?? d; } catch (_) { return d; } };
@@ -16,9 +16,9 @@
     { id: 'tinkerer', icon: '🛠️', name: 'Tinkerer', desc: 'Make your own command', need: 1, val: (s) => s.cmds },
     { id: 'disk', icon: '💽', name: 'Disk detective', desc: 'Open the Disk space map', need: 1, val: (s) => (s.visited.includes('diskmap') ? 1 : 0) },
     { id: 'gamer', icon: '🎮', name: 'Player one', desc: 'Open the Controllers page', need: 1, val: (s) => (s.visited.includes('controllers') ? 1 : 0) },
-    { id: 'streak3', icon: '🔥', name: 'On a roll', desc: 'Use Aurora 3 days in a row', need: 3, val: (s) => s.streak },
-    { id: 'streak7', icon: '⚡', name: 'Regular', desc: 'Use Aurora 7 days in a row', need: 7, val: (s) => s.streak },
-    { id: 'night', icon: '🌙', name: 'Night owl', desc: 'Open Aurora after 11 pm', need: 1, val: (s) => (s.night ? 1 : 0) },
+    { id: 'streak3', icon: '🔥', name: 'On a roll', desc: 'Use Vorynth 3 days in a row', need: 3, val: (s) => s.streak },
+    { id: 'streak7', icon: '⚡', name: 'Regular', desc: 'Use Vorynth 7 days in a row', need: 7, val: (s) => s.streak },
+    { id: 'night', icon: '🌙', name: 'Night owl', desc: 'Open Vorynth after 11 pm', need: 1, val: (s) => (s.night ? 1 : 0) },
     { id: 'styled', icon: '🎨', name: 'Stylist', desc: 'Pick a theme preset', need: 1, val: (s) => (s.styled ? 1 : 0) }
   ];
   // ---- pure helpers ----
@@ -58,7 +58,7 @@
   let current = 'home';
   const todayCounts = () => { const rep = []; const todo = JS('aurora.todo.list', []); return { ready: (rep || []).filter((t) => t.status === 'ready').length, todos: (todo || []).filter((t) => !t.done).length }; };
   function heroNode() {
-    const d = new Date(); const box = document.createElement('div'); box.id = 'aur-hero'; const nm = LS.get('aurora.name', ''); const h2 = document.createElement('h2'); h2.append(greeting(d.getHours()) + ', '); const n = document.createElement('span'); n.className = 'nm'; n.id = 'aur-name'; n.textContent = nm || 'friend'; n.title = 'Click to set your name'; n.onclick = async () => { const v = await askText('What should Aurora call you?', { placeholder: 'Your name' }); if (v != null && String(v).trim()) { LS.set('aurora.name', String(v).trim().slice(0, 30)); n.textContent = String(v).trim().slice(0, 30); } }; h2.append(n);
+    const d = new Date(); const box = document.createElement('div'); box.id = 'aur-hero'; const nm = LS.get('aurora.name', ''); const h2 = document.createElement('h2'); h2.append(greeting(d.getHours()) + ', '); const n = document.createElement('span'); n.className = 'nm'; n.id = 'aur-name'; n.textContent = nm || 'friend'; n.title = 'Click to set your name'; n.onclick = async () => { const v = await askText('What should Vorynth call you?', { placeholder: 'Your name' }); if (v != null && String(v).trim()) { LS.set('aurora.name', String(v).trim().slice(0, 30)); n.textContent = String(v).trim().slice(0, 30); } }; h2.append(n);
     const sub = document.createElement('div'); sub.className = 'sub2'; sub.textContent = d.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' }); const ch = document.createElement('div'); ch.className = 'chips'; const c = todayCounts(); const st = stateNow();
     [['🔥 ' + st.streak + '-day streak'], ['🔧 ' + c.ready + ' repairs ready'], ['✅ ' + c.todos + ' open to-dos'], ['🏆 ' + evaluate(st).filter((m) => m.done).length + '/' + MS.length + ' milestones']].forEach((x, i) => { const e = document.createElement('span'); e.className = 'chip'; e.textContent = x[0]; if (i === 3) { e.style.cursor = 'pointer'; e.onclick = () => go('milestones'); } ch.append(e); });
     box.append(h2, sub, ch); return box;
@@ -83,8 +83,8 @@
   };
   // ---- commands: theme <name>, aurora bg on/off ----
   { const prev = window.auroraCommands; window.auroraCommands = (qs) => { const out = prev ? prev(qs) : []; const q = qs.trim().toLowerCase(); let m;
-      if ((m = /^theme\s+(\w+)$/.exec(q))) { const t = THEMES.find((x) => x.id === m[1] || x.name.toLowerCase().startsWith(m[1])); if (t) out.unshift({ act: true, icon: '🎨', label: 'Theme: ' + t.name, hint: 'Aurora looks', run: async () => { applyTheme(t.id, true); return t.name; } }); }
-      if ((m = /^aurora\s+bg\s+(on|off)$/.exec(q))) out.unshift({ act: true, icon: '🌌', label: 'Aurora background ' + m[1], hint: 'Aurora looks', run: async () => { setFx(m[1] === 'on'); return 'Background ' + m[1]; } });
+      if ((m = /^theme\s+(\w+)$/.exec(q))) { const t = THEMES.find((x) => x.id === m[1] || x.name.toLowerCase().startsWith(m[1])); if (t) out.unshift({ act: true, icon: '🎨', label: 'Theme: ' + t.name, hint: 'Vorynth looks', run: async () => { applyTheme(t.id, true); return t.name; } }); }
+      if ((m = /^aurora\s+bg\s+(on|off)$/.exec(q))) out.unshift({ act: true, icon: '🌌', label: 'Vorynth background ' + m[1], hint: 'Vorynth looks', run: async () => { setFx(m[1] === 'on'); return 'Background ' + m[1]; } });
       return out; }; }
   window.__special = { greeting, nextStreak, evaluate, theme, THEMES, MS, stateNow, setFx, applyTheme };
 }

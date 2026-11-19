@@ -1,4 +1,4 @@
-/* Aurora Store UI. Backend: lib/appstore.js (handlers appStore*). Uses the helpers from app.js: el, call, toast, errText, askText, go. */
+/* Vorynth Store UI. Backend: lib/appstore.js (handlers appStore*). Uses the helpers from app.js: el, call, toast, errText, askText, go. */
 CUSTOM.appstore = (box) => {
   const FEATURED = ['Mozilla.Firefox', 'VideoLAN.VLC', 'Microsoft.VisualStudioCode', '7zip.7zip', 'Notepad++.Notepad++', 'OBSProject.OBSStudio', 'Git.Git', 'Discord.Discord', 'Spotify.Spotify'];
   const CAT_ICON = { Browsers: '🌐', Media: '🎬', Developer: '🧑‍💻', Utilities: '🧰', Games: '🎮', Communication: '💬', Security: '🛡️', Productivity: '📝', Graphics: '🎨', 'System tools': '⚙️', Education: '🎓', 'Added by you': '➕' };
@@ -12,7 +12,7 @@ CUSTOM.appstore = (box) => {
 
   /* ---------- skeleton of the page ---------- */
   const hero = el('div', 'sx-hero'), heroText = el('div', 'sx-hero-text'), stats = el('div', 'sx-stats'), heroBtns = el('div', 'sx-hero-btns');
-  heroText.append(el('div', 'sx-title', '🛍️ Aurora Store'), el('div', 'sx-sub', 'Free apps from the public Windows Package Manager catalog. Every download is checked against its published SHA-256 fingerprint before it runs.'));
+  heroText.append(el('div', 'sx-title', '🛍️ Vorynth Store'), el('div', 'sx-sub', 'Free apps from the public Windows Package Manager catalog. Every download is checked against its published SHA-256 fingerprint before it runs.'));
   const search = el('input', 'filter sx-search'); search.placeholder = 'Search apps…  ( press / )'; search.setAttribute('aria-label', 'Search apps');
   const chk = el('button', 'btn', '🔄 Check for updates'), upAll = el('button', 'btn primary', 'Update all'), add = el('button', 'btn', '➕ Add by package ID'); upAll.hidden = true;
   heroBtns.append(chk, upAll, add); hero.append(heroText, stats, heroBtns);

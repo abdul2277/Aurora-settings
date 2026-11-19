@@ -1,4 +1,4 @@
-/* Aurora Store UI (see store-ui.js). Uses the app's theme variables, so every theme and light/dark mode applies. */
+/* Vorynth Store UI (see store-ui.js). Uses the app's theme variables, so every theme and light/dark mode applies. */
 .sx { --sx-r: 16px; }
 .sx-hero { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: calc(var(--sx-r) + 2px); padding: 18px 20px; display: grid; gap: 14px; grid-template-columns: 1fr auto; align-items: center;
   background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 60%), radial-gradient(100% 120% at 100% 100%, color-mix(in srgb, #c77dff 22%, transparent), transparent 55%), var(--card); }

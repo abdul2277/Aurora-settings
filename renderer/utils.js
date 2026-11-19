@@ -1,4 +1,4 @@
-/* Aurora Utilities: file checker, folder compare, empty folder finder and checksum lists. Nothing here changes or deletes your files. (Text and colour tools are optional add-ons now.) */
+/* Vorynth Utilities: file checker, folder compare, empty folder finder and checksum lists. Nothing here changes or deletes your files. (Text and colour tools are optional add-ons now.) */
 {
   const B = (t, c, f) => { const b = el('button', 'btn' + (c ? ' ' + c : ''), t); if (f) b.onclick = f; return b; };
   const err = (e) => toast(errText(e), true);

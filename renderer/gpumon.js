@@ -18,7 +18,7 @@
     };
     const draw = (d) => {
       out.replaceChildren();
-      if (!d.gpus.length) { out.append(el('div', 'card', 'No NVIDIA GPU was found (nvidia-smi is missing or the driver is not loaded). AMD and Intel GPUs are shown by the Aurora OS "GPU Monitor" tool.')); }
+      if (!d.gpus.length) { out.append(el('div', 'card', 'No NVIDIA GPU was found (nvidia-smi is missing or the driver is not loaded). AMD and Intel GPUs are shown by the Vorynth OS "GPU Monitor" tool.')); }
       d.gpus.forEach((g, i) => {
         const vp = g.vramTotalMB ? 100 * g.vramUsedMB / g.vramTotalMB : null;
         push(i + 'u', g.util); push(i + 'v', vp); push(i + 't', g.tempC); push(i + 'p', g.powerW);

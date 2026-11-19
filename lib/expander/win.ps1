@@ -1,4 +1,4 @@
-# Aurora text expander helper (Windows). Prints one short code per key to stdout, nothing else, and writes nothing to disk:
+# Vorynth text expander helper (Windows). Prints one short code per key to stdout, nothing else, and writes nothing to disk:
 #   C<char> typed character   B backspace   R reset (Enter, Tab, Ctrl/Alt/Win combos, mouse click)
 Add-Type -TypeDefinition @"
 using System; using System.Runtime.InteropServices; using System.Text; using System.Diagnostics; using System.Windows.Forms;

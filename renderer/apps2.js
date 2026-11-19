@@ -1,4 +1,4 @@
-/* More Aurora Apps: Snap (screenshots), Cam (camera), QR, Dev kit and Dates. Loaded after apps.js. */
+/* More Vorynth Apps: Snap (screenshots), Cam (camera), QR, Dev kit and Dates. Loaded after apps.js. */
 {
   const apDl = (blob, name) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
   const B = (txt, cls, fn) => { const b = el('button', 'btn' + (cls ? ' ' + cls : ''), txt); if (fn) b.onclick = fn; return b; };
@@ -44,7 +44,7 @@
     const out = () => { const c = document.createElement('canvas'); const r = sel || { x: 0, y: 0, w: img.width, h: img.height }; c.width = Math.round(r.w); c.height = Math.round(r.h); const x = c.getContext('2d'); x.translate(-r.x, -r.y); x.drawImage(img, 0, 0); ops.forEach((o) => drawOp(x, o)); return c; };
     const delay = el('select', 'filter'); delay.style.width = 'auto'; [0, 3, 5, 10].forEach((d) => delay.append(Object.assign(el('option', '', d ? `Wait ${d} seconds` : 'No delay'), { value: d })));
     const status = el('div', 'sub', '');
-    const take = async () => { try { const d = Number(delay.value); if (d) { for (let k = d; k > 0; k--) { status.textContent = `Capturing in ${k}...`; await new Promise((r) => setTimeout(r, 1000)); } } status.textContent = 'Aurora hides for a moment...'; const r = await call('screenSnap'); await load(r.dataUrl); status.textContent = `${r.w} x ${r.h} px. Pick a tool below, or drag with Crop to choose an area.`; } catch (e) { status.textContent = ''; toast(errText(e), true); } };
+    const take = async () => { try { const d = Number(delay.value); if (d) { for (let k = d; k > 0; k--) { status.textContent = `Capturing in ${k}...`; await new Promise((r) => setTimeout(r, 1000)); } } status.textContent = 'Vorynth hides for a moment...'; const r = await call('screenSnap'); await load(r.dataUrl); status.textContent = `${r.w} x ${r.h} px. Pick a tool below, or drag with Crop to choose an area.`; } catch (e) { status.textContent = ''; toast(errText(e), true); } };
     const need = () => { if (!img) { toast('Take a screenshot first', true); return false; } return true; };
     const open = el('input'); open.type = 'file'; open.accept = 'image/*'; open.style.display = 'none'; open.onchange = () => { const f = open.files[0]; if (!f) return; const u = URL.createObjectURL(f); load(u).then(() => URL.revokeObjectURL(u)).catch((e) => toast(errText(e), true)); open.value = ''; };
     const tools = el('div', 'store-chips'); const tb = {}; [['crop', '✂ Crop'], ['pen', '✏ Pen'], ['box', '⬜ Box'], ['arrow', '➜ Arrow'], ['text', 'T Text'], ['blur', '▒ Blur']].forEach(([k, l]) => { const b = el('button', 'chip' + (k === tool ? ' on' : ''), l); b.dataset.tool = k; b.onclick = () => { tool = k; Object.values(tb).forEach((x) => x.classList.remove('on')); b.classList.add('on'); cv.style.cursor = k === 'text' ? 'text' : 'crosshair'; }; tb[k] = b; tools.append(b); });
@@ -60,7 +60,7 @@
     let stream = null, rec = null, chunks = [], mirror = true; const devs = el('select', 'filter'); devs.style.width = 'auto';
     const stop = () => { if (stream) stream.getTracks().forEach((t) => t.stop()); stream = null; vid.srcObject = null; vid.style.display = 'none'; };
     const start = async () => {
-      stop(); try { stream = await navigator.mediaDevices.getUserMedia({ video: devs.value ? { deviceId: { exact: devs.value } } : true, audio: false }); } catch (_) { msg.textContent = 'Aurora could not open a camera. Check that one is connected and that Camera access is on in Privacy.'; return; }
+      stop(); try { stream = await navigator.mediaDevices.getUserMedia({ video: devs.value ? { deviceId: { exact: devs.value } } : true, audio: false }); } catch (_) { msg.textContent = 'Vorynth could not open a camera. Check that one is connected and that Camera access is on in Privacy.'; return; }
       msg.textContent = ''; vid.srcObject = stream; vid.style.display = 'block'; vid.style.transform = mirror ? 'scaleX(-1)' : ''; await vid.play().catch(() => {});
       const list = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'videoinput'); const cur = stream.getVideoTracks()[0].getSettings().deviceId; devs.replaceChildren(); list.forEach((d, i) => { const o = Object.assign(el('option', '', d.label || 'Camera ' + (i + 1)), { value: d.deviceId }); if (d.deviceId === cur) o.selected = true; devs.append(o); });
     };

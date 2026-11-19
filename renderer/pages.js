@@ -110,7 +110,7 @@ window.PAGES = [
       {
         title: 'Theme', items: [
           toggle('darkMode', 'Dark mode', 'Apps and system surfaces', 'theme light night appearance color'),
-          { type: 'accent', id: 'accent', label: 'Accent color', desc: 'Used throughout Aurora Settings', kw: 'color highlight' },
+          { type: 'accent', id: 'accent', label: 'Accent color', desc: 'Used throughout Vorynth Settings', kw: 'color highlight' },
           toggle('transparency', 'Transparency effects', 'Mica and acrylic surfaces', 'blur glass'),
           { type: 'custom', id: 'autotheme', label: 'Auto dark mode schedule', desc: '', kw: 'schedule automatic sunset sunrise switch theme timer night', render: 'autotheme' }
         ]
@@ -149,13 +149,13 @@ window.PAGES = [
   id: 'mycmds', icon: '⌨️', title: 'My commands', sub: 'Make your own commands and add-ons by typing',
   sections: [{ title: 'Build your own', items: [{ type: 'custom', id: 'mycmds', label: 'my commands macros create add-on addon custom command bar shortcut automation', kw: 'اوامر مخصصة اضافة ماكرو', render: 'mycmds' }] }]
 }, {
-  id: 'looks', icon: '🎨', title: 'Aurora looks', sub: 'Themes and the living aurora background',
+  id: 'looks', icon: '🎨', title: 'Vorynth looks', sub: 'Themes and the living aurora background',
   sections: [{ title: 'Make it yours', items: [{ type: 'custom', id: 'looks', label: 'theme style accent colour sunset ocean aurora background animation', kw: 'ثيم الوان مظهر خلفية', render: 'looks' }] }]
 }, {
-  id: 'milestones', icon: '🏆', title: 'Milestones', sub: 'Unlock badges as you use Aurora',
+  id: 'milestones', icon: '🏆', title: 'Milestones', sub: 'Unlock badges as you use Vorynth',
   sections: [{ title: 'Your progress', items: [{ type: 'custom', id: 'milestones', label: 'milestones achievements badges streak progress', kw: 'انجازات شارات', render: 'milestones' }] }]
 }, {
-  id: 'autodoc', icon: '🩺', title: 'Aurora Doctor', sub: 'Diagnose every part of your PC and fix what is broken',
+  id: 'autodoc', icon: '🩺', title: 'Vorynth Doctor', sub: 'Diagnose every part of your PC and fix what is broken',
   sections: [{ title: 'Diagnose and repair', items: [{ type: 'custom', id: 'autodoc', label: 'doctor diagnose pc health check repair fix broken cpu gpu ram motherboard drives temperature errors bravebuffer auto fix', kw: 'تشخيص فحص اصلاح الجهاز اعطال معالج كرت شاشة رام لوحة ام', render: 'autodoc' }] }]
 }, {
     id: 'gaming', icon: '🎮', title: 'Gaming', sub: 'Performance and capture',
@@ -191,7 +191,7 @@ window.PAGES = [
   {
     id: 'tweaks', icon: '🧪', title: 'Power tweaks', sub: 'The stuff Windows hides',
     sections: [
-      { title: 'Optional Aurora extras', items: [{ type: 'custom', id: 'extras', label: 'Optional extras features switch on off sidebar pages tools store apps plus toolkit toolbox labs profiles automation', kw: 'extras optional features sidebar add remove pages tools store toolbox labs', render: 'extras' }] },
+      { title: 'Optional Vorynth extras', items: [{ type: 'custom', id: 'extras', label: 'Optional extras features switch on off sidebar pages tools store apps plus toolkit toolbox labs profiles automation', kw: 'extras optional features sidebar add remove pages tools store toolbox labs', render: 'extras' }] },
       {
         title: 'File Explorer', items: [
           toggle('fileExt', 'Show file extensions', 'See .txt, .exe, .png and so on', 'explorer'),
@@ -213,10 +213,10 @@ window.PAGES = [
     ]
   },
   {
-    id: 'backup', icon: '💾', title: 'Aurora backup', sub: 'Updates, and saving or restoring your preferences',
-    sections: [{ title: 'Full backup of your Aurora data', items: [{ type: 'custom', id: 'databackup', label: 'Full backup export import everything notes planner journal data move to another pc encrypt password', kw: 'backup restore migrate transfer data export import', render: 'databackup' }] }, { title: 'Settings Time Machine', items: [{ type: 'custom', id: 'timemachine', label: 'Settings Time Machine snapshots history undo restore roll back compare what changed', kw: 'snapshot backup restore previous settings rollback history checkpoint', render: 'timemachine' }] }, { title: 'Update Aurora', items: [{ type: 'custom', id: 'selfupdate', label: 'Update Aurora check for updates new version install update app', kw: 'update upgrade version download newer', render: 'selfupdate' }] }, {
+    id: 'backup', icon: '💾', title: 'Vorynth backup', sub: 'Updates, and saving or restoring your preferences',
+    sections: [{ title: 'Full backup of your Vorynth data', items: [{ type: 'custom', id: 'databackup', label: 'Full backup export import everything notes planner journal data move to another pc encrypt password', kw: 'backup restore migrate transfer data export import', render: 'databackup' }] }, { title: 'Settings Time Machine', items: [{ type: 'custom', id: 'timemachine', label: 'Settings Time Machine snapshots history undo restore roll back compare what changed', kw: 'snapshot backup restore previous settings rollback history checkpoint', render: 'timemachine' }] }, { title: 'Update Vorynth', items: [{ type: 'custom', id: 'selfupdate', label: 'Update Vorynth check for updates new version install update app', kw: 'update upgrade version download newer', render: 'selfupdate' }] }, {
       title: 'Preferences', items: [
-        { type: 'button', id: 'export', label: 'Export settings', desc: 'Saves every toggle in Aurora Settings, plus accent and pinned items, to a JSON file',
+        { type: 'button', id: 'export', label: 'Export settings', desc: 'Saves every toggle in Vorynth Settings, plus accent and pinned items, to a JSON file',
           kw: 'backup save', btn: 'Export', run: 'export' },
         { type: 'button', id: 'restorepoint', label: 'Create a Windows restore point', desc: 'A safety net before big changes. Windows asks for administrator permission and allows one per 24 hours.',
           kw: 'system restore undo safe checkpoint', btn: 'Create', run: async () => { await call('restorePoint'); return 'Restore point requested'; } },
@@ -328,7 +328,7 @@ PAGES.push({
 });
 
 PAGES.push({
-  id: 'automation', icon: '🤖', title: 'Automation', sub: 'Let Aurora do things for you, automatically',
+  id: 'automation', icon: '🤖', title: 'Automation', sub: 'Let Vorynth do things for you, automatically',
   sections: [
     { title: 'Run in the background', items: [{ type: 'custom', id: 'bgsettings', label: 'Background tray start with Windows hotkeys notifications pause automation', kw: 'startup autostart tray background shortcuts', render: 'bgsettings' }] },
     { title: 'Rules', items: [{ type: 'custom', id: 'rules', label: 'Automation rules when unplug battery wifi app time then do', kw: 'automatic trigger if this then that schedule profile', render: 'rules' }] },
@@ -338,7 +338,7 @@ PAGES.push({
 });
 
 PAGES.push({
-  id: 'wintools', icon: '🧩', title: 'Windows tools', sub: 'Aurora versions of Task Manager, Services, Event Viewer, Win+V and more',
+  id: 'wintools', icon: '🧩', title: 'Windows tools', sub: 'Vorynth versions of Task Manager, Services, Event Viewer, Win+V and more',
   sections: [
     { title: 'Services', items: [{ type: 'custom', id: 'services', label: 'Services manager start stop restart startup type', kw: 'services.msc windows service background', render: 'services' }] },
     { title: 'Event log', items: [{ type: 'custom', id: 'events', label: 'Event viewer errors warnings crashes why did windows crash', kw: 'event viewer logs blue screen problems errors', render: 'events' }] },
@@ -346,35 +346,35 @@ PAGES.push({
     { title: 'Quick notes', items: [{ type: 'custom', id: 'notes', label: 'Quick notes sticky notes', kw: 'sticky notes memo text', render: 'notes' }] },
     { title: 'System report', items: [{ type: 'button', id: 'report', label: 'Save a full PC report', desc: 'Hardware, storage, battery, updates, startup apps and device problems in one web page you can keep or send', kw: 'system information msinfo specs export share', btn: 'Create report', run: async () => { const f = await call('systemReport'); return f ? 'Saved to ' + f : 'Cancelled'; } }] },
     { title: 'Other built-in tools', items: [
-      { type: 'button', id: 'alt-taskmgr', label: 'Task Manager', desc: 'Aurora version: Toolbox > Process manager', btn: 'Go', run: () => { go('toolbox', 'processes'); return 'Opened Toolbox'; } },
-      { type: 'button', id: 'alt-startup', label: 'Startup apps (msconfig)', desc: 'Aurora version: Apps > Startup', btn: 'Go', run: () => { go('apps', 'startupmgr'); return 'Opened Apps'; } },
-      { type: 'button', id: 'alt-cleanup', label: 'Disk Cleanup', desc: 'Aurora version: Toolbox > Cleanup center', btn: 'Go', run: () => { go('toolbox', 'cleanup'); return 'Opened Toolbox'; } },
-      { type: 'button', id: 'alt-sched', label: 'Task Scheduler (Aurora rules)', desc: 'Aurora version: Automation > Rules', btn: 'Go', run: () => { go('automation', 'rules'); return 'Opened Automation'; } },
-      { type: 'button', id: 'alt-diskmgmt', label: 'Disk Management', desc: 'Aurora version: System > Disks and partitions', btn: 'Go', run: () => { go('system', 'disks'); return 'Opened System'; } },
-      { type: 'button', id: 'alt-notepad', label: 'Notepad', desc: 'Aurora version: Pad', btn: 'Go', run: () => { go('aurora-apps', 'pad'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-calculator', label: 'Calculator', desc: 'Aurora version: Calc', btn: 'Go', run: () => { go('aurora-apps', 'calc'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-paint', label: 'Paint', desc: 'Aurora version: Sketch', btn: 'Go', run: () => { go('aurora-apps', 'sketch'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-clock', label: 'Clock and alarms', desc: 'Aurora version: Timer and stopwatch', btn: 'Go', run: () => { go('aurora-apps', 'timer'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-calendar', label: 'Calendar', desc: 'Aurora version: Planner', btn: 'Go', run: () => { go('aurora-apps', 'planner'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-voicerec', label: 'Voice Recorder', desc: 'Aurora version: Recorder', btn: 'Go', run: () => { go('aurora-apps', 'recorder'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-photos', label: 'Photos and Media Player', desc: 'Aurora version: Viewer', btn: 'Go', run: () => { go('aurora-apps', 'viewer'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-charmap', label: 'Character Map', desc: 'Aurora version: Symbols', btn: 'Go', run: () => { go('aurora-apps', 'symbols'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-snip', label: 'Snipping Tool', desc: 'Aurora version: Snap', btn: 'Go', run: () => { go('aurora-apps', 'snap'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-camera', label: 'Camera', desc: 'Aurora version: Cam', btn: 'Go', run: () => { go('aurora-apps', 'cam'); return 'Opened Aurora Apps'; } },
-      { type: 'button', id: 'alt-store', label: 'Microsoft Store', desc: 'Aurora version: Aurora Store (install apps with one click)', btn: 'Go', run: () => { go('store', 'appstore'); return 'Opened Aurora Store'; } },
-      { type: 'button', id: 'alt-programs', label: 'Control Panel: Programs', desc: 'Aurora version: Apps > Installed (with Uninstall)', btn: 'Go', run: () => { go('apps', 'applist'); return 'Opened Apps'; } },
-      { type: 'button', id: 'alt-devmgmt', label: 'Device Manager', desc: 'Aurora version: Bluetooth & devices', btn: 'Go', run: () => { go('devices', 'deviceproblems'); return 'Opened Devices'; } }
+      { type: 'button', id: 'alt-taskmgr', label: 'Task Manager', desc: 'Vorynth version: Toolbox > Process manager', btn: 'Go', run: () => { go('toolbox', 'processes'); return 'Opened Toolbox'; } },
+      { type: 'button', id: 'alt-startup', label: 'Startup apps (msconfig)', desc: 'Vorynth version: Apps > Startup', btn: 'Go', run: () => { go('apps', 'startupmgr'); return 'Opened Apps'; } },
+      { type: 'button', id: 'alt-cleanup', label: 'Disk Cleanup', desc: 'Vorynth version: Toolbox > Cleanup center', btn: 'Go', run: () => { go('toolbox', 'cleanup'); return 'Opened Toolbox'; } },
+      { type: 'button', id: 'alt-sched', label: 'Task Scheduler (Vorynth rules)', desc: 'Vorynth version: Automation > Rules', btn: 'Go', run: () => { go('automation', 'rules'); return 'Opened Automation'; } },
+      { type: 'button', id: 'alt-diskmgmt', label: 'Disk Management', desc: 'Vorynth version: System > Disks and partitions', btn: 'Go', run: () => { go('system', 'disks'); return 'Opened System'; } },
+      { type: 'button', id: 'alt-notepad', label: 'Notepad', desc: 'Vorynth version: Pad', btn: 'Go', run: () => { go('aurora-apps', 'pad'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-calculator', label: 'Calculator', desc: 'Vorynth version: Calc', btn: 'Go', run: () => { go('aurora-apps', 'calc'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-paint', label: 'Paint', desc: 'Vorynth version: Sketch', btn: 'Go', run: () => { go('aurora-apps', 'sketch'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-clock', label: 'Clock and alarms', desc: 'Vorynth version: Timer and stopwatch', btn: 'Go', run: () => { go('aurora-apps', 'timer'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-calendar', label: 'Calendar', desc: 'Vorynth version: Planner', btn: 'Go', run: () => { go('aurora-apps', 'planner'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-voicerec', label: 'Voice Recorder', desc: 'Vorynth version: Recorder', btn: 'Go', run: () => { go('aurora-apps', 'recorder'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-photos', label: 'Photos and Media Player', desc: 'Vorynth version: Viewer', btn: 'Go', run: () => { go('aurora-apps', 'viewer'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-charmap', label: 'Character Map', desc: 'Vorynth version: Symbols', btn: 'Go', run: () => { go('aurora-apps', 'symbols'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-snip', label: 'Snipping Tool', desc: 'Vorynth version: Snap', btn: 'Go', run: () => { go('aurora-apps', 'snap'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-camera', label: 'Camera', desc: 'Vorynth version: Cam', btn: 'Go', run: () => { go('aurora-apps', 'cam'); return 'Opened Vorynth Apps'; } },
+      { type: 'button', id: 'alt-store', label: 'Microsoft Store', desc: 'Vorynth version: Vorynth Store (install apps with one click)', btn: 'Go', run: () => { go('store', 'appstore'); return 'Opened Vorynth Store'; } },
+      { type: 'button', id: 'alt-programs', label: 'Control Panel: Programs', desc: 'Vorynth version: Apps > Installed (with Uninstall)', btn: 'Go', run: () => { go('apps', 'applist'); return 'Opened Apps'; } },
+      { type: 'button', id: 'alt-devmgmt', label: 'Device Manager', desc: 'Vorynth version: Bluetooth & devices', btn: 'Go', run: () => { go('devices', 'deviceproblems'); return 'Opened Devices'; } }
     ] }
   ]
 });
 
 PAGES.push({
-  id: 'store', icon: '🛍️', title: 'Aurora Store', sub: 'Install apps safely, no website hunting',
-  sections: [{ title: 'Apps', items: [{ type: 'custom', id: 'appstore', label: 'Aurora Store install apps download browser firefox chrome vlc 7zip steam update uninstall', kw: 'store app installer winget microsoft store alternative download software', render: 'appstore' }] }]
+  id: 'store', icon: '🛍️', title: 'Vorynth Store', sub: 'Install apps safely, no website hunting',
+  sections: [{ title: 'Apps', items: [{ type: 'custom', id: 'appstore', label: 'Vorynth Store install apps download browser firefox chrome vlc 7zip steam update uninstall', kw: 'store app installer winget microsoft store alternative download software', render: 'appstore' }] }]
 });
 
 PAGES.push({
-  id: 'aurora-apps', icon: '🧰', title: 'Aurora Apps', sub: 'Your own Notepad, Calculator, Paint, Screenshots, Camera, Journal and more',
+  id: 'aurora-apps', icon: '🧰', title: 'Vorynth Apps', sub: 'Your own Notepad, Calculator, Paint, Screenshots, Camera, Journal and more',
   sections: [
     { title: 'Pad: text editor', items: [{ type: 'custom', id: 'pad', label: 'Pad text editor notepad write edit text file', kw: 'notepad txt editor', render: 'pad' }] },
     { title: 'Calc: calculator and converter', items: [{ type: 'custom', id: 'calc', label: 'Calc calculator scientific unit converter', kw: 'calculator math convert length weight temperature', render: 'calc' }] },
@@ -398,10 +398,10 @@ PAGES.push({
   ]
 });
 
-{ const pz = PAGES.find((x) => x.id === 'personalization'); if (pz) pz.sections.splice(1, 0, { title: 'Aurora-only settings', items: [{ type: 'custom', id: 'auroraprefs', label: 'Aurora-only settings start page compact sidebar text size density corners glass sounds right to left hide pages message position confirm commands', kw: 'preferences interface layout ui behaviour customise', render: 'auroraprefs' }] }); if (pz) pz.sections.unshift({ title: 'Aurora Studio', items: [{ type: 'custom', id: 'studio', label: 'Aurora Studio themes packs neon gold borealis effects background animation spotlight intro', kw: 'theme look style appearance animation particles stars aurora background', render: 'studio' }] }); }
+{ const pz = PAGES.find((x) => x.id === 'personalization'); if (pz) pz.sections.splice(1, 0, { title: 'Vorynth-only settings', items: [{ type: 'custom', id: 'auroraprefs', label: 'Vorynth-only settings start page compact sidebar text size density corners glass sounds right to left hide pages message position confirm commands', kw: 'preferences interface layout ui behaviour customise', render: 'auroraprefs' }] }); if (pz) pz.sections.unshift({ title: 'Vorynth Studio', items: [{ type: 'custom', id: 'studio', label: 'Vorynth Studio themes packs neon gold borealis effects background animation spotlight intro', kw: 'theme look style appearance animation particles stars aurora background', render: 'studio' }] }); }
 
 PAGES.push({
-  id: 'aurora-plus', icon: '💎', title: 'Aurora Plus', sub: '40 extra tools: organise, calculate, write, create, play',
+  id: 'aurora-plus', icon: '💎', title: 'Vorynth Plus', sub: '40 extra tools: organise, calculate, write, create, play',
   sections: [
     { title: 'Organize: Boards', items: [{ type: 'custom', id: 'kanban', label: 'Boards kanban to do doing done cards tasks', kw: 'kanban trello project', render: 'kanban' }] },
     { title: 'Organize: Snippets', items: [{ type: 'custom', id: 'snippets', label: 'Snippets saved text copy paste replies templates', kw: 'text templates canned responses', render: 'snippets' }] },
@@ -447,7 +447,7 @@ PAGES.push({
 });
 
 PAGES.push({
-  id: 'aurora-pro', icon: '🛠️', title: 'Aurora Toolkit', sub: 'PC doctor, Wi-Fi file drop, network kit, PDF, zip, QR, encrypted vault',
+  id: 'aurora-pro', icon: '🛠️', title: 'Vorynth Toolkit', sub: 'PC doctor, Wi-Fi file drop, network kit, PDF, zip, QR, encrypted vault',
   sections: [
     { title: 'PC Doctor', items: [{ type: 'custom', id: 'doctor', label: 'PC Doctor health check why is my pc slow memory disk startup devices advice', kw: 'slow lag problems performance check', render: 'doctor' }] },
     { title: 'Lock a file with a password', items: [{ type: 'custom', id: 'filelock', label: 'Lock encrypt decrypt unlock file password protect aur', kw: 'encrypt decrypt lock file password secure aur end to end', render: 'filelock' }] },
@@ -462,7 +462,7 @@ PAGES.push({
 });
 
 PAGES.push({
-  id: 'addons', icon: '🧩', title: 'Add-ons', sub: 'Small tools for Aurora, made by you or others',
+  id: 'addons', icon: '🧩', title: 'Add-ons', sub: 'Small tools for Vorynth, made by you or others',
   sections: [{ title: 'Add-ons', items: [{ type: 'custom', id: 'addons', label: 'Add-ons plugins extensions install make your own custom tools sandbox', kw: 'plugin extension addon install create custom widget tool', render: 'addons' }] }]
 });
 
@@ -472,7 +472,7 @@ PAGES.push({
 });
 
 PAGES.push({
-  id: 'desklook', icon: '🍏', title: 'Desktop Look', sub: 'Make Aurora OS look and feel like a Mac. Dock, menu bar, colours, hot corners',
+  id: 'desklook', icon: '🍏', title: 'Desktop Look', sub: 'Make Vorynth OS look and feel like a Mac. Dock, menu bar, colours, hot corners',
   sections: [{ title: 'Desktop Look', items: [{ type: 'custom', id: 'desklook', label: 'desktop look macos mac dock menu bar theme dark light accent wallpaper hot corners night shift blur', kw: 'macos dock menubar theme dark accent wallpaper hot corners night shift blur spotlight control center', render: 'desklook' }] }]
 });
 
@@ -484,21 +484,21 @@ PAGES.push({
 
 
 PAGES.push({
-  id: 'utils', icon: '🧮', title: 'Aurora Utilities', sub: 'File checker, folder compare, checksum lists',
+  id: 'utils', icon: '🧮', title: 'Vorynth Utilities', sub: 'File checker, folder compare, checksum lists',
   sections: [{ title: 'Utilities', items: [{ type: 'custom', id: 'utils', label: 'Utilities file checker checksum hash sha256 folder compare empty folders checksum list', kw: 'hash checksum verify download compare folders empty folders', render: 'utils' }] }]
 });
 
 PAGES.push({
-  id: 'journey', icon: '🏆', title: 'Aurora Journey', sub: 'Levels, streaks, achievements and unlockable accents',
+  id: 'journey', icon: '🏆', title: 'Vorynth Journey', sub: 'Levels, streaks, achievements and unlockable accents',
   sections: [{ title: 'Journey', items: [{ type: 'custom', id: 'journey', label: 'Journey level xp streak achievements quests rewards unlock accent colors game', kw: 'level xp streak achievement quest reward unlock accent game progress', render: 'journey' }] }]
 });
 PAGES.push({
-  id: 'aurora-os', icon: '💿', title: 'Aurora OS', sub: 'Download, check and install Aurora OS',
-  sections: [{ title: 'Aurora OS', items: [{ type: 'custom', id: 'os', label: 'Aurora OS install download image iso usb ventoy rufus linux boot check verify join parts', kw: 'aurora os linux iso image usb boot install download verify join', render: 'os' }] }]
+  id: 'aurora-os', icon: '💿', title: 'Vorynth OS', sub: 'Download, check and install Vorynth OS',
+  sections: [{ title: 'Vorynth OS', items: [{ type: 'custom', id: 'os', label: 'Vorynth OS install download image iso usb ventoy rufus linux boot check verify join parts', kw: 'aurora os linux iso image usb boot install download verify join', render: 'os' }] }]
 });
 
 PAGES.push({
-  id: 'mods', icon: '🛠️', title: 'Aurora Mods', sub: 'Small tweaks for taskbar, Explorer and Start. All reversible',
+  id: 'mods', icon: '🛠️', title: 'Vorynth Mods', sub: 'Small tweaks for taskbar, Explorer and Start. All reversible',
   sections: [
     { title: 'Taskbar', items: [
       toggle('taskbarEndTask', 'End task in taskbar menu', 'Right-click an app on the taskbar and choose End task (Windows 11)', 'kill close frozen app developer'),
@@ -690,11 +690,11 @@ PAGES.push({
   sections: [{ title: 'Your Bluetooth audio', items: [{ type: 'custom', id: 'btaudio', label: 'Bluetooth audio LDAC codec aptX AAC SBC headphones high resolution a2dp', kw: 'ldac aptx aac sbc codec bluetooth headphones earbuds hi-res sony wh-1000xm', render: 'btaudio' }] }]
 });
 
-// The macOS-style desktop page only exists on Aurora OS (Linux)
+// The macOS-style desktop page only exists on Vorynth OS (Linux)
 if (typeof window !== 'undefined' && window.api && (window.api.platform === 'win32' || window.api.platform === 'darwin')) {
   for (let i = PAGES.length - 1; i >= 0; i--) if (PAGES[i].id === 'desklook' || PAGES[i].id === 'oscustomize') PAGES.splice(i, 1);
 }
-// On Linux (Aurora OS) only the pages that do not depend on Windows are shown.
+// On Linux (Vorynth OS) only the pages that do not depend on Windows are shown.
 if (typeof window !== 'undefined' && window.api && (window.api.platform === 'linux' || window.api.platform === 'darwin')) {
   const KEEP = ['btaudio', 'home', 'desklook', 'oscustomize', 'pcrating', 'gpumon', 'controllers', 'aurora-os', 'journey', 'space', 'utils', 'addons', 'aurora-apps', 'aurora-plus', 'aurora-pro', 'toolbox', 'backup', 'personalization', 'diskmap', 'dupes', 'mycmds', 'looks', 'milestones', 'autodoc', 'diag', 'salah', 'zakat', 'worldclock', 'picker', 'fx'].filter((id) => !((id === 'desklook' || id === 'oscustomize') && window.api.platform !== 'linux'));
   for (let i = PAGES.length - 1; i >= 0; i--) if (!KEEP.includes(PAGES[i].id)) PAGES.splice(i, 1);
